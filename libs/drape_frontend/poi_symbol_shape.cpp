@@ -6,6 +6,7 @@
 
 #include "drape/attribute_provider.hpp"
 #include "drape/batcher.hpp"
+#include "drape/grove_brand_texture.hpp"
 #include "drape/texture_manager.hpp"
 #include "drape/utils/vertex_decl.hpp"
 
@@ -203,6 +204,10 @@ drape_ptr<dp::OverlayHandle> PoiSymbolShape::CreateOverlayHandle(m2::RectD const
 
 uint64_t PoiSymbolShape::GetOverlayPriority() const
 {
+  // Grove: chains' logos are pinned, see drape/grove_brand_texture.hpp.
+  if (m_params.m_symbolName.starts_with(grove::kBrandSymbolPrefix))
+    return grove::kBrandPriority;
+
   // Set up maximum priority for some POI.
   if (m_params.m_prioritized)
     return dp::kPriorityMaskAll;

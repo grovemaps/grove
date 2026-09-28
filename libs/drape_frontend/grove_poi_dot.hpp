@@ -71,7 +71,7 @@ private:
   std::string const m_dotName;
 };
 
-// Adds the dot for a place icon, if the icon has one. A brand badge keeps the dot of its category icon.
+// Adds the dot for a place icon, if the icon has one.
 template <typename InsertShapeFn>
 void InsertPoiDot(InsertShapeFn const & insertShape, ref_ptr<dp::TextureManager> textures,
                   m2::PointD const & mercatorPt, df::PoiSymbolViewParams const & iconParams,

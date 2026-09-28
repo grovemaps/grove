@@ -85,6 +85,9 @@ BrandPack::BrandPack()
     {
       if (line.empty() || line.front() == '#')
         continue;
+      // FNV-1a.
+      for (char const ch : line)
+        m_signature = (m_signature ^ static_cast<uint8_t>(ch)) * 1099511628211ULL;
       std::vector<std::string_view> fields;
       strings::Tokenize(line, "\t", [&fields](std::string_view f) { fields.push_back(f); });
       if (fields.size() != 6 && fields.size() != 7)  // The main colour is optional.
@@ -145,6 +148,12 @@ std::string_view BrandPack::Find(std::string_view name, std::string_view country
     }
   }
   return anywhere;
+}
+
+size_t BrandPack::GetRank(std::string_view qid) const
+{
+  auto const it = m_byQid.find(std::string(qid));
+  return it != m_byQid.end() ? it->second : m_brands.size();
 }
 
 uint32_t BrandPack::GetColor(std::string_view qid) const

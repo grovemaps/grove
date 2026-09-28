@@ -96,6 +96,11 @@ struct FrameworkParams
   FrameworkParams(bool enableDiffs) : m_enableDiffs(enableDiffs) {}
 };
 
+namespace grove
+{
+class BrandPlaces;
+}  // namespace grove
+
 class Framework
   : public PositionProvider
   , public SearchAPI::Delegate
@@ -171,6 +176,8 @@ protected:
   std::unique_ptr<RasterTileProvider> m_rasterTileProvider;
   // Grove: shaded relief tiles, see map/grove_relief.hpp.
   std::unique_ptr<RasterTileProvider> m_groveRelief;
+  // Grove: chains' places for the logo layer, see map/grove_brand_places.hpp.
+  std::unique_ptr<grove::BrandPlaces> m_groveBrandPlaces;
 
   StorageDownloadingPolicy m_storageDownloadingPolicy;
   storage::Storage m_storage;

@@ -2,6 +2,7 @@
 
 #include "drape/constants.hpp"
 #include "drape/debug_renderer.hpp"
+#include "drape/grove_brand_texture.hpp"
 
 #include "geometry/mercator.hpp"
 
@@ -252,6 +253,10 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, int currentRank,
   bool const boundToParent = (parentOverlay != nullptr && handle->IsBound());
   if (boundToParent)
     handleToCompare = parentOverlay;
+
+  // Grove: chains' logos never hide each other, see grove_brand_texture.hpp.
+  if (handleToCompare->GetPriority() == grove::kBrandPriority)
+    rivals.erase_if([](ref_ptr<OverlayHandle> const & h) { return h->GetPriority() == grove::kBrandPriority; });
 
   bool const selected =
       m_selectedFeatureID.IsValid() && handleToCompare->GetOverlayID().m_featureId == m_selectedFeatureID;

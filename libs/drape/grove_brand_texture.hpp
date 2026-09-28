@@ -26,6 +26,11 @@ namespace grove
 // BrandTexture, which loads each badge on first use into a slot of one dynamic texture.
 std::string_view constexpr kBrandSymbolPrefix = "brand:";
 
+// Overlay priority of logos: above every map label and icon (dp::CalculateOverlayPriority: 0xFF, then a depth below
+// 2^15, rank and 0xFFFF), below the user marks shown at every zoom. Logos are pinned: nothing on the map hides them,
+// and they never hide each other (OverlayTree).
+uint64_t constexpr kBrandPriority = 0xFF00FFFFFFFFFFFF;
+
 // Badge size on screen: a little larger than the category icons, so logos stay recognisable.
 double constexpr kBrandBadgeDp = 32.0;
 
@@ -41,6 +46,12 @@ public:
   // place types (e.g. "shop-supermarket"), or empty.
   std::string_view Find(std::string_view name, std::string_view country,
                         std::vector<std::string> const & placeTypes) const;
+
+  // Popularity rank: 0 for the brand with the most places, larger for rarer ones and unknown brands.
+  size_t GetRank(std::string_view qid) const;
+
+  // Changes whenever the pack does, for caches built from it.
+  uint64_t GetSignature() const { return m_signature; }
 
   // The logo's main colour (0xRRGGBB), or 0 for grey logos and unknown brands.
   uint32_t GetColor(std::string_view qid) const;
@@ -65,6 +76,7 @@ private:
   std::unordered_map<std::string, std::vector<size_t>> m_byName;  // Lower-case name -> brands.
   std::unordered_map<std::string, size_t> m_byQid;
   std::unique_ptr<ModelReader> m_pack;
+  uint64_t m_signature = 14695981039346656037ULL;
 };
 
 class BrandKey : public dp::Texture::Key

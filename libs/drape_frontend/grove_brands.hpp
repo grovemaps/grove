@@ -1,27 +1,22 @@
 #pragma once
 
+#include "drape/drape_global.hpp"
 #include "drape/grove_brand_texture.hpp"
 #include "drape/texture_manager.hpp"
 
 #include "indexer/classificator.hpp"
-#include "indexer/drawing_rules.hpp"
-#include "indexer/drules_struct.hpp"
 #include "indexer/feature.hpp"
 #include "indexer/feature_data.hpp"
-#include "indexer/feature_visibility.hpp"
 
 #include "coding/string_utf8_multilang.hpp"
 
-#include <algorithm>
-#include <set>
 #include <string>
 #include <string_view>
 #include <vector>
 
 namespace grove
 {
-// Places of chains show their logo badge instead of the category icon wherever the icon shows (see
-// drape/grove_brand_texture.hpp).
+// Places of chains show their logo badge (drape/grove_brand_texture.hpp) instead of their category icon.
 
 // The Wikidata id of the chain a place belongs to, if its logo is in the pack, or empty.
 inline std::string_view FindBrand(FeatureType & f)
@@ -53,70 +48,43 @@ inline std::string_view FindBrand(FeatureType & f)
   return pack.Find(brand, std::string_view(mwm).substr(0, mwm.find('_')), placeTypes);
 }
 
-// Replaces symbolName with the brand badge of the feature, if it has one and there is room in the badge texture.
-inline void UseBrandBadge(FeatureType & f, ref_ptr<dp::TextureManager> textures, std::string & symbolName)
+// Chains show their logo from zoom 13, drawn by the logo layer (grove_brand_layer.hpp) wherever they are, whether
+// or not the map's style draws their category yet. Their names show from zoom 16, under the logo.
+int constexpr kBrandLayerMinZoom = 13;
+int constexpr kChainNameZoom = 16;
+
+inline bool IsBrandLayerZoom(int zoomLevel)
 {
+  return zoomLevel >= kBrandLayerMinZoom;
+}
+
+inline bool ShowsChainName(int zoomLevel)
+{
+  return zoomLevel >= kChainNameZoom;
+}
+
+// For a chain whose logo the layer draws at this zoom: true, and the logo's size in pixels. False for other places,
+// and for chains whose logo doesn't fit in the texture, which keep their category icon.
+inline bool ChainLogoSize(FeatureType & f, int zoomLevel, ref_ptr<dp::TextureManager> textures, m2::PointF & size)
+{
+  if (!IsBrandLayerZoom(zoomLevel))
+    return false;
   auto const qid = FindBrand(f);
   if (qid.empty())
-    return;
+    return false;
 
-  std::string badge = std::string(kBrandSymbolPrefix).append(qid);
   dp::TextureManager::SymbolRegion region;
-  if (textures->GetSymbolRegionSafe(badge, region))
-    symbolName = std::move(badge);
-}
-
-// A symbol rule for a chain whose category has no icon at this zoom yet, but whose name shows (its caption
-// rule): the logo then appears with the name, ranked like it. False for other places.
-inline bool EarlyBrandRule(FeatureType & f, drule::CaptionRule const * captionRule,
-                           ref_ptr<dp::TextureManager> textures, drule::SymbolRule & rule)
-{
-  if (!captionRule)
+  if (!textures->GetSymbolRegionSafe(std::string(kBrandSymbolPrefix).append(qid), region))
     return false;
-  std::string symbol;
-  UseBrandBadge(f, textures, symbol);
-  if (symbol.empty())
-    return false;
-  rule.name = std::move(symbol);
-  rule.priority = captionRule->priority;
+  size = region.GetPixelSize();
   return true;
 }
-// Places a tile reads only from the next zoom's index, for their early logo: map/grove_landcover_reading.hpp
-// collects them and RuleDrawer draws the same tile's features right after, on the same thread.
-inline std::set<FeatureID> & BorrowedFeatures()
+
+// A chain's name goes under its logo, and gives way to other labels and icons: the logo stays anyway.
+inline void PlaceChainName(dp::TitleDecl & title, dp::Anchor below)
 {
-  thread_local std::set<FeatureID> ids;
-  return ids;
-}
-
-// Chains show their logo from zoom 15, a zoom before most of their places are drawn (map/grove_landcover_reading.hpp
-// reads the zoom 16 index for zoom 15).
-int constexpr kEarlyLogoZoom = 15;
-
-// For a place without drawing rules at this zoom: its logo's symbol rule, if it is a chain and its type gets an icon
-// one zoom later (ranked like that icon). False for other places.
-inline bool EarlyLogoRule(FeatureType & f, int zoomLevel, ref_ptr<dp::TextureManager> textures,
-                          drule::SymbolRule & rule)
-{
-  if (zoomLevel != kEarlyLogoZoom || f.GetGeomType() == feature::GeomType::Line)
-    return false;
-  // Only places not drawn at this zoom anyway.
-
-  drule::KeysT keys;
-  feature::GetDrawRule(feature::TypesHolder(f), zoomLevel + 1, keys);
-  auto const icon = std::ranges::find_if(keys, [](drule::Key const & k) { return k.m_type == drule::symbol; });
-  if (icon == keys.end())
-    return false;
-
-  std::string symbol;
-  UseBrandBadge(f, textures, symbol);
-  if (symbol.empty())
-    return false;
-
-  auto const * later = drule::GetCurrentRules().Find(*icon)->GetSymbol();
-  rule.name = std::move(symbol);
-  rule.priority = later->priority;
-  rule.min_distance = later->min_distance;
-  return true;
+  title.m_anchor = below;
+  title.m_primaryOptional = true;
+  title.m_secondaryOptional = true;
 }
 }  // namespace grove

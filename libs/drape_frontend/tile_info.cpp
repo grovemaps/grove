@@ -1,5 +1,6 @@
 #include "drape_frontend/tile_info.hpp"
 #include "drape_frontend/engine_context.hpp"
+#include "drape_frontend/grove_brand_layer.hpp"
 #include "drape_frontend/map_data_provider.hpp"
 #include "drape_frontend/metaline_manager.hpp"
 #include "drape_frontend/rule_drawer.hpp"
@@ -63,6 +64,7 @@ void TileInfo::ReadFeatures(MapDataProvider const & model)
     drawer.DrawTileNet();
 #endif
   }
+  grove::DrawBrandLayer(m_context->GetTileKey(), m_mwms, make_ref(m_context));
 #if defined(DRAPE_MEASURER_BENCHMARK) && defined(TILES_STATISTIC)
   DrapeMeasurer::Instance().EndTileReading();
 #endif

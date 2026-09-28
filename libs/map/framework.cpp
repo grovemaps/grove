@@ -2,6 +2,7 @@
 #include "base/assert.hpp"
 #include "map/benchmark_tools.hpp"
 #include "map/gps_tracker.hpp"
+#include "map/grove_brand_places.hpp"
 #include "map/grove_landcover_reading.hpp"
 #include "map/grove_relief.hpp"
 #include "map/place_page_info.hpp"
@@ -24,6 +25,7 @@
 
 #include "drape_frontend/color_constants.hpp"
 #include "drape_frontend/gps_track_point.hpp"
+#include "drape_frontend/grove_brands.hpp"
 #include "drape_frontend/relations_draw_info.hpp"
 #include "drape_frontend/tile_key.hpp"
 #include "drape_frontend/visual_params.hpp"
@@ -64,6 +66,7 @@
 #include "geometry/mercator.hpp"
 #include "geometry/rect2d.hpp"
 
+#include "base/file_name_utils.hpp"
 #include "base/logging.hpp"
 #include "base/math.hpp"
 #include "base/string_utils.hpp"
@@ -1775,6 +1778,23 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
   // Grove: shaded relief, see map/grove_relief.hpp.
   if (!m_groveRelief)
     m_groveRelief = grove::CreateReliefProvider([this] { return make_ref(m_drapeEngine); });
+
+  // Grove: chains' logos from zoom 13, see map/grove_brand_places.hpp.
+  if (!m_groveBrandPlaces)
+  {
+    m_groveBrandPlaces = std::make_unique<grove::BrandPlaces>(
+        m_featuresFetcher.GetDataSource(), base::JoinPath(GetPlatform().WritableDir(), "grove_brand_places"),
+        [this](m2::RectD const & rect)
+    {
+      GetPlatform().RunTask(Platform::Thread::Gui, [this, rect]
+      {
+        if (grove::IsBrandLayerZoom(GetDrawScale()))
+          InvalidateRect(rect);
+      });
+    });
+    grove::SetBrandPlacesSource([places = m_groveBrandPlaces.get()](auto const & mwm, auto const & rect, auto & out)
+    { places->ForEachInRect(mwm, rect, out); });
+  }
 
   auto tileBackgroundReadFn = [this](df::TileKey const & tileKey, dp::BackgroundMode mode) -> bool
   {

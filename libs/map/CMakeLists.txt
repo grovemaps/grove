@@ -48,6 +48,8 @@ set(SRC
   power_management/power_manager.hpp
   power_management/power_management_schemas.cpp
   power_management/power_management_schemas.hpp
+  grove_brand_places.cpp
+  grove_brand_places.hpp
   grove_place_color.cpp
   grove_place_color.hpp
   grove_relief.cpp
