@@ -10160,26 +10160,26 @@ type leisure-slipway
     symbol name=slipway-m priority=120
     caption primary[height=10 color=c083 dy=1 optional] priority=-9880
 type leisure-sports_centre
-  z15 if "extra_tag=sport=scuba_diving"
+  z15
     area color=c249 priority=-1810
-  z16 if "extra_tag=sport=scuba_diving"
+  z16
     area color=c249 priority=-1810
-  z17 if "extra_tag=sport=scuba_diving"
-    area color=c249 priority=-1810
-    symbol name=pitch-m priority=1250 min_distance=10
-    caption primary[height=10 color=c105 stroke=c073 dy=1 optional] priority=-8750
-  z18 if "extra_tag=sport=scuba_diving"
+  z17
     area color=c249 priority=-1810
     symbol name=pitch-m priority=1250 min_distance=10
-    caption primary[height=10 color=c105 stroke=c073 dy=1 optional] priority=-8750
-  z19 if "extra_tag=sport=scuba_diving"
+    caption primary[height=10 color=c100 stroke=c073 dy=1 optional] priority=-8750
+  z18
     area color=c249 priority=-1810
     symbol name=pitch-m priority=1250 min_distance=10
-    caption primary[height=10 color=c105 stroke=c073 dy=1 optional] priority=-8750
-  z20 if "extra_tag=sport=scuba_diving"
+    caption primary[height=10 color=c100 stroke=c073 dy=1 optional] priority=-8750
+  z19
     area color=c249 priority=-1810
     symbol name=pitch-m priority=1250 min_distance=10
-    caption primary[height=10 color=c105 stroke=c073 dy=1 optional] priority=-8750
+    caption primary[height=10 color=c100 stroke=c073 dy=1 optional] priority=-8750
+  z20
+    area color=c249 priority=-1810
+    symbol name=pitch-m priority=1250 min_distance=10
+    caption primary[height=10 color=c100 stroke=c073 dy=1 optional] priority=-8750
 type leisure-sports_hall
   z17
     symbol name=pitch-m priority=1250 min_distance=10
