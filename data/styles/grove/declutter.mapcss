@@ -1,0 +1,126 @@
+/* Grove: declutter, closer to Apple Maps' calm look.
+ *
+ * Imported by apple-look.mapcss after all upstream includes. Nothing new is drawn here: these rules
+ * only switch off upstream icons and names at some zooms ("none"), so features appear later.
+ */
+
+/* ---- Street names: main roads first, residential streets when zoomed in ---- */
+
+line|z10[highway=primary],
+line|z10-11[highway=secondary],
+line|z12-13[highway=tertiary],
+line|z13-14[highway=unclassified],
+line|z13-14[highway=residential],
+line|z14[highway=road],
+line|z14-15[highway=living_street],
+line|z14-15[highway=pedestrian],
+{text: none;}
+
+/* ---- Place names: neighbourhoods when zoomed in ---- */
+
+node|z13[place=quarter],
+node|z13[place=quarter]::int_name,
+node|z13-14[place=neighbourhood],
+node|z13-14[place=neighbourhood]::int_name,
+node|z13-14[place=locality],
+node|z13-14[place=locality]::int_name,
+{text: none;}
+
+/* ---- Region zoom: no reserve markers or ferry icons (reserve names stay) ---- */
+
+node|z11-13[leisure=nature_reserve],
+area|z11-13[leisure=nature_reserve],
+node|z11-13[boundary=national_park],
+area|z11-13[boundary=national_park],
+node|z11-13[boundary=protected_area],
+area|z11-13[boundary=protected_area],
+{icon-image: none;}
+
+node|z11-12[amenity=ferry_terminal],
+area|z11-12[amenity=ferry_terminal],
+{icon-image: none; text: none;}
+
+/* ---- Busy categories a little later ---- */
+
+node|z14-15[amenity=place_of_worship],
+area|z14-15[amenity=place_of_worship],
+node|z14-15[man_made=communications_tower],
+node|z14-15[amenity=charging_station],
+area|z14-15[amenity=charging_station],
+node|z15[historic=memorial],
+area|z15[historic=memorial],
+node|z15-16[tourism=artwork],
+area|z15-16[tourism=artwork],
+{icon-image: none; text: none;}
+
+/* ---- Street furniture and small utilities: only when zoomed right in ---- */
+
+/* From zoom 18 */
+node|z15-17[man_made=flagpole],
+node|z16-17[barrier=block],
+node|z16-17[barrier=bollard],
+node|z16-17[barrier=chain],
+node|z16-17[barrier=cycle_barrier],
+node|z16-17[barrier=debris],
+node|z16-17[barrier=entrance],
+node|z16-17[barrier=gate],
+node|z16-17[barrier=jersey_barrier],
+node|z16-17[barrier=kissing_gate],
+node|z16-17[barrier=lift_gate],
+node|z16-17[barrier=log],
+node|z16-17[barrier=stile],
+node|z16-17[barrier=swing_gate],
+node|z16-17[barrier=turnstile],
+node|z16-17[barrier=wicket_gate],
+node|z16-17[barrier=yes],
+node|z16-17[amenity=drinking_water],
+node|z16-17[amenity=water_point],
+node|z16-17[man_made=water_tap],
+node|z16-17[man_made=water_well],
+node|z16-17[man_made=chimney],
+node|z16-17[man_made=crane],
+node|z16-17[man_made=cross],
+node|z16-17[man_made=flare],
+node|z16-17[man_made=mast],
+node|z16-17[man_made=silo],
+node|z16-17[man_made=storage_tank],
+node|z16-17[man_made=tower],
+node|z16-17[man_made=monitoring_station],
+node|z17[man_made=petroleum_well],
+node|z16-17[tourism=information][information=board],
+node|z16-17[tourism=information][information=guidepost],
+node|z16-17[tourism=information][information=map],
+node|z16-17[historic=boundary_stone],
+node|z16-17[historic=wayside_cross],
+node|z16-17[historic=wayside_shrine],
+node|z17[emergency=phone],
+node|z17[emergency=lifeguard],
+node|z16-17[highway=ford],
+node|z15-16[power=generator][generator:source=wind],
+{icon-image: none; text: none;}
+
+/* From zoom 19 */
+node|z17-18[amenity=bicycle_parking],
+area|z17-18[amenity=bicycle_parking],
+node|z17-18[amenity=motorcycle_parking],
+area|z17-18[amenity=motorcycle_parking],
+node|z17-18[amenity=recycling][recycling_type=container],
+node|z17-18[amenity=telephone],
+node|z17-18[amenity=vending_machine],
+node|z17-18[amenity=parcel_locker],
+node|z17-18[amenity=luggage_locker],
+node|z17-18[amenity=payment_terminal],
+node|z17-18[amenity=shower],
+node|z18[amenity=bench],
+node|z18[amenity=waste_basket],
+node|z18[amenity=waste_disposal],
+node|z18[amenity=post_box],
+node|z18[amenity=compressed_air],
+node|z18[amenity=bbq],
+node|z18[amenity=public_bookcase],
+node|z18[amenity=parking_space],
+node|z17-18[leisure=picnic_table],
+node|z17-18[leisure=fitness_station],
+node|z17-18[highway=elevator],
+node|z17-18[highway=ladder],
+{icon-image: none; text: none;}

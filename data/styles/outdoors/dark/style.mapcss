@@ -5,6 +5,7 @@
 @import("../include/Roads.mapcss");
 @import("../include/Roads_label.mapcss");
 @import("../include/Icons.mapcss");
+@import("../../grove/poi-label-colors.mapcss");
 @import("../include/Subways.mapcss");
 
 colors

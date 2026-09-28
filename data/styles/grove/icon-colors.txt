@@ -1,0 +1,42 @@
+# Grove: POI icon colors, by label category (measured from Apple Maps, light theme).
+#
+# tools/grove/generate_symbols.py recolors each upstream icon whose place types all share one
+# label category (poi-label-colors.mapcss) to that category's color. Dark mode uses the same
+# hues, dimmed so they don't glare on the black map. Upstream SVGs are never edited.
+#
+# <label variable>        <light>  <dark>   # what it covers
+food_label                 #FC8A30  #CF7630  # restaurants, cafés, bars
+shop_label                 #FBBF1C  #CE9F20  # shops
+entertainment_label        #C4488E  #A14077  # cinemas, theatres, nightlife, museums
+culture_label              #5E76CC  #5264A7  # landmarks, attractions
+hotel_label                #9256D6  #7B4CAF  # hotels, hostels, campsites
+sport_label                #26C2D8  #26A0B1  # gyms, sports
+water_light_label          #2CC8EA  #2CA5C0  # marinas, pools, beaches
+nature_label               #34B852  #309747  # plant nurseries, bird hides
+park_label                 #34B852  #309747  # parks (upstream park labels)
+education_label            #A67C5E  #886750  # schools, universities, libraries
+neutral_label              #8E8E9A  #75757E  # banks, police, post, town halls
+industry_label             #8E8E9A  #75757E  # offices, garages, fuel
+healthcare_label           #E8456F  #BE3F60  # hospitals, pharmacies, doctors
+public_transport_label     #5CA4F6  #528ACA  # bike rental, taxi
+emergency_label            #2FA35E  #2B8650  # emergency access points
+transport                  #5CA4F6  #528ACA  # transit, airports, parking, fuel (Apple uses one blue)
+charging                   #34B852  #309747  # EV charging stations
+
+# Icons without a label category, colored explicitly. These win over the automatic mapping.
+# icon <name or glob>       <color key>  [all]
+icon bus-*                  transport
+icon tram-*                 transport
+icon train-*                transport
+icon taxi-m                 transport
+icon funicular-*            transport
+icon cable-car-*            transport
+icon monorail-*             transport
+icon airport-*              transport
+icon helipad-m              transport
+icon parking*               transport
+icon fuel-*                 transport
+icon charging-station-*     charging
+
+# Two-color silhouettes: "all" recolors every non-neutral color instead of skipping the icon.
+icon monument-*             culture_label  all

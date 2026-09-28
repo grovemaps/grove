@@ -1,0 +1,175 @@
+/* Grove: Apple Maps light palette.
+ *
+ * Overrides variables from default/light/colors.mapcss, which stays identical to upstream
+ * Organic Maps. Imported right after it by default/light/style.mapcss and
+ * outdoors/light/colors.mapcss, so later outdoors overrides still apply.
+ * Values measured from Apple Maps screenshots (Amsterdam, 2026-09), kept in
+ * /Volumes/grove/reference/apple-maps-light/.
+ */
+
+/* 1.BASEMAP */
+@background: #F7F6F0;
+
+/* 3.1 Main natural */
+@water: #8CDCF6;
+@water_bad: #9CD6E6;
+@river: #86D6F3;
+@beach: #F7F1CE;
+@barerock: #E6E2D6;
+@scree: #DEDAD0;
+@desert: #F4EDCC;
+
+/* 3.2 Vegetation */
+@green0: #CEEBB6;
+@green1: #C8E8AA;
+@green1b: #CDEAB1;
+@green2: #C5E9A6;
+@green3: #BFE5A0;
+@green4: #BBE3A1;
+@green5: #B2E08F;
+@forest: #ABE085;
+@green6: #6BAF5B;
+@flowers: #D3EDB0;
+
+/* 4.1 Main landuse */
+@pedestrian_area: #EFEEEA;
+@pedestrian_area_light: #F4F3EF;
+@platform: #E1E3E7;
+@leisure: #FFF3DA;
+@university: #F2E8DA;
+@hospital: #FBE5E1;
+@industrial: #ECECEA;
+@sport0: #CDEBC0;
+@sport1: #C4E7B6;
+@sport2: #BCE3AD;
+@parking: #EDEDEC;
+@farmland: #E1EFC1;
+@farmyard: #EDEBD9;
+
+/* 4.2 Aerodrome */
+@aerodrome0: #E3EDF6;
+@aerodrome1: #E6EFF7;
+@aerodrome2: #E9F1F8;
+@aerodrome3: #ECF3F9;
+@aerodrome4: #EEF4FA;
+@aerodrome5: #F0F6FB;
+
+/* 4.3 Barriers */
+@hedge: #A6D48C;
+
+/* 4.4 Buildings */
+@building0: #E9E8E3;
+@building1: #E4E1DC;
+@building_border0: #D6D4CE;
+@building_border1: #D0CDC7;
+
+/* 5.1 All roads */
+@trunk0: #969DB0;
+@trunk1: #979EAF;
+@primary0: #A2A8B5;
+@primary1: #A9AFB8;
+@primary2: #B3B8BF;
+@secondary0: #BCC0C5;
+@secondary1: #C3C7CB;
+@tertiary: #D7D9DB;
+@residential: #E2E3E3;
+@pedestrian: #FBFBFA;
+@footway: #FDFDFD;
+@cycleway: #C99A9E;
+@construction: #D6D3CB;
+@track: #8F8570;
+@path: #9F9585;
+@path_expert: #6B6154;
+@bridleway: #7F7563;
+
+/* 5.2 Bridges */
+@bridge_background: #F7F6F0;
+@bridge_casing: #9DA3AB;
+
+/* 5.3 Tunnels */
+@trunk_tunnel: #B7BCC7;
+@trunk_tunnel_casing: #9DA3AB;
+@primary_tunnel: #B7BCC7;
+@primary_tunnel_casing: #9DA3AB;
+@secondary_tunnel: #CFD2D6;
+@secondary_tunnel_casing: #9DA3AB;
+@tertiary_tunnel_casing: #9DA3AB;
+@residential_tunnel_casing: #9DA3AB;
+
+/* 5.5 Transport */
+@railway_light: #C3C7CD;
+@railway: #A9AEB6;
+@railway_dash: #F7F7F7;
+@railway_tunnel: #9AA0A8;
+@tram: #9CA3A8;
+@ferry: #5490C0;
+
+/* 6.1 Main labels */
+@label_dark: #303030;
+@label_medium: #56565B;
+@label_light: #707075;
+@label_halo_medium: #F7F6F0;
+
+/* 6.2 Natural labels */
+@water_label: #5490C0;
+@park_label: #30784E;
+
+/* 6.3 Place labels */
+@city_label: #3A3A3A;
+@district_label: #76767B;
+@housenumber: #77756F;
+@building_label: #6E6C68;
+
+/* Grove: POI label colors (used by poi-label-colors.mapcss), measured from Apple Maps */
+@food_label: #9C4E21;
+@shop_label: #846C2A;
+@entertainment_label: #994E7B;
+@culture_label: #54669F;
+@hotel_label: #635196;
+@sport_label: #2D7B93;
+@nature_label: #337848;
+@water_light_label: #217E90;
+@education_label: #755D54;
+@neutral_label: #63636F;
+@industry_label: #5D5D6C;
+@healthcare_label: #872D36;
+@public_transport_label: #3F66A5;
+@emergency_label: #247F52;
+
+/* Grove: landcover shades (used by landcover.mapcss). Structure from CoMaps (separate classes,
+ * lighter when zoomed out); colors from Apple Maps: meadows #E1EFC1, parks #C5E9A6,
+ * woods #ABE085, dune heath #E2E8B6, scrub #BBE098, sand #F7F1CE. */
+@park_10: #D3EEBE;
+@park_11: #CEEBB6;
+@park_12: #CAEAAD;
+@park_13: #C5E9A6;
+@park: #C2E7A3;
+@grass_11: #E1EFC1;
+@grass_12: #DCEDB9;
+@grass_13: #DAEDB7;
+@grass: #D3EBAF;
+@woods_10: #C8E7AF;
+@woods_11: #C2E5A8;
+@woods_12: #B9E29B;
+@woods_13: #AFDF8B;
+@woods: #ABE085;
+@heath_11: #E4EDBF;
+@heath_12: #E4EABC;
+@heath_13: #E2E8B6;
+@heath: #DFE6B0;
+@scrubs_11: #CDE8AE;
+@scrubs_12: #C4E3A0;
+@scrubs_13: #BFE19B;
+@scrubs: #BBE098;
+@golf_12: #CDEBB5;
+@golf_13: #C8E9AE;
+@golf: #C3E8A8;
+@allotments_12: #D9EDC1;
+@allotments_13: #D4EBB9;
+@allotments: #CFE9B2;
+@residential_garden_12: #EBF3DB;
+@residential_garden_13: #E7F1D4;
+@residential_garden: #E3EFCD;
+@wetland_fill: #C6E6D2;
+@wetland_marsh: #BEE4CB;
+@wetland_bog: #CBE6CE;

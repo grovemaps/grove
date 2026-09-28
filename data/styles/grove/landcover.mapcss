@@ -1,0 +1,144 @@
+/* Grove: landcover, one color per class and lighter shades when zoomed out.
+ *
+ * Imported by apple-look.mapcss, so it overrides upstream's vegetation rules. The first part is
+ * CoMaps' vegetation section: data/styles/default/include/Basemap.mapcss ("4.VEGETATION") at
+ * 2528fbb919 (Apache-2.0), minus the two leisure=dog_park lines (Organic Maps has no area priority for
+ * dog parks, and adding one would mean editing upstream's priorities file). It uses the same variable names; Grove's palette-*.mapcss give them
+ * Apple Maps colors. Zoom 11 rules match nothing in Organic Maps' downloadable maps, which only
+ * store grass, meadow and heath from zoom 12; they take effect with maps built from Grove's style.
+ */
+
+/* ---- CoMaps 4.VEGETATION ---- */
+
+
+area|z10-[landuse=forest],
+area|z10-[leisure=park],
+area|z12-[leisure=garden],
+area|z11-[landuse=grass],
+area|z11-[natural=grassland],
+area|z12-[leisure=golf_course],
+area|z11-[natural=heath],
+area|z12-[landuse=allotments],
+area|z11-[natural=bare_rock],
+area|z12-[natural=shingle],
+area|z11-[natural=scree],
+area|z12-[landuse=orchard],
+area|z12-[landuse=plant_nursery],
+area|z12-[landuse=vineyard],
+area|z11-[landuse=meadow],
+area|z12-[landuse=recreation_ground],
+area|z12-[landuse=village_green],
+area|z11-[natural=scrub],
+area|z16-[landuse=flowerbed],
+{fill-opacity: 1;}
+
+area|z10[leisure=park],
+{fill-color: @park_10;}
+area|z11[leisure=park],
+{fill-color: @park_11;}
+area|z12[leisure=park],
+{fill-color: @park_12;}
+area|z13[leisure=park],
+{fill-color: @park_13;}
+area|z14-[leisure=park],
+{fill-color: @park;}
+
+area|z11[natural=heath],
+{fill-color: @heath_11;}
+area|z12[natural=heath],
+{fill-color: @heath_12;}
+area|z13[natural=heath],
+{fill-color: @heath_13;}
+area|z14-[natural=heath],
+{fill-color: @heath;}
+
+area|z11[landuse=grass],
+area|z11[natural=grassland],
+area|z11[landuse=meadow],
+{fill-color: @grass_11;}
+area|z12[landuse=grass],
+area|z12[natural=grassland],
+area|z12[landuse=meadow],
+area|z12[landuse=recreation_ground],
+area|z12[landuse=village_green],
+{fill-color: @grass_12;}
+area|z13[landuse=grass],
+area|z13[natural=grassland],
+area|z13[landuse=meadow],
+area|z13[landuse=recreation_ground],
+area|z13[landuse=village_green],
+{fill-color: @grass_13;}
+area|z14-[landuse=grass],
+area|z14-[natural=grassland],
+area|z14-[landuse=meadow],
+area|z14-[landuse=recreation_ground],
+area|z14-[landuse=village_green],
+{fill-color: @grass;}
+
+area|z16-[landuse=flowerbed],
+{fill-color: @flowers;}
+
+area|z12[leisure=golf_course],
+{fill-color: @golf_12;}
+area|z13[leisure=golf_course],
+{fill-color: @golf_13;}
+area|z14-[leisure=golf_course],
+{fill-color: @golf;}
+
+area|z12[leisure=garden],
+area|z12[landuse=allotments],
+area|z12[landuse=orchard],
+area|z12[landuse=plant_nursery],
+area|z12[landuse=vineyard],
+{fill-color: @allotments_12;}
+area|z13[leisure=garden],
+area|z13[landuse=allotments],
+area|z13[landuse=orchard],
+area|z13[landuse=plant_nursery],
+area|z13[landuse=vineyard],
+{fill-color: @allotments_13;}
+area|z14-[leisure=garden],
+area|z14-[landuse=allotments],
+area|z14-[landuse=orchard],
+area|z14-[landuse=plant_nursery],
+area|z14-[landuse=vineyard],
+{fill-color: @allotments;}
+
+area|z12[leisure=garden][garden:type=residential],
+{fill-color: @residential_garden_12;}
+area|z13[leisure=garden][garden:type=residential],
+{fill-color: @residential_garden_13;}
+area|z14-[leisure=garden][garden:type=residential],
+{fill-color: @residential_garden;}
+
+area|z11[natural=scrub],
+{fill-color: @scrubs_11;}
+area|z12[natural=scrub],
+{fill-color: @scrubs_12;}
+area|z13[natural=scrub],
+{fill-color: @scrubs_13;}
+area|z14-[natural=scrub],
+{fill-color: @scrubs;}
+
+area|z10[landuse=forest],
+{fill-color: @woods_10;}
+area|z11[landuse=forest],
+{fill-color: @woods_11;}
+area|z12[landuse=forest],
+{fill-color: @woods_12;}
+area|z13[landuse=forest],
+{fill-color: @woods_13;}
+area|z14-[landuse=forest],
+{fill-color: @woods;}
+
+
+
+/* ---- Grove additions ---- */
+
+/* Wetlands: soft green-teal as in Apple Maps, instead of upstream's blue-gray. */
+area|z11-[natural=wetland],
+{fill-color: @wetland_fill;}
+area|z11-[natural=wetland][wetland=marsh],
+{fill-color: @wetland_marsh;}
+area|z11-[natural=wetland][wetland=bog],
+{fill-color: @wetland_bog;}

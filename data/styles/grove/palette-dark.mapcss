@@ -1,0 +1,59 @@
+/* Grove: dark palette.
+ *
+ * Overrides/extends default/dark/colors.mapcss, which stays identical to upstream Organic Maps.
+ * Imported right after it by default/dark/style.mapcss and outdoors/dark/colors.mapcss.
+ * Only POI label colors so far: the Apple Maps light hues, lightened to ~6:1 contrast on the
+ * dark background. Replace with measured values once there are Apple Maps dark-mode references.
+ */
+
+/* Grove: POI label colors (used by poi-label-colors.mapcss), derived from the light ones */
+@food_label: #CC7D4F;
+@shop_label: #A98E42;
+@entertainment_label: #B77FA1;
+@culture_label: #8490B7;
+@hotel_label: #968AB9;
+@sport_label: #459BB6;
+@nature_label: #4FA168;
+@water_light_label: #369DB1;
+@education_label: #A28C83;
+@neutral_label: #8F8F9A;
+@industry_label: #90909D;
+@healthcare_label: #C97A82;
+@public_transport_label: #7592C1;
+@emergency_label: #3AA36F;
+
+/* Grove: landcover shades (used by landcover.mapcss), CoMaps dark theme values */
+@park_10: #27281B;
+@park_11: #29281C;
+@park_12: #292A1C;
+@park_13: #2A2B1D;
+@park: #2B2C1D;
+@grass_11: #252719;
+@grass_12: #252819;
+@grass_13: #26291A;
+@grass: #272A1A;
+@woods_10: #1F2311;
+@woods_11: #1F2211;
+@woods_12: #1F2310;
+@woods_13: #1F2410;
+@woods: #202510;
+@heath_11: #27281D;
+@heath_12: #27291D;
+@heath_13: #282A1D;
+@heath: #292B1E;
+@scrubs_11: #212413;
+@scrubs_12: #212513;
+@scrubs_13: #212613;
+@scrubs: #222713;
+@golf_12: #232616;
+@golf_13: #242716;
+@golf: #252816;
+@allotments_12: #29281D;
+@allotments_13: #2A291D;
+@allotments: #2B2A1E;
+@residential_garden_12: #171614;
+@residential_garden_13: #171614;
+@residential_garden: #171614;
+@wetland_fill: #1C2A24;
+@wetland_marsh: #1B2B23;
+@wetland_bog: #1F2A22;

@@ -1,0 +1,44 @@
+/* Grove: rule overrides for an Apple Maps look.
+ *
+ * Imported last by default/{light,dark}/style.mapcss, after all upstream includes, so these rules
+ * win over upstream's for the same features and zooms. Colors live in palette-*.mapcss.
+ */
+@import("../../grove/landcover.mapcss");
+@import("../../grove/declutter.mapcss");
+
+/* Nature reserves and national parks: no hatching (hardcoded in drape_frontend/stylist.cpp for
+ * these types). Apple Maps shows the landcover underneath and, for parks, a thin green border. */
+area|z8-17[leisure=nature_reserve],
+area|z8-17[boundary=national_park],
+area|z8-17[boundary=protected_area][protect_class=1],
+{fill-color: none;}
+
+/* House numbers only when zoomed right in, as in Apple Maps. */
+node|z16-18[addr:housenumber][addr:street],
+node|z16-18[addr:housenumber][addr:street]::int_name,
+{text: none;}
+
+/* Fewer road number shields when zoomed out: Apple Maps shows mostly motorway numbers there.
+ * An empty shield-font-size means "no shield" to kothic (0 would still count as set). */
+line|z10-11[highway=primary]::shield,
+line|z11-12[highway=primary_link]::shield,
+line|z12[highway=secondary]::shield,
+{shield-font-size: "";}
+line|z10-11[highway=motorway]::shield,
+line|z10-11[highway=trunk]::shield,
+{shield-min-distance: 140;}
+
+/* District and neighbourhood names: smaller, closer to Apple's small gray labels (color: @district_label).
+ * (Apple also sets them in spaced capitals; drules captions have no uppercase option.) */
+node|z12[place=suburb]
+{font-size: 10;}
+node|z13[place=suburb]
+{font-size: 11;}
+node|z14[place=suburb]
+{font-size: 12;}
+node|z14[place=quarter],
+node|z15-[place=quarter],
+{font-size: 11;}
+node|z15-[place=locality],
+node|z15-[place=neighbourhood],
+{font-size: 10;}
