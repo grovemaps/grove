@@ -78,6 +78,7 @@ import app.organicmaps.utils.Graphics;
 import app.organicmaps.widget.ArrowPopup;
 import app.organicmaps.widget.ArrowView;
 import app.organicmaps.widget.colorpicker.ColorPickerFragment;
+import app.organicmaps.widget.placepage.sections.GroveReviewsFragment;
 import app.organicmaps.widget.placepage.sections.PlacePageLinksFragment;
 import app.organicmaps.widget.placepage.sections.PlacePageNotesFragment;
 import app.organicmaps.widget.placepage.sections.PlacePageOpeningHoursFragment;
@@ -806,6 +807,9 @@ public class PlacePageView extends Fragment
     updateOpeningHoursView();
     updateProductsView();
     updateWikipediaView();
+    // Grove: Mangrove reviews.
+    updateViewFragment(GroveReviewsFragment.class, GroveReviewsFragment.TAG, R.id.grove_reviews_fragment,
+                       GroveReviewsFragment.isShown());
     updateNotesView();
     updatePhoneView();
     updateTrackView();

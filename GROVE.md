@@ -86,6 +86,7 @@ Current upstream hooks:
 | `libs/drape_frontend/apply_feature_functors.cpp` (again) | chains get no category icon (the logo layer draws theirs), and from zoom 16 their name under the logo (`libs/drape_frontend/grove_brands.hpp`, Grove) |
 | `android/app/build.gradle` | stores `grove_brands.bin` uncompressed, so it is read in place |
 | `android/app/src/main/res/**`, `RoutingBottomMenuController.java` | Roboto references point to the app font (Geist, Inter for Greek), and the app themes hang under `values/grove_fonts.xml`; written by `tools/grove/android_fonts.py`, see "Fonts" |
+| `android/app/src/main/res/layout/place_page_details.xml`, `PlacePageView.java` | a container for the Mangrove reviews section and the one line that shows it (`GroveReviewsFragment`) |
 | `data/fonts/whitelist.txt` | Inter for Latin, Greek and Cyrillic blocks; drops the system Roboto entries for those blocks (a whitelisted system font loads last and would win) |
 
 Grove style files in `data/styles/grove/`:
@@ -207,6 +208,15 @@ Places of chains (Albert Heijn, McDonald's, Lidl...) show the chain's logo inste
 ## Place cards
 
 On Android, tapping a place opens a card whose title is in the place's colour: its chain's logo colour (worked out by `tools/grove/brand_logos.py` as the logo's most common clear colour), otherwise its category colour, the label colour of its type in the current day or night style, which is also its icon circle's colour, darkened (day) or lightened (night) until it reads. Places without an icon keep the plain title. Tinting the whole card was tried and dropped: it looked muddy. Code: `libs/map/grove_place_color.cpp`, JNI `android/sdk/.../GrovePlace.cpp`, card `android/app/.../placepage/GrovePlaceCard.java`, one call in `PlacePageView.refreshPreview`.
+
+## Reviews
+
+Place cards of shops, restaurants, hotels, museums and other places people review (CoMaps' list of about 260 types) show their reviews from [Mangrove](https://mangrove.reviews), an open review commons (CC BY 4.0): the average stars, the number of reviews, the five newest (tap one to read all of it), and a link to write one on Mangrove's site. Ported from CoMaps, with one difference: CoMaps builds the reviews into its own map files, matched to OpenStreetMap ids on its servers, while Grove uses Organic Maps' map files. So Grove asks Mangrove's API (`/geo`, the reviews in a small box around the place) when a card opens, and keeps the reviews whose subject is the place: Mangrove names a place by a geo URI with its name and how far it reaches (`geo:52.3562,4.9115?q=Veganees&u=50`), so a review matches when its point lies within both places' reach plus 30 m and the names agree (any case), unless one has no name.
+
+- **Code:** `libs/map/grove_reviews.cpp` (subject, matching, request; tests in `map_tests/grove_reviews_tests.cpp`), JNI `android/sdk/.../GroveReviews.cpp`, section `android/app/.../placepage/sections/GroveReviewsFragment.java`.
+- **Privacy:** it sends the place's position to Mangrove when its card opens. Settings → "Reviews from Mangrove" switches it off (key `GroveReviews`, on by default).
+- **Strings:** `reviews_by_mangrove` and `add_review` with CoMaps' translations, `pref_mangrove_reviews_summary` new.
+- **Not ported yet:** CoMaps sends some types to MapComplete's review themes, which needs the place's OpenStreetMap id; Grove sends all to Mangrove. iOS and the desktop app show no reviews yet.
 
 ## Checking the look without a phone
 

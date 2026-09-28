@@ -54,6 +54,8 @@ set(SRC
   grove_place_color.hpp
   grove_relief.cpp
   grove_relief.hpp
+  grove_reviews.cpp
+  grove_reviews.hpp
   raster_tile_provider.cpp
   raster_tile_provider.hpp
   routing_manager.cpp

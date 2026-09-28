@@ -30,6 +30,7 @@ set(SRC
   app/organicmaps/sdk/ChoosePositionMode.cpp
   app/organicmaps/sdk/GrovePlace.cpp
   app/organicmaps/sdk/GroveRelief.cpp
+  app/organicmaps/sdk/GroveReviews.cpp
   app/organicmaps/sdk/MapStyle.cpp
   app/organicmaps/sdk/OrganicMaps.cpp
   app/organicmaps/sdk/Router.cpp

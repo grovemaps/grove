@@ -47,6 +47,14 @@
       app:singleLineTitle="false"
       android:persistent="false"
       android:order="3" />
+    <!-- Grove: Mangrove reviews on place cards, see GroveSettings.java -->
+    <SwitchPreferenceCompat
+      android:key="GroveReviews"
+      android:title="@string/reviews_by_mangrove"
+      android:summary="@string/pref_mangrove_reviews_summary"
+      app:singleLineTitle="false"
+      android:persistent="false"
+      android:order="3" />
     <SwitchPreferenceCompat
       android:key="@string/pref_autodownload"
       android:title="@string/autodownload"
