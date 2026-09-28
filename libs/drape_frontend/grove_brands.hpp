@@ -6,7 +6,6 @@
 #include "indexer/classificator.hpp"
 #include "indexer/feature.hpp"
 #include "indexer/feature_data.hpp"
-#include "indexer/feature_meta.hpp"
 
 #include "coding/string_utf8_multilang.hpp"
 
@@ -27,13 +26,18 @@ inline void UseBrandBadge(FeatureType & f, int zoomLevel, ref_ptr<dp::TextureMan
   if (zoomLevel < kMinBrandZoom)
     return;
 
-  // The map generator drops the brand of places named like it (most of them), so the name stands in for it.
-  // Matching the place type too keeps an independent shop that happens to share a chain's name plain.
-  std::string_view brand = f.GetMetadata(feature::Metadata::FMD_BRAND);
-  if (brand.empty())
-    brand = f.GetName(StringUtf8Multilang::kDefaultCode);
+  // Brands are matched by name: the map generator drops the brand tag of places named like it (most of them),
+  // and reading the stored brand of every place would slow tile loading. A branch name like "Albert Heijn Dam"
+  // matches by its leading words. Matching the place type too keeps an independent shop that happens to share
+  // a chain's name plain.
+  std::string_view brand = f.GetName(StringUtf8Multilang::kDefaultCode);
   auto const & pack = BrandPack::Instance();
-  if (brand.empty() || !pack.HasName(brand))
+  while (!brand.empty() && !pack.HasName(brand))
+  {
+    auto const space = brand.rfind(' ');
+    brand = space == std::string_view::npos ? std::string_view{} : brand.substr(0, space);
+  }
+  if (brand.empty())
     return;
 
   std::vector<std::string> placeTypes;
