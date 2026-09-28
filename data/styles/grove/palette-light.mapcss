@@ -75,13 +75,14 @@
 @tertiary: #FFFFFF;
 @residential: #FFFFFF;
 @pedestrian: #FFFFFF;
-@footway: #FDFDFD;
-@cycleway: #C99A9E;
+@footway: #FFFFFF;
+@footway_casing: #D3CCBF;
+@cycleway: #8468D6;
 @construction: #D6D3CB;
-@track: #8F8570;
-@path: #9F9585;
-@path_expert: #6B6154;
-@bridleway: #7F7563;
+@track: #8E6A48;
+@path: #A0754F;
+@path_expert: #6E4F36;
+@bridleway: #8A6A4A;
 
 /* 5.2 Bridges */
 @bridge_background: #F3F1EB;

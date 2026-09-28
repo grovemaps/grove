@@ -1,0 +1,87 @@
+/* Grove: paths, after Apple Maps and Mapy.com. Imported by apple-look.mapcss, after upstream's rules, which it
+ * overrides.
+ *
+ * - Footways and sidewalks: solid white with a thin warm grey casing, where upstream's near-white dashes on the
+ *   light background read as faint dots.
+ * - Paths and tracks: warm brown, longer dashes, a little wider, as on Mapy.com's outdoor map.
+ * - Pedestrian streets: the same, wider.
+ * - Cycleways: solid violet, stronger.
+ */
+
+line|z15-[highway=footway],
+line|z15-[highway=steps],
+{color: @footway; dashes: none; casing-color: @footway_casing;}
+line|z15[highway=footway],
+{casing-width: 0.4;}
+line|z16[highway=footway],
+{casing-width: 0.5;}
+line|z17[highway=footway],
+{casing-width: 0.6;}
+line|z18[highway=footway],
+{casing-width: 0.7;}
+line|z19-[highway=footway],
+{casing-width: 0.8;}
+/* Upstream hides sidewalks and crossings on z15: their casing too. */
+line|z15[highway=footway][footway=sidewalk],
+line|z15[highway=footway][footway=crossing],
+{casing-width: 0;}
+/* Footway areas are drawn as areas. */
+line|z14-[highway=footway][area?],
+{casing-width: 0;}
+
+line|z14[highway=path],
+{width: 1.1; dashes: 4,2;}
+line|z15[highway=path],
+{width: 1.3; dashes: 4.5,2.2;}
+line|z16[highway=path],
+{width: 1.8; dashes: 5,2.5;}
+line|z17[highway=path],
+{width: 2.3; dashes: 6,3;}
+line|z18[highway=path],
+{width: 3; dashes: 7,3.5; opacity: 1;}
+line|z19-[highway=path],
+{width: 3.8; dashes: 8,4; opacity: 1;}
+
+line|z14[highway=track],
+{width: 1.3; dashes: 7,2.5;}
+line|z15[highway=track],
+{width: 1.6; dashes: 7,2.5;}
+line|z16[highway=track],
+{width: 2.1; dashes: 8,3;}
+line|z17[highway=track],
+{width: 2.7; dashes: 9,3.5;}
+line|z18[highway=track],
+{width: 3.5; dashes: 10,4; opacity: 1;}
+line|z19-[highway=track],
+{width: 4.4; dashes: 12,4; opacity: 1;}
+
+line|z13-[highway=cycleway],
+{dashes: none;}
+line|z13[highway=cycleway],
+{opacity: 0.6;}
+line|z14-15[highway=cycleway],
+{opacity: 0.75;}
+line|z16-[highway=cycleway],
+{opacity: 0.9;}
+
+/* Shared foot and cycle ways keep upstream's dashes: the violet cycle line under them shows in the gaps. */
+line|z15-16[highway=footway][bicycle=designated],
+{dashes: 5,3;}
+line|z17[highway=footway][bicycle=designated],
+{dashes: 6,4.2;}
+line|z18[highway=footway][bicycle=designated],
+{dashes: 8,5.5;}
+line|z19-[highway=footway][bicycle=designated],
+{dashes: 10,6.7;}
+
+/* Pedestrian streets (and Vondelpark's paths): solid white, wider than footways, with the same casing. */
+line|z13-[highway=pedestrian],
+{color: @pedestrian; dashes: none; casing-color: @footway_casing;}
+line|z15[highway=pedestrian],
+{casing-width: 0.5;}
+line|z16-17[highway=pedestrian],
+{casing-width: 0.6;}
+line|z18-[highway=pedestrian],
+{casing-width: 0.8;}
+line|z14-[highway=pedestrian][area?],
+{casing-width: 0;}

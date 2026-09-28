@@ -57,3 +57,6 @@
 @wetland_fill: #1C2A24;
 @wetland_marsh: #1B2B23;
 @wetland_bog: #1F2A22;
+
+/* Grove: footway casing (used by paths.mapcss). */
+@footway_casing: #2B2B2B;
