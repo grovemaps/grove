@@ -55,6 +55,14 @@
       app:singleLineTitle="false"
       android:persistent="false"
       android:order="3" />
+    <!-- Grove: the user's Tripadvisor API key for ratings on place cards, see GroveSettings.java -->
+    <EditTextPreference
+      android:key="GroveTripadvisorKey"
+      android:title="@string/tripadvisor_api_key"
+      android:dialogMessage="@string/tripadvisor_api_key_summary"
+      app:singleLineTitle="false"
+      android:persistent="false"
+      android:order="3" />
     <!-- Grove: Mangrove reviews on place cards, see GroveSettings.java -->
     <SwitchPreferenceCompat
       android:key="GroveReviews"

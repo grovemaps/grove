@@ -7062,6 +7062,76 @@ pt = Últimos 6 meses: %1$s
 ru = За последние 6 месяцев: %1$s
 uk = За останні 6 місяців: %1$s
 
+[tripadvisor_api_key]
+comment = Grove: Settings: title of the field for the user's own Tripadvisor API key
+tags = android-app
+en = Tripadvisor API key
+de = Tripadvisor-API-Schlüssel
+es = Clave de API de Tripadvisor
+fr = Clé d’API Tripadvisor
+it = Chiave API di Tripadvisor
+nl = Tripadvisor-API-sleutel
+pt = Chave de API do Tripadvisor
+ru = API-ключ Tripadvisor
+uk = API-ключ Tripadvisor
+
+[tripadvisor_api_key_summary]
+comment = Grove: Settings: explanation shown when entering the Tripadvisor API key
+tags = android-app
+en = With your own key from tripadvisor.com/developers, place cards show Tripadvisor ratings and the newest reviews. Opening a place's card then sends its name and position to Tripadvisor. Leave empty to switch this off.
+de = Mit deinem eigenen Schlüssel von tripadvisor.com/developers zeigen Ortskarten Tripadvisor-Bewertungen und die neuesten Rezensionen. Beim Öffnen einer Ortskarte werden dann Name und Position des Ortes an Tripadvisor gesendet. Leer lassen, um dies auszuschalten.
+es = Con tu propia clave de tripadvisor.com/developers, las fichas de lugares muestran las valoraciones de Tripadvisor y las reseñas más recientes. Al abrir la ficha de un lugar, se envían su nombre y posición a Tripadvisor. Déjalo vacío para desactivarlo.
+fr = Avec votre propre clé de tripadvisor.com/developers, les fiches des lieux affichent les notes Tripadvisor et les avis les plus récents. Ouvrir la fiche d’un lieu envoie alors son nom et sa position à Tripadvisor. Laissez vide pour désactiver.
+it = Con la tua chiave di tripadvisor.com/developers, le schede dei luoghi mostrano le valutazioni di Tripadvisor e le recensioni più recenti. Aprire la scheda di un luogo invia il suo nome e la sua posizione a Tripadvisor. Lascia vuoto per disattivare.
+nl = Met je eigen sleutel van tripadvisor.com/developers tonen plaatskaarten Tripadvisor-beoordelingen en de nieuwste recensies. Het openen van een plaatskaart stuurt dan de naam en positie van de plaats naar Tripadvisor. Laat leeg om dit uit te zetten.
+pt = Com a sua própria chave de tripadvisor.com/developers, os cartões dos locais mostram as avaliações do Tripadvisor e as críticas mais recentes. Abrir o cartão de um local envia o seu nome e posição ao Tripadvisor. Deixe vazio para desativar.
+ru = С вашим собственным ключом с tripadvisor.com/developers карточки мест показывают оценки Tripadvisor и новейшие отзывы. При открытии карточки места его название и расположение отправляются в Tripadvisor. Оставьте пустым, чтобы отключить.
+uk = З вашим власним ключем з tripadvisor.com/developers картки місць показують оцінки Tripadvisor і найновіші відгуки. Під час відкриття картки місця його назва й розташування надсилаються до Tripadvisor. Залиште порожнім, щоб вимкнути.
+
+[api_key_not_set]
+comment = Grove: Settings: summary of an API key field without a key
+tags = android-app
+en = Not set
+de = Nicht festgelegt
+es = No configurada
+fr = Non définie
+it = Non impostata
+nl = Niet ingesteld
+pt = Não definida
+ru = Не задан
+uk = Не задано
+
+[api_key_set]
+comment = Grove: Settings: summary of an API key field with a key; %1$s is the key's last 4 characters
+tags = android-app
+en = Set (…%1$s)
+de = Festgelegt (…%1$s)
+es = Configurada (…%1$s)
+fr = Définie (…%1$s)
+it = Impostata (…%1$s)
+nl = Ingesteld (…%1$s)
+pt = Definida (…%1$s)
+ru = Задан (…%1$s)
+uk = Задано (…%1$s)
+
+[reviews_on_tripadvisor]
+comment = Grove: place card section title: the place's rating and reviews on Tripadvisor (brand name, don't translate it)
+tags = android-app
+en = Tripadvisor
+
+[more_on_tripadvisor]
+comment = Grove: place card: link to the place's page on Tripadvisor, required by Tripadvisor
+tags = android-app
+en = Read more on Tripadvisor
+de = Mehr auf Tripadvisor
+es = Más en Tripadvisor
+fr = En savoir plus sur Tripadvisor
+it = Leggi di più su Tripadvisor
+nl = Meer op Tripadvisor
+pt = Mais no Tripadvisor
+ru = Подробнее на Tripadvisor
+uk = Докладніше на Tripadvisor
+
 [reviews_by_mangrove]
 comment = Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps.
 tags = android-app

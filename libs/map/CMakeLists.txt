@@ -64,6 +64,8 @@ set(SRC
   grove_relief.hpp
   grove_reviews.cpp
   grove_reviews.hpp
+  grove_tripadvisor.cpp
+  grove_tripadvisor.hpp
   raster_tile_provider.cpp
   raster_tile_provider.hpp
   routing_manager.cpp

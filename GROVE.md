@@ -102,6 +102,7 @@ Current upstream hooks:
 | `libs/map/framework.{hpp,cpp}` (again) | queues every downloaded map region, at start and after each download, for saving its relief and land cover (`libs/map/grove_offline_layers.hpp`, Grove) |
 | `libs/map/routing_manager.{hpp,cpp}`, `bookmark_manager.{hpp,cpp}` (`SaveRoute`) | a route saved as a track keeps its stops and router in the track's properties (`grove_route_points`, `grove_router`), and `GroveRestoreTrip` plans it again; Android shows "Navigate this trip" on such a track's card (`GroveTripRow.java`, `place_page_preview.xml`) |
 | `libs/routing/index_router.cpp`, `route.hpp` (`SetTurnDirection`) | bicycle routes use `grove::BicycleDirectionsEngine` (`libs/routing/grove_turns.hpp`): the car directions, then bike path jogs merged (below) |
+| `android/app/src/main/res/layout/place_page_details.xml` (again), `PlacePageView.java` | a container for the Tripadvisor section (`GroveTripadvisorFragment`) |
 | `android/app/build.gradle` | stores `grove_brands.bin`, `grove_landcover_world.bin` and `grove_reviews.bin` uncompressed, so they are read in place |
 | `android/app/src/main/res/**`, `RoutingBottomMenuController.java` | Roboto references point to the app font (Geist, Inter for Greek), and the app themes hang under `values/grove_fonts.xml`; written by `tools/grove/android_fonts.py`, see "Fonts" |
 | `android/app/src/main/res/layout/place_page_details.xml`, `PlacePageView.java` | a container for the Mangrove reviews section and the one line that shows it (`GroveReviewsFragment`) |
@@ -269,6 +270,10 @@ Place cards of shops, restaurants, hotels, museums and other places people revie
 - **Privacy:** the bundled reviews need no network; for the newest, it sends the place's position to Mangrove when its card opens. Settings → "Reviews from Mangrove" switches it off (key `GroveReviews`, on by default).
 - **Strings:** `reviews_by_mangrove` and `add_review` with CoMaps' translations, `pref_mangrove_reviews_summary` and `reviews_last_6_months` new.
 - **Not ported yet:** CoMaps sends some types to MapComplete's review themes, which needs the place's OpenStreetMap id; Grove sends all to Mangrove. iOS and the desktop app show no reviews yet.
+
+### Tripadvisor, with the user's own key
+
+Settings → "Tripadvisor API key" takes a key from [Tripadvisor's Content API](https://tripadvisor-content-api.readme.io) (tripadvisor.com/developers; free up to a monthly quota at the time of writing, check the terms). With one, the cards of named places people review show Tripadvisor's rating and review count, the 5 newest reviews, a trend line when those from the last six months differ from the overall rating by half a star or more, and "Read more on Tripadvisor", the link its terms require. Grove asks `nearby_search` for the place (same name, ignoring case and accents, or one name within the other; within 150 m plus the place's reach), then `details` and `reviews` (`libs/map/grove_tripadvisor.cpp`, tests in `map_tests/grove_tripadvisor_tests.cpp`). Nothing is stored. Without a key nothing is sent; with one, opening a card sends the place's name and position to Tripadvisor. The key is the settings key `GroveTripadvisorKey`. Tripadvisor's terms may also ask for its logo next to the rating; check them before publishing the app.
 
 ## Checking the look without a phone
 

@@ -79,6 +79,7 @@ import app.organicmaps.widget.ArrowPopup;
 import app.organicmaps.widget.ArrowView;
 import app.organicmaps.widget.colorpicker.ColorPickerFragment;
 import app.organicmaps.widget.placepage.sections.GroveReviewsFragment;
+import app.organicmaps.widget.placepage.sections.GroveTripadvisorFragment;
 import app.organicmaps.widget.placepage.sections.PlacePageLinksFragment;
 import app.organicmaps.widget.placepage.sections.PlacePageNotesFragment;
 import app.organicmaps.widget.placepage.sections.PlacePageOpeningHoursFragment;
@@ -808,7 +809,9 @@ public class PlacePageView extends Fragment
     updateOpeningHoursView();
     updateProductsView();
     updateWikipediaView();
-    // Grove: Mangrove reviews.
+    // Grove: Tripadvisor rating and Mangrove reviews.
+    updateViewFragment(GroveTripadvisorFragment.class, GroveTripadvisorFragment.TAG, R.id.grove_tripadvisor_fragment,
+                       GroveTripadvisorFragment.isShown());
     updateViewFragment(GroveReviewsFragment.class, GroveReviewsFragment.TAG, R.id.grove_reviews_fragment,
                        GroveReviewsFragment.isShown());
     updateNotesView();

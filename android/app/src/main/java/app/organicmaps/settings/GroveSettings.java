@@ -1,11 +1,15 @@
 package app.organicmaps.settings;
 
+import android.text.InputType;
 import androidx.annotation.NonNull;
+import androidx.preference.EditTextPreference;
 import androidx.preference.TwoStatePreference;
+import app.organicmaps.R;
 import app.organicmaps.sdk.GroveCycleRoutes;
 import app.organicmaps.sdk.GroveLandcover;
 import app.organicmaps.sdk.GroveRelief;
 import app.organicmaps.sdk.GroveReviews;
+import app.organicmaps.sdk.GroveTripadvisor;
 
 // Grove's own settings, kept out of upstream's SettingsPrefsFragment.
 final class GroveSettings
@@ -32,6 +36,22 @@ final class GroveSettings
     cycleRoutes.setChecked(GroveCycleRoutes.nativeIsEnabled());
     cycleRoutes.setOnPreferenceChangeListener((preference, newValue) -> {
       GroveCycleRoutes.nativeSetEnabled((Boolean) newValue);
+      return true;
+    });
+
+    final EditTextPreference tripadvisor = fragment.getPreference("GroveTripadvisorKey");
+    tripadvisor.setText(GroveTripadvisor.nativeGetKey());
+    tripadvisor.setOnBindEditTextListener(editText -> {
+      editText.setSingleLine(true);
+      editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+    });
+    tripadvisor.setSummaryProvider(preference -> {
+      final String key = GroveTripadvisor.nativeGetKey();
+      return key.isEmpty() ? fragment.getString(R.string.api_key_not_set)
+                           : fragment.getString(R.string.api_key_set, key.substring(Math.max(0, key.length() - 4)));
+    });
+    tripadvisor.setOnPreferenceChangeListener((preference, newValue) -> {
+      GroveTripadvisor.nativeSetKey(((String) newValue).trim());
       return true;
     });
 
