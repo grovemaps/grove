@@ -49,10 +49,11 @@ inline std::string_view FindBrand(FeatureType & f)
   return pack.Find(brand, std::string_view(mwm).substr(0, mwm.find('_')), placeTypes);
 }
 
-// Chains show their logo from zoom 12, drawn by the logo layer (grove_brand_layer.hpp) wherever they are, whether
-// or not the map's style draws their category yet. Their names show from zoom 16, under the logo.
-int constexpr kBrandLayerMinZoom = 12;
-int constexpr kChainNameZoom = 16;
+// Chains show their logo from zoom 15, drawn by the logo layer (grove_brand_layer.hpp) wherever they are, whether
+// or not the map's style draws their category yet: stations, sights and parks come first, zooming in. Their names
+// show from zoom 17, under the logo.
+int constexpr kBrandLayerMinZoom = 15;
+int constexpr kChainNameZoom = 17;
 
 // The map's brands button (map/grove_brand_places.hpp): when off, chains show like other places.
 inline std::atomic<bool> & BrandsShown()
