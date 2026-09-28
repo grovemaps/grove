@@ -169,6 +169,8 @@ protected:
 
   // POC source of raster background tiles (see tileBackgroundReadFn in CreateDrapeEngine).
   std::unique_ptr<RasterTileProvider> m_rasterTileProvider;
+  // Grove: shaded relief tiles, see map/grove_relief.hpp.
+  std::unique_ptr<RasterTileProvider> m_groveRelief;
 
   StorageDownloadingPolicy m_storageDownloadingPolicy;
   storage::Storage m_storage;

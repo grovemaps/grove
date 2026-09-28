@@ -3,6 +3,7 @@
 #include "map/benchmark_tools.hpp"
 #include "map/gps_tracker.hpp"
 #include "map/grove_landcover_reading.hpp"
+#include "map/grove_relief.hpp"
 #include "map/place_page_info.hpp"
 #include "map/raster_tile_provider.hpp"
 #include "map/relation_track.hpp"
@@ -1770,6 +1771,10 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
 
   if (bgTilesActive && !m_rasterTileProvider)
     CreateBackgroundTilesProvider(bgTilesUrl, GetBackgroundTilesCacheSize());
+
+  // Grove: shaded relief, see map/grove_relief.hpp.
+  if (!m_groveRelief)
+    m_groveRelief = grove::CreateReliefProvider([this] { return make_ref(m_drapeEngine); });
 
   auto tileBackgroundReadFn = [this](df::TileKey const & tileKey, dp::BackgroundMode mode) -> bool
   {
