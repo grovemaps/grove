@@ -502,8 +502,15 @@ void RoutingSession::GenerateNotifications(std::vector<std::string> & notificati
   if (m_routingRebuildCount > m_routingRebuildAnnounceCount)
   {
     m_routingRebuildAnnounceCount = m_routingRebuildCount;
-    notifications.emplace_back(m_turnNotificationsMgr.GenerateRecalculatingText());
-    return;
+    // Grove: once a minute at most; riding a different way than the route rebuilds it every few seconds.
+    auto const now = std::chrono::steady_clock::now();
+    if (now - m_groveRecalculatingSaid >= std::chrono::minutes(1) ||
+        m_groveRecalculatingSaid == std::chrono::steady_clock::time_point{})
+    {
+      m_groveRecalculatingSaid = now;
+      notifications.emplace_back(m_turnNotificationsMgr.GenerateRecalculatingText());
+      return;
+    }
   }
 
   // Voice turn notifications.

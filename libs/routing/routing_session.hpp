@@ -21,6 +21,7 @@
 
 #include "base/thread_checker.hpp"
 
+#include <chrono>
 #include <memory>
 #include <string>
 
@@ -224,6 +225,8 @@ private:
   // Rerouting count
   int m_routingRebuildCount = -1;         // -1 for the first rebuild called in BuildRoute().
   int m_routingRebuildAnnounceCount = 0;  // track TTS announcement state (ignore the first build)
+  // Grove: when "Recalculating" was last said, so rebuilds in a row say it once a minute.
+  std::chrono::steady_clock::time_point m_groveRecalculatingSaid;
   mutable double m_lastCompletionPercent = 0.0;
 
   DECLARE_THREAD_CHECKER(m_threadChecker);

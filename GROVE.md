@@ -97,6 +97,7 @@ Current upstream hooks:
 | `android/app/src/main/res/xml/prefs_main.xml` (again) | "Prefer cycle routes" switch under Navigation (`GroveSettings.java`, JNI `GroveCycleRoutes.cpp`) |
 | `tools/unix/version.sh` | the Android version code counts at most 99 commits a day: Grove has days with more, and the wear module's code (×10 + 1) would overflow |
 | `android/app/.../placepage/PlacePageView.java`, `res/layout/place_page_latlon.xml` | the place card shows the point's height next to its coordinates (`GrovePlaceElevation.java`, `libs/map/grove_elevation.hpp`, Grove) |
+| `libs/routing/routing_session.{hpp,cpp}`, `routing_settings.cpp` | "Recalculating" is said once a minute at most, and bicycle rebuilds start the way the rider goes (upstream ignored the heading for bikes, so a rebuilt route could point back and be rebuilt again every few seconds) |
 | `android/app/build.gradle` | stores `grove_brands.bin`, `grove_landcover_world.bin` and `grove_reviews.bin` uncompressed, so they are read in place |
 | `android/app/src/main/res/**`, `RoutingBottomMenuController.java` | Roboto references point to the app font (Geist, Inter for Greek), and the app themes hang under `values/grove_fonts.xml`; written by `tools/grove/android_fonts.py`, see "Fonts" |
 | `android/app/src/main/res/layout/place_page_details.xml`, `PlacePageView.java` | a container for the Mangrove reviews section and the one line that shows it (`GroveReviewsFragment`) |

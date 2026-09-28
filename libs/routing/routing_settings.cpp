@@ -35,7 +35,8 @@ RoutingSettings GetRoutingSettings(VehicleType vehicleType)
             .m_maxIngoingPointsCount = 2,
             .m_minIngoingDistMeters = 4.0};
   case VehicleType::Bicycle:
-    return {.m_useDirectionForRouteBuilding = false,
+    // Grove: a rebuilt route starts the way the rider goes, instead of sending them back each time.
+    return {.m_useDirectionForRouteBuilding = true,
             .m_matchRoute = true,
             .m_soundDirection = true,
             .m_matchingThresholdM = 30.0,
