@@ -20,7 +20,8 @@ namespace grove::landcover
 // under the map's areas by drape_frontend/grove_raster_layers.hpp. WorldCover is a set of Cloud-Optimized GeoTIFFs
 // on AWS Open Data, one per 3° square, each with overviews down to 600 m pixels: a map tile needs a square's header
 // and one tile of the overview that matches its zoom, which HTTP range requests fetch; both are cached on disk.
-// Zoom 6 and out come from a bundled pack of class tiles (data/grove_landcover_world.bin, tools/grove/landcover_world.py).
+// Zoom 6 and out come from a bundled pack of class tiles (data/grove_landcover_world.bin,
+// tools/grove/landcover_world.py).
 
 // WorldCover classes.
 enum Class : uint8_t
