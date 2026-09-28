@@ -30,6 +30,29 @@ Apple Maps sets the color palette.
 - Upstream's own workflows are disabled in the fork, so only Grove's build uses Actions.
 - After syncing with a newer Organic Maps (below), `git push origin grove` publishes the merge and triggers a new build.
 
+## Working on Grove on a new machine
+
+- **Get the code:**
+  - `git clone --recurse-submodules https://github.com/grovemaps/grove` (default branch `grove`).
+  - Add the upstreams:
+    - `git remote add organicmaps https://github.com/organicmaps/organicmaps.git`
+    - `git remote add comaps https://codeberg.org/comaps/comaps.git`
+- **Tools:**
+  - Python 3.10+, CMake 3.22+, Ninja, `oxipng` or `optipng`.
+  - Qt 6 with Core, Gui, Widgets, Xml, Svg, OpenGL, OpenGLWidgets and Network. It's needed for `skin_generator_tool` (icons) and the desktop app (renders).
+  - Android: JDK 17, SDK platform 36, NDK 29.0.14206865; build with `cd android && ./gradlew -Parm64 assembleFdroidDebug`.
+- **Style changes:**
+  1. Edit `data/styles/grove/*`.
+  2. Run `tools/grove/generate_drules.sh`, then `tools/grove/generate_symbols.py`.
+  3. Commit the regenerated files separately as `[styles] Regenerated`.
+- **Before pushing, check for logged errors.** The APKs are Debug builds, which stop on any logged error (LERROR) or failed ASSERT. Release desktop builds only log them. Run the desktop app with `--log_abort_level=E` in screenshot mode (see `tools/grove/render_screens.sh` for the flags) and make sure the log has no `E(` lines. On GitHub, the emulator test in `grove-android.yaml` refuses to publish an APK that doesn't survive start.
+- **Known pitfalls:**
+  - kothic rejects selectors on tag keys Organic Maps doesn't know.
+  - CoMaps-only selectors like `[sport=...]` compile to `extra_tag` runtime conditions that crash Organic Maps Debug builds.
+  - Drawing a new kind of area needs an entry in upstream's priorities files.
+  - Organic Maps' downloadable maps only hold features from the zoom where upstream's style draws them (see "Map data limits").
+- **Visual references:** the Apple Maps screenshots used for the palette aren't in the repo (Apple imagery). They're re-attached in chat when needed.
+
 ## Staying mergeable with Organic Maps
 
 Grove must be able to take in new Organic Maps releases, so keep its changes out of upstream files wherever possible:
