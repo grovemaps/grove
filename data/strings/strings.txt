@@ -6971,6 +6971,32 @@ pt = Sombreia colinas e montanhas. Transfere dados de elevação enquanto explor
 ru = Затеняет холмы и горы. Загружает данные о высотах, пока вы просматриваете карту.
 uk = Затіняє пагорби та гори. Завантажує дані про висоти, поки ви переглядаєте мапу.
 
+[pref_map_landcover_title]
+comment = Grove: Settings «General» category: «Land cover» title (colours of forests, fields and towns when zoomed out)
+tags = android-app
+en = Land cover
+de = Landbedeckung
+es = Cobertura del suelo
+fr = Occupation du sol
+it = Copertura del suolo
+nl = Bodembedekking
+pt = Cobertura do solo
+ru = Земной покров
+uk = Земний покрив
+
+[pref_map_landcover_summary]
+comment = Grove: Settings «General» category: «Land cover» summary
+tags = android-app
+en = Colours forests, fields and towns when zoomed out. Downloads land cover data (ESA WorldCover) while you browse the map.
+de = Färbt Wälder, Felder und Städte in weiten Ansichten. Lädt beim Betrachten der Karte Landbedeckungsdaten (ESA WorldCover) herunter.
+es = Colorea bosques, campos y ciudades al alejar el mapa. Descarga datos de cobertura del suelo (ESA WorldCover) mientras exploras el mapa.
+fr = Colore les forêts, les champs et les villes en vue éloignée. Télécharge des données d’occupation du sol (ESA WorldCover) pendant que vous parcourez la carte.
+it = Colora boschi, campi e città con la mappa rimpicciolita. Scarica dati di copertura del suolo (ESA WorldCover) mentre esplori la mappa.
+nl = Kleurt bossen, velden en steden als je uitzoomt. Downloadt bodembedekkingsgegevens (ESA WorldCover) terwijl je de kaart bekijkt.
+pt = Colore florestas, campos e cidades com o mapa afastado. Transfere dados de cobertura do solo (ESA WorldCover) enquanto explora o mapa.
+ru = Раскрашивает леса, поля и города на мелких масштабах. Загружает данные о земном покрове (ESA WorldCover), пока вы просматриваете карту.
+uk = Розфарбовує ліси, поля та міста на дрібних масштабах. Завантажує дані про земний покрив (ESA WorldCover), поки ви переглядаєте мапу.
+
 [reviews_by_mangrove]
 comment = Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps.
 tags = android-app
