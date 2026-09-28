@@ -219,6 +219,12 @@
     <string name="pref_map_relief_title">Relief ombré</string>
     <!-- Grove: Settings «General» category: «Shaded relief» summary -->
     <string name="pref_map_relief_summary">Ombre les collines et les montagnes. Télécharge des données d’altitude pendant que vous parcourez la carte.</string>
+    <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->
+    <string name="reviews_by_mangrove">Avis provenant de Mangrove</string>
+    <!-- Grove: place card button that opens a website for writing a review of the place; %@ is the website's name (Mangrove). Ported from CoMaps. -->
+    <string name="add_review">Ajouter un avis via %s</string>
+    <!-- Grove: Settings «General» category: summary of the «Reviews from Mangrove» switch -->
+    <string name="pref_mangrove_reviews_summary">Affiche des avis sur les fiches des commerces, restaurants et autres lieux. Demande à mangrove.reviews les avis du lieu que vous ouvrez.</string>
     <!-- Settings: title of the satellite imagery (custom raster tiles) screen -->
     <string name="pref_bg_tiles_title">Imagerie satellite</string>
     <!-- Settings «Satellite Imagery»: title of the tile server URL input field -->

@@ -219,6 +219,12 @@
     <string name="pref_map_relief_title">Reliefschattierung</string>
     <!-- Grove: Settings «General» category: «Shaded relief» summary -->
     <string name="pref_map_relief_summary">Schattiert Hügel und Berge. Lädt beim Betrachten der Karte Höhendaten herunter.</string>
+    <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->
+    <string name="reviews_by_mangrove">Rezensionen von Mangrove</string>
+    <!-- Grove: place card button that opens a website for writing a review of the place; %@ is the website's name (Mangrove). Ported from CoMaps. -->
+    <string name="add_review">Rezension über %s schreiben</string>
+    <!-- Grove: Settings «General» category: summary of the «Reviews from Mangrove» switch -->
+    <string name="pref_mangrove_reviews_summary">Zeigt Rezensionen auf den Karten von Geschäften, Restaurants und anderen Orten. Fragt mangrove.reviews nach den Rezensionen des geöffneten Ortes.</string>
     <!-- Settings: title of the satellite imagery (custom raster tiles) screen -->
     <string name="pref_bg_tiles_title">Satellitenbilder</string>
     <!-- Settings «Satellite Imagery»: title of the tile server URL input field -->
