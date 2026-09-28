@@ -7036,6 +7036,19 @@ pt = Logótipos de marcas
 ru = Логотипы брендов
 uk = Логотипи брендів
 
+[reviews_last_6_months]
+comment = Grove: place card reviews section: the rating of the last half year's reviews when it differs from the older ones. %1$s is like "★ 2.0 ↓ (3)"
+tags = android-app
+en = Last 6 months: %1$s
+de = Letzte 6 Monate: %1$s
+es = Últimos 6 meses: %1$s
+fr = 6 derniers mois : %1$s
+it = Ultimi 6 mesi: %1$s
+nl = Laatste 6 maanden: %1$s
+pt = Últimos 6 meses: %1$s
+ru = За последние 6 месяцев: %1$s
+uk = За останні 6 місяців: %1$s
+
 [reviews_by_mangrove]
 comment = Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps.
 tags = android-app

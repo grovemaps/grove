@@ -29,6 +29,17 @@
       android:textAppearance="@style/MwmTextAppearance.Body3"
       tools:text="★ 4.5 (3)" />
   </LinearLayout>
+  <TextView
+    android:id="@+id/grove_reviews_trend"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/margin_base"
+    android:paddingEnd="@dimen/margin_base"
+    android:paddingBottom="@dimen/margin_half"
+    android:textAppearance="@style/MwmTextAppearance.Body3"
+    android:visibility="gone"
+    tools:text="Last 6 months: ★ 2.0 ↓ (3 reviews)"
+    tools:visibility="visible" />
   <LinearLayout
     android:id="@+id/grove_reviews_list"
     android:layout_width="match_parent"

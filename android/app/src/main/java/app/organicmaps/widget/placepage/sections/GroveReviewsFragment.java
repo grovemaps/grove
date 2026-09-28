@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,8 +26,9 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-// Grove: reviews of the place from Mangrove (https://mangrove.reviews), loaded when its card opens, and a link to
-// write one. See libs/map/grove_reviews.hpp.
+// Grove: reviews of the place from Mangrove (https://mangrove.reviews): those bundled with the app at once, then
+// Mangrove's newest when online, with how the last half year's differ, and a link to write one. See
+// libs/map/grove_reviews.hpp.
 public class GroveReviewsFragment extends Fragment implements Observer<MapObject>
 {
   public static final String TAG = "GROVE_REVIEWS_FRAGMENT_TAG";
@@ -36,6 +38,7 @@ public class GroveReviewsFragment extends Fragment implements Observer<MapObject
   private final Handler mMainHandler = new Handler(Looper.getMainLooper());
   private PlacePageViewModel mViewModel;
   private TextView mSummary;
+  private TextView mTrend;
   private LinearLayout mList;
   @Nullable
   private String mSubject;
@@ -60,6 +63,7 @@ public class GroveReviewsFragment extends Fragment implements Observer<MapObject
   {
     super.onViewCreated(view, savedInstanceState);
     mSummary = view.findViewById(R.id.grove_reviews_summary);
+    mTrend = view.findViewById(R.id.grove_reviews_trend);
     mList = view.findViewById(R.id.grove_reviews_list);
     final TextView write = view.findViewById(R.id.grove_reviews_write_text);
     write.setText(getString(R.string.add_review, "Mangrove"));
@@ -90,40 +94,47 @@ public class GroveReviewsFragment extends Fragment implements Observer<MapObject
     if (TextUtils.equals(subject, mSubject))
       return;
     mSubject = subject;
-    mList.removeAllViews();
-    mSummary.setText("");
+    show(null);
     if (subject == null)
       return;
 
     ThreadPool.getWorker().execute(() -> {
-      final GroveReviews.Review[] reviews = GroveReviews.nativeFetch(subject);
-      mMainHandler.post(() -> {
-        // Another place may have been selected meanwhile.
-        if (isAdded() && subject.equals(mSubject))
-          show(reviews);
-      });
+      post(subject, GroveReviews.nativeGetBundled(subject));
+      final GroveReviews.Result online = GroveReviews.nativeFetch(subject);
+      if (online != null)
+        post(subject, online);
     });
   }
 
-  private void show(@Nullable GroveReviews.Review[] reviews)
+  private void post(@NonNull String subject, @NonNull GroveReviews.Result result)
   {
-    if (reviews == null || reviews.length == 0)
+    mMainHandler.post(() -> {
+      // Another place may have been selected meanwhile.
+      if (isAdded() && subject.equals(mSubject))
+        show(result);
+    });
+  }
+
+  private void show(@Nullable GroveReviews.Result result)
+  {
+    mList.removeAllViews();
+    mSummary.setText("");
+    UiUtils.hide(mTrend);
+    if (result == null || result.reviews.length == 0)
       return;
 
-    int rated = 0;
-    int ratingSum = 0;
-    for (GroveReviews.Review r : reviews)
-    {
-      if (r.rating > 0)
-      {
-        ++rated;
-        ratingSum += r.rating;
-      }
-    }
-    // Mangrove's 0..100 ratings are 1..5 stars in steps of 25.
+    final GroveReviews.Review[] reviews = result.reviews;
     final String count = "(" + reviews.length + ")";
-    mSummary.setText(rated == 0 ? count
-                                : String.format(Locale.getDefault(), "★ %.1f %s", 1 + ratingSum / 25f / rated, count));
+    mSummary.setText(result.stars == 0 ? count : String.format(Locale.getDefault(), "★ %.1f %s", result.stars, count));
+    if (result.recentStars > 0)
+    {
+      mTrend.setText(getString(R.string.reviews_last_6_months,
+                               String.format(Locale.getDefault(), "★ %.1f %s (%d)", result.recentStars,
+                                             result.better ? "↑" : "↓", result.recentCount)));
+      mTrend.setTextColor(
+          ContextCompat.getColor(requireContext(), result.better ? R.color.base_green : R.color.base_red));
+      UiUtils.show(mTrend);
+    }
 
     final LayoutInflater inflater = LayoutInflater.from(requireContext());
     final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);

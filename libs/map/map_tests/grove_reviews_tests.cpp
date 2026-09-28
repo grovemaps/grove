@@ -59,4 +59,75 @@ UNIT_TEST(GroveReviews_Parse)
   TEST(ParseReviews("not json", place).m_reviews.empty(), ());
   TEST_EQUAL(PlaceReviews{}.AverageStars(), 0.0f, ());
 }
+
+UNIT_TEST(GroveReviews_PackCell)
+{
+  Subject const place{{52.3562, 4.9115}, "Veganees", 10};
+  // The same place, another place nearby, the place without a name in the review, and one far away.
+  std::string const cell =
+      "52.3562100\t4.9115200\t30\tVeganees\t100\t1700000000\tanna\tGreat\\tfood\\nand \\\\ service\n"
+      "52.3562100\t4.9115200\t30\tOther Cafe\t25\t1700000100\tbob\tMeh\n"
+      "52.3561900\t4.9114800\t10\t\t75\t1700000200\t\t\n"
+      "52.3700000\t4.9115200\t10\tVeganees\t50\t1700000300\tcarl\tFar\n"
+      "broken line\n";
+  auto const reviews = ParsePackCell(cell, place);
+  TEST_EQUAL(reviews.m_reviews.size(), 2, ());
+  TEST_EQUAL(reviews.m_reviews[0].m_rating, 75, ());  // Newest first.
+  TEST(reviews.m_reviews[0].m_author.empty(), ());
+  TEST(reviews.m_reviews[0].m_opinion.empty(), ());
+  TEST_EQUAL(reviews.m_reviews[1].m_opinion, "Great\tfood\nand \\ service", ());
+  TEST_EQUAL(reviews.m_reviews[1].m_author, "anna", ());
+}
+
+UNIT_TEST(GroveReviews_Merge)
+{
+  PlaceReviews bundled{{{100, "a", "x", 10}, {50, "b", "y", 5}}};
+  PlaceReviews const online{{{75, "new", "z", 20}, {100, "a", "x", 10}}};
+  bundled.Merge(online);
+  TEST_EQUAL(bundled.m_reviews.size(), 3, ());
+  TEST_EQUAL(bundled.m_reviews[0].m_opinion, "new", ());
+  TEST_EQUAL(bundled.m_reviews[2].m_opinion, "b", ());
+}
+
+UNIT_TEST(GroveReviews_Trend)
+{
+  int64_t constexpr kDay = 24 * 3600;
+  int64_t constexpr kNow = 1'800'000'000;
+  // Two recent 2-star reviews after two older 5-star ones: worse.
+  PlaceReviews reviews{{{25, "", "", kNow - 10 * kDay},
+                        {25, "", "", kNow - 30 * kDay},
+                        {100, "", "", kNow - 400 * kDay},
+                        {100, "", "", kNow - 500 * kDay}}};
+  auto trend = reviews.RecentTrend(kNow);
+  TEST(trend, ());
+  TEST_ALMOST_EQUAL_ABS(trend->m_recentStars, 2.0f, 1e-5f, ());
+  TEST_EQUAL(trend->m_recentCount, 2, ());
+  TEST(!trend->m_better, ());
+
+  // Better.
+  for (auto & r : reviews.m_reviews)
+    r.m_rating = 125 - r.m_rating;
+  trend = reviews.RecentTrend(kNow);
+  TEST(trend && trend->m_better, ());
+
+  // Too few recent reviews.
+  reviews.m_reviews.erase(reviews.m_reviews.begin());
+  TEST(!reviews.RecentTrend(kNow), ());
+
+  // Unrated reviews don't count, and small changes show nothing.
+  PlaceReviews steady{{{75, "", "", kNow - kDay},
+                       {0, "", "", kNow - 2 * kDay},
+                       {75, "", "", kNow - 3 * kDay},
+                       {100, "", "", kNow - 400 * kDay},
+                       {75, "", "", kNow - 500 * kDay},
+                       {75, "", "", kNow - 600 * kDay}}};
+  TEST(!steady.RecentTrend(kNow), ());
+}
+
+UNIT_TEST(GroveReviews_Bundled)
+{
+  // Mangrove has reviews of Veganees in Amsterdam since 2024; the pack must find them.
+  auto const reviews = FindBundled({{52.3562, 4.9115}, "Veganees", 10});
+  TEST_GREATER(reviews.m_reviews.size(), 0, ());
+}
 }  // namespace grove_reviews_tests

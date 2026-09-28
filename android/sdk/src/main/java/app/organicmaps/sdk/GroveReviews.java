@@ -37,14 +37,41 @@ public final class GroveReviews
     }
   }
 
+  // A place's reviews, newest first, and how the last half year's differ from the older ones.
+  @Keep
+  public static final class Result
+  {
+    @NonNull
+    public final Review[] reviews;
+    public final float stars; // 1..5, 0 without ratings.
+    public final float recentStars; // The last half year's, 0 when it doesn't differ by half a star or more.
+    public final int recentCount;
+    public final boolean better;
+
+    @Keep
+    Result(@NonNull Review[] reviews, float stars, float recentStars, int recentCount, boolean better)
+    {
+      this.reviews = reviews;
+      this.stars = stars;
+      this.recentStars = recentStars;
+      this.recentCount = recentCount;
+      this.better = better;
+    }
+  }
+
   // The selected place's Mangrove subject, or null for places people don't review or when reviews are switched off.
   @Nullable
   public static native String nativeGetSelectedSubject();
 
-  // The place's reviews, newest first, or null on network errors. Blocks until Mangrove answers.
+  // The place's reviews in the pack bundled with the app, which works offline.
+  @WorkerThread
+  @NonNull
+  public static native Result nativeGetBundled(@NonNull String subject);
+
+  // The bundled reviews and Mangrove's newest ones, or null on network errors. Blocks until Mangrove answers.
   @WorkerThread
   @Nullable
-  public static native Review[] nativeFetch(@NonNull String subject);
+  public static native Result nativeFetch(@NonNull String subject);
 
   // Mangrove's web page for writing a review of the place.
   @Nullable

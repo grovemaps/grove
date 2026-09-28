@@ -54,6 +54,13 @@ jobs:
         with:
           key: grove-android-fdroid-debug-${{ matrix.arch }}
 
+      # Each APK carries the newest reviews; the committed pack stays if Mangrove can't be reached.
+      - name: Refresh the Mangrove reviews pack
+        continue-on-error: true
+        timeout-minutes: 15
+        shell: bash
+        run: python3 tools/grove/mangrove_reviews.py
+
       - name: Build the APK
         shell: bash
         working-directory: android
