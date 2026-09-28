@@ -96,7 +96,8 @@ vertex Area3dFragment_T vsArea3d(const Area3dVertex_T in [[stage_in]],
   out.position = uniforms.u_pivotTransform * pos;
   
   half4 color = u_colorTex.sample(u_colorTexSampler, in.a_texCoords);
-  color.a = (half)uniforms.u_opacity;
+  // Grove: the colour's alpha too, which buildings with places inside lower. Same as texturing3d.fsh.glsl.
+  color.a *= (half)uniforms.u_opacity;
   out.color = color;
   
   return out;

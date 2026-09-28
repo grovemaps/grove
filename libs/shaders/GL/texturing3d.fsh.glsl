@@ -19,6 +19,8 @@ layout (binding = 1) uniform sampler2D u_colorTex;
 
 void main()
 {
-  vec4 finalColor = vec4(texture(u_colorTex, v_colorTexCoords).rgb, u_opacity);
+  // Grove: the colour's alpha too, which buildings with places inside lower (drape_frontend/grove_buildings.hpp).
+  vec4 texColor = texture(u_colorTex, v_colorTexCoords);
+  vec4 finalColor = vec4(texColor.rgb, texColor.a * u_opacity);
   v_FragColor = vec4(v_intensity * finalColor.rgb, finalColor.a);  // Grove: the vertex shader sets the brightness.
 }

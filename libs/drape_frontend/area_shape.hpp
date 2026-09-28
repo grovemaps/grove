@@ -7,6 +7,7 @@
 #include "drape/pointers.hpp"
 
 #include "geometry/point2d.hpp"
+#include "geometry/triangle2d.hpp"
 
 #include <vector>
 
@@ -39,6 +40,21 @@ class AreaShape : public MapShape
 {
 public:
   AreaShape(std::vector<m2::PointD> triangleList, BuildingOutline && buildingOutline, AreaViewParams const & params);
+
+  // Grove: see grove_buildings.hpp.
+  bool IsBuilding3D() const { return m_params.m_is3D; }
+  bool Contains(m2::PointD const & pt) const
+  {
+    for (size_t i = 0; i + 2 < m_vertexes.size(); i += 3)
+      if (m2::IsPointInsideTriangle(pt, m_vertexes[i], m_vertexes[i + 1], m_vertexes[i + 2]))
+        return true;
+    return false;
+  }
+  void SetAlpha(uint8_t alpha)
+  {
+    auto const & c = m_params.m_color;
+    m_params.m_color = dp::Color(c.GetRed(), c.GetGreen(), c.GetBlue(), alpha);
+  }
 
   void Draw(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Batcher> batcher,
             ref_ptr<dp::TextureManager> textures) const override;

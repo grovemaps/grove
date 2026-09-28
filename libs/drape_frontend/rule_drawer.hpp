@@ -2,6 +2,7 @@
 
 #include "drape_frontend/apply_feature_params.hpp"
 #include "drape_frontend/custom_features_context.hpp"
+#include "drape_frontend/grove_buildings.hpp"
 #include "drape_frontend/map_shape.hpp"
 #include "drape_frontend/relations_draw_info.hpp"
 #include "drape_frontend/stylist.hpp"
@@ -75,6 +76,7 @@ private:
   RelationsDrawSettings m_relsSettings;
 
   df::ApplyFeatureParams m_applyParams;
+  grove::HollowBuildings m_groveBuildings;  // Grove: see grove_buildings.hpp.
 
   uint8_t m_zoomLevel;
   int8_t m_deviceLang;
