@@ -49,6 +49,7 @@ Current upstream hooks:
 | `data/styles/outdoors/{light,dark}/style.mapcss` | imports `grove/poi-label-colors.mapcss` after `Icons.mapcss` |
 | `libs/platform/platform.cpp` | adds `fonts/08_inter_medium.ttf` to the bundled font list |
 | `libs/map/framework.cpp` | tile feature reading goes through `libs/map/grove_landcover_reading.hpp` (Grove), which adds the zoom 12 landcover at zoom 11 |
+| `libs/drape_frontend/apply_feature_functors.cpp` | after each place icon, `grove::InsertPoiDot` (`libs/drape_frontend/grove_poi_dot.hpp`, Grove) adds its dot |
 | `data/fonts/whitelist.txt` | Inter for Latin, Greek and Cyrillic blocks; drops the system Roboto entries for those blocks (a whitelisted system font loads last and would win) |
 
 Grove style files in `data/styles/grove/`:
@@ -64,6 +65,8 @@ Grove style files in `data/styles/grove/`:
 ### Icons
 
 `tools/grove/generate_symbols.py` builds the icon atlases. It copies upstream's SVGs to a temp folder, recolors the copies and runs `skin_generator_tool` on them, so upstream SVGs are never edited. Each icon takes the color of the label category its place types share, read from the compiled `data/drules_default.txt`. Icons shared by several categories keep upstream colors (`--verbose` lists them). So new upstream icons are colored automatically.
+
+It also writes an `<icon>-dot` symbol for every recolored icon: a small circle of the icon's color with a thin ring. The renderer draws that dot under the icon in the geometry layer, where nothing collides (`grove_poi_dot.hpp`). A visible icon covers its dot, and when a neighbour displaces the icon the dot stays, as in Apple Maps.
 
 The script needs Qt 6 to build `skin_generator_tool` (`QT_PATH` in `/Volumes/grove/tools/env.sh`). It uses `optipng` or `oxipng` for lossless compression. With unmodified SVGs, this toolchain reproduces upstream's committed atlases pixel for pixel.
 
