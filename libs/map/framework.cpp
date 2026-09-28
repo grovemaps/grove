@@ -1783,7 +1783,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
   grove::landcover::CreateProvider([this] { return make_ref(m_drapeEngine); },
                                    [this] { return MapStyleIsDark(GetMapStyle()); });
 
-  // Grove: chains' logos from zoom 11, see map/grove_brand_places.hpp.
+  // Grove: chains' logos from zoom 12, see map/grove_brand_places.hpp.
   if (!m_groveBrandPlaces)
   {
     m_groveBrandPlaces = std::make_unique<grove::BrandPlaces>(

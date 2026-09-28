@@ -56,4 +56,20 @@ UNIT_TEST(GroveBrandLayer_StableAndCapped)
   for (size_t i = 0; i < 2; ++i)
     TEST_EQUAL(reversed[0].m_logos[i]->m_id, clusters[0].m_logos[i]->m_id, (i));
 }
+UNIT_TEST(GroveBrandLayer_ChainSpacing)
+{
+  // Two McDonald's 3 apart, and one far away: zoomed out, the second one is left out.
+  std::vector<BrandPlace> const places = {Place(1, 0.0, 0.0, kMcD), Place(2, 3.0, 0.0, kMcD), Place(3, 20.0, 0.0, kMcD),
+                                          Place(4, 3.2, 0.0, kAH)};
+  TEST_EQUAL(ClusterBrandPlaces(places, 1.0, 3).size(), 3, ());
+  auto const spaced = ClusterBrandPlaces(places, 1.0, 3, 5.0 /* chainSpacing */);
+  size_t logos = 0;
+  for (auto const & c : spaced)
+  {
+    logos += c.m_logos.size();
+    for (auto const * p : c.m_logos)
+      TEST_NOT_EQUAL(p->m_id.m_index, 2, ());
+  }
+  TEST_EQUAL(logos, 3, ("Other chains stay"));
+}
 }  // namespace grove_brand_layer_tests

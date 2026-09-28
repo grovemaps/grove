@@ -34,7 +34,8 @@ void SetBrandPlacesSource(BrandPlacesSource source)
   Source() = std::move(source);
 }
 
-std::vector<BrandCluster> ClusterBrandPlaces(std::vector<BrandPlace> const & places, double distance, size_t maxLogos)
+std::vector<BrandCluster> ClusterBrandPlaces(std::vector<BrandPlace> const & places, double distance, size_t maxLogos,
+                                             double chainSpacing)
 {
   // Common chains first, then by position: the clusters don't depend on the order the maps list their places in.
   auto const & pack = BrandPack::Instance();
@@ -56,8 +57,19 @@ std::vector<BrandCluster> ClusterBrandPlaces(std::vector<BrandPlace> const & pla
     std::vector<BrandPlace const *> m_logos;
   };
   std::vector<Accumulator> clusters;
+  std::vector<BrandPlace const *> shown;
   for (auto const * place : sorted)
   {
+    // Zoomed out, a chain shows once per area.
+    if (chainSpacing > 0 && std::ranges::any_of(shown, [&](BrandPlace const * p)
+    {
+      return p->m_brand == place->m_brand && std::abs(p->m_point.x - place->m_point.x) < chainSpacing &&
+             std::abs(p->m_point.y - place->m_point.y) < chainSpacing;
+    }))
+    {
+      continue;
+    }
+
     // Near the first place of a cluster, so a cluster doesn't creep across the map.
     auto it = std::ranges::find_if(clusters, [&](Accumulator const & c) {
       return std::abs(c.m_seed.x - place->m_point.x) < distance && std::abs(c.m_seed.y - place->m_point.y) < distance;
@@ -70,7 +82,10 @@ std::vector<BrandCluster> ClusterBrandPlaces(std::vector<BrandPlace> const & pla
     bool const newChain =
         std::ranges::none_of(it->m_logos, [place](BrandPlace const * p) { return p->m_brand == place->m_brand; });
     if (newChain && it->m_logos.size() < maxLogos)
+    {
       it->m_logos.push_back(place);
+      shown.push_back(place);
+    }
   }
 
   std::vector<BrandCluster> result;
@@ -105,8 +120,22 @@ void DrawBrandLayer(df::TileKey const & tileKey, std::set<MwmSet::MwmId> const &
   double const mercatorPerPx = rect.SizeX() / vparams.GetTileSize();
   auto const textures = context->GetTextureManager();
 
+  // Zoomed out: wider bundles of fewer logos, and each chain once per area.
+  struct Density
+  {
+    double m_bundle;  // Logo widths.
+    size_t m_maxLogos;
+    double m_chainSpacing;  // Logo widths.
+  };
+  Density const density = tileKey.m_zoomLevel <= 12 ? Density{1.5, 2, 6}
+                        : tileKey.m_zoomLevel == 13 ? Density{1.25, 2, 4}
+                        : tileKey.m_zoomLevel == 14 ? Density{1, 3, 3}
+                                                    : Density{1, kMaxLogos, 0};
+  double const logoWidth = logoPx * mercatorPerPx;
+
   df::TMapShapes shapes;
-  for (auto const & cluster : ClusterBrandPlaces(places, logoPx * mercatorPerPx, kMaxLogos))
+  for (auto const & cluster :
+       ClusterBrandPlaces(places, density.m_bundle * logoWidth, density.m_maxLogos, density.m_chainSpacing * logoWidth))
   {
     std::vector<std::pair<BrandPlace const *, std::string>> logos;
     for (auto const * place : cluster.m_logos)

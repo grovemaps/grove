@@ -22,7 +22,7 @@ class EngineContext;
 
 namespace grove
 {
-// The logo layer: chains' logos from zoom 11 (see grove_brands.hpp), before the map draws their places, and
+// The logo layer: chains' logos from zoom 12 (see grove_brands.hpp), before the map draws their places, and
 // wherever they are. The places come from a list of each map's chains (map/grove_brand_places.hpp), since the map
 // files index most places only from zoom 16. Places closer than a logo's width are bundled: one row of logos, one
 // per chain, most common chains first. Logos are pinned (drape/grove_brand_texture.hpp).
@@ -46,8 +46,10 @@ struct BrandCluster
 };
 
 // Bundles places closer than distance (mercator units) to a cluster's center, in a stable order: the same places
-// always make the same clusters. A cluster shows at most maxLogos chains.
-std::vector<BrandCluster> ClusterBrandPlaces(std::vector<BrandPlace> const & places, double distance, size_t maxLogos);
+// always make the same clusters. A cluster shows at most maxLogos chains, and a chain's place closer than
+// chainSpacing to one of its shown places is left out (0: none are).
+std::vector<BrandCluster> ClusterBrandPlaces(std::vector<BrandPlace> const & places, double distance, size_t maxLogos,
+                                             double chainSpacing = 0);
 
 // Draws the logo layer of a tile read from these maps.
 void DrawBrandLayer(df::TileKey const & tileKey, std::set<MwmSet::MwmId> const & mwms,
