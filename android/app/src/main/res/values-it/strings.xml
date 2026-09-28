@@ -233,6 +233,16 @@
     <string name="grove_brand_logos">Loghi dei marchi</string>
     <!-- Grove: place card reviews section: the rating of the last half year's reviews when it differs from the older ones. %1$s is like "★ 2.0 ↓ (3)" -->
     <string name="reviews_last_6_months">Ultimi 6 mesi: %1$s</string>
+    <!-- Grove: Settings: title of the field for the user's own Tripadvisor API key -->
+    <string name="tripadvisor_api_key">Chiave API di Tripadvisor</string>
+    <!-- Grove: Settings: explanation shown when entering the Tripadvisor API key -->
+    <string name="tripadvisor_api_key_summary">Con la tua chiave di tripadvisor.com/developers, le schede dei luoghi mostrano le valutazioni di Tripadvisor e le recensioni più recenti. Aprire la scheda di un luogo invia il suo nome e la sua posizione a Tripadvisor. Lascia vuoto per disattivare.</string>
+    <!-- Grove: Settings: summary of an API key field without a key -->
+    <string name="api_key_not_set">Non impostata</string>
+    <!-- Grove: Settings: summary of an API key field with a key; %1$s is the key's last 4 characters -->
+    <string name="api_key_set">Impostata (…%1$s)</string>
+    <!-- Grove: place card: link to the place's page on Tripadvisor, required by Tripadvisor -->
+    <string name="more_on_tripadvisor">Leggi di più su Tripadvisor</string>
     <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->
     <string name="reviews_by_mangrove">Recensioni da Mangrove</string>
     <!-- Grove: place card button that opens a website for writing a review of the place; %@ is the website's name (Mangrove). Ported from CoMaps. -->

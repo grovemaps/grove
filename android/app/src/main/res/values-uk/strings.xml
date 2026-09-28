@@ -233,6 +233,16 @@
     <string name="grove_brand_logos">Логотипи брендів</string>
     <!-- Grove: place card reviews section: the rating of the last half year's reviews when it differs from the older ones. %1$s is like "★ 2.0 ↓ (3)" -->
     <string name="reviews_last_6_months">За останні 6 місяців: %1$s</string>
+    <!-- Grove: Settings: title of the field for the user's own Tripadvisor API key -->
+    <string name="tripadvisor_api_key">API-ключ Tripadvisor</string>
+    <!-- Grove: Settings: explanation shown when entering the Tripadvisor API key -->
+    <string name="tripadvisor_api_key_summary">З вашим власним ключем з tripadvisor.com/developers картки місць показують оцінки Tripadvisor і найновіші відгуки. Під час відкриття картки місця його назва й розташування надсилаються до Tripadvisor. Залиште порожнім, щоб вимкнути.</string>
+    <!-- Grove: Settings: summary of an API key field without a key -->
+    <string name="api_key_not_set">Не задано</string>
+    <!-- Grove: Settings: summary of an API key field with a key; %1$s is the key's last 4 characters -->
+    <string name="api_key_set">Задано (…%1$s)</string>
+    <!-- Grove: place card: link to the place's page on Tripadvisor, required by Tripadvisor -->
+    <string name="more_on_tripadvisor">Докладніше на Tripadvisor</string>
     <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->
     <string name="reviews_by_mangrove">Відгуки з Mangrove</string>
     <!-- Grove: place card button that opens a website for writing a review of the place; %@ is the website's name (Mangrove). Ported from CoMaps. -->
