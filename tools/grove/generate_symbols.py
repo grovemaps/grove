@@ -31,6 +31,13 @@ STYLES = os.path.join(DATA, 'styles')
 RESOLUTIONS = [('mdpi', 18), ('hdpi', 27), ('xhdpi', 36), ('6plus', 43), ('xxhdpi', 54), ('xxxhdpi', 64)]
 THEMES = ['light', 'dark']
 
+# 6 units wide (a medium icon is 18): about 10 px at 2x, like Apple Maps' dots, with a thin ring.
+DOT_SVG = """<svg version="1.1" viewBox="0 0 10 10" width="6" height="6" xmlns="http://www.w3.org/2000/svg">
+ <circle cx="5" cy="5" r="5" fill="{ring}" opacity=".9"/>
+ <circle cx="5" cy="5" r="4" fill="{fill}"/>
+</svg>
+"""
+
 # Colors inside fill/stroke/stop-color attributes and style declarations.
 PAINT = re.compile(r'((?:fill|stroke|stop-color)\s*[:=]\s*"?\s*)(#(?:[0-9A-Fa-f]{6}|[0-9A-Fa-f]{3}))\b')
 
@@ -135,7 +142,14 @@ def prepare_symbols(theme, icons, colors, recolor_all, tmp, verbose):
             with open(path, 'w') as f:
                 f.write(out)
             changed += 1
-    print(f'{theme}: recolored {changed} icons, kept {len(skipped)} multi-color icons as upstream')
+    # Place dots (see libs/drape_frontend/grove_poi_dot.hpp): a small circle of the icon's color with a soft ring,
+    # shown where a displaced icon would otherwise leave nothing.
+    ring = '#fff' if theme == 'light' else '#000'
+    for icon, category in icons.items():
+        with open(os.path.join(dst, icon + '-dot.svg'), 'w') as f:
+            f.write(DOT_SVG.format(ring=ring, fill=colors[category][theme]))
+    print(f'{theme}: recolored {changed} icons, kept {len(skipped)} multi-color icons as upstream, '
+          f'added {len(icons)} dots')
     if verbose and skipped:
         print('  multi-color: ' + ' '.join(skipped))
     return dst
