@@ -89,3 +89,6 @@
 	path = 3party/boost_headers
 	url = https://github.com/organicmaps/boost_headers.git
 	branch = master
+[submodule "3party/gurumaps-mapstyle"]
+	path = 3party/gurumaps-mapstyle
+	url = https://github.com/GuruMaps/MapStyle.git
