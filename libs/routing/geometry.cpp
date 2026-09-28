@@ -1,6 +1,7 @@
 #include "routing/geometry.hpp"
 
 #include "routing/city_roads.hpp"
+#include "routing/grove_cycle_routes.hpp"
 #include "routing/maxspeeds.hpp"
 
 #include "indexer/altitude_loader.hpp"
@@ -198,6 +199,7 @@ void RoadGeometry::Load(VehicleModelInterface const & vehicleModel, FeatureType 
       m_condition = maxspeed.GetConditionalTime();
     }
   }
+  grove::ApplyCycleRoutes(vehicleModel, feature, m_forwardS, m_backwardS);  // Grove
 
   auto const & optionsClassfier = RoutingOptionsClassifier::Instance();
   for (uint32_t type : types)

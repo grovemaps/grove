@@ -29,6 +29,7 @@ set(SRC
   app/organicmaps/sdk/routing/RoutingJni.hpp
   app/organicmaps/sdk/ChoosePositionMode.cpp
   app/organicmaps/sdk/GroveBrands.cpp
+  app/organicmaps/sdk/GroveCycleRoutes.cpp
   app/organicmaps/sdk/GroveLandcover.cpp
   app/organicmaps/sdk/GroveMeasure.cpp
   app/organicmaps/sdk/GrovePlace.cpp

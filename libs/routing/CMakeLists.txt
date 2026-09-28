@@ -64,6 +64,8 @@ set(SRC
   gate_access.hpp
   geometry.cpp
   geometry.hpp
+  grove_cycle_routes.cpp
+  grove_cycle_routes.hpp
   guides_connections.cpp
   guides_connections.hpp
   guides_graph.cpp

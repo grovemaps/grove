@@ -2,6 +2,7 @@ package app.organicmaps.settings;
 
 import androidx.annotation.NonNull;
 import androidx.preference.TwoStatePreference;
+import app.organicmaps.sdk.GroveCycleRoutes;
 import app.organicmaps.sdk.GroveLandcover;
 import app.organicmaps.sdk.GroveRelief;
 import app.organicmaps.sdk.GroveReviews;
@@ -24,6 +25,13 @@ final class GroveSettings
     landcover.setChecked(GroveLandcover.nativeIsEnabled());
     landcover.setOnPreferenceChangeListener((preference, newValue) -> {
       GroveLandcover.nativeSetEnabled((Boolean) newValue);
+      return true;
+    });
+
+    final TwoStatePreference cycleRoutes = fragment.getPreference("GroveCycleRoutes");
+    cycleRoutes.setChecked(GroveCycleRoutes.nativeIsEnabled());
+    cycleRoutes.setOnPreferenceChangeListener((preference, newValue) -> {
+      GroveCycleRoutes.nativeSetEnabled((Boolean) newValue);
       return true;
     });
 

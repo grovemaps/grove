@@ -6997,6 +6997,32 @@ pt = Colore florestas, campos e cidades com o mapa afastado. Transfere dados de 
 ru = Раскрашивает леса, поля и города на мелких масштабах. Загружает данные о земном покрове (ESA WorldCover), пока вы просматриваете карту.
 uk = Розфарбовує ліси, поля та міста на дрібних масштабах. Завантажує дані про земний покрив (ESA WorldCover), поки ви переглядаєте мапу.
 
+[pref_prefer_cycle_routes_title]
+comment = Grove: Settings «Navigation» category: «Prefer cycle routes» switch title (bicycle routing takes signed cycle routes)
+tags = android-app
+en = Prefer cycle routes
+de = Radrouten bevorzugen
+es = Preferir rutas ciclistas
+fr = Privilégier les itinéraires cyclables
+it = Preferisci gli itinerari ciclabili
+nl = Fietsroutes verkiezen
+pt = Preferir rotas cicláveis
+ru = Предпочитать веломаршруты
+uk = Надавати перевагу веломаршрутам
+
+[pref_prefer_cycle_routes_summary]
+comment = Grove: Settings «Navigation» category: «Prefer cycle routes» summary
+tags = android-app
+en = Bicycle routes take signed cycle routes and node networks when the detour is short.
+de = Fahrradrouten nutzen ausgeschilderte Radrouten und Knotenpunktnetze, wenn der Umweg kurz ist.
+es = Las rutas en bicicleta usan rutas ciclistas señalizadas y redes de nodos cuando el desvío es corto.
+fr = Les itinéraires à vélo empruntent les itinéraires cyclables balisés et les réseaux points-nœuds quand le détour est court.
+it = I percorsi in bici usano itinerari ciclabili segnalati e reti a nodi quando la deviazione è breve.
+nl = Fietsroutes gebruiken bewegwijzerde fietsroutes en knooppuntnetwerken als de omweg kort is.
+pt = As rotas de bicicleta usam rotas cicláveis sinalizadas e redes de nós quando o desvio é curto.
+ru = Велосипедные маршруты проходят по размеченным веломаршрутам и узловым сетям, если объезд небольшой.
+uk = Велосипедні маршрути проходять розміченими веломаршрутами та вузловими мережами, якщо об’їзд невеликий.
+
 [grove_brand_logos]
 comment = Grove: map button that shows and hides the logos of chain stores and restaurants (accessibility description)
 tags = android-app
