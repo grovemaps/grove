@@ -38,10 +38,12 @@ void VisualParams::Init(double vs, uint32_t tileSize)
   vizParams.m_visualScale = vs;
 
   // Here we set up glyphs rendering parameters separately for high-res and low-res screens.
+  // Grove: wider, softer label halos, as Mapy.com's generous white outlines (outline 0.13 and 0.025, was 0.2 and
+  // 0.01; the glyph edge is at 0.5 of the distance field).
   if (vs <= 1.0)
-    vizParams.m_glyphVisualParams = {0.48f, 0.08f, 0.2f, 0.01f, 0.49f, 0.04f};
+    vizParams.m_glyphVisualParams = {0.48f, 0.08f, 0.13f, 0.025f, 0.49f, 0.04f};
   else
-    vizParams.m_glyphVisualParams = {0.5f, 0.06f, 0.2f, 0.01f, 0.49f, 0.04f};
+    vizParams.m_glyphVisualParams = {0.5f, 0.06f, 0.13f, 0.025f, 0.49f, 0.04f};
 
   vizParams.m_isInited = true;
 
