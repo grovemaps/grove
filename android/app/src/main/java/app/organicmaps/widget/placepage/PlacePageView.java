@@ -888,6 +888,7 @@ public class PlacePageView extends Fragment
         Framework.nativeGetCoordinateFormats(mMapObject.getLat(), mMapObject.getLon());
     mTvLatlon.setText(entries[effectiveIndex(entries)].getDisplay());
     UiUtils.hideIf(mMapObject.isTrackRecording() || mMapObject.isTrack(), mFrame.findViewById(R.id.ll__place_latlon));
+    GrovePlaceElevation.show(mFrame.findViewById(R.id.tv__place_elevation), mMapObject.getLat(), mMapObject.getLon());
   }
 
   private void addOrganisation()

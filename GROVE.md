@@ -96,6 +96,7 @@ Current upstream hooks:
 | `libs/routing/geometry.cpp` | bicycle routing raises the weight of roads in signed cycle routes (`libs/routing/grove_cycle_routes.hpp`, Grove) |
 | `android/app/src/main/res/xml/prefs_main.xml` (again) | "Prefer cycle routes" switch under Navigation (`GroveSettings.java`, JNI `GroveCycleRoutes.cpp`) |
 | `tools/unix/version.sh` | the Android version code counts at most 99 commits a day: Grove has days with more, and the wear module's code (×10 + 1) would overflow |
+| `android/app/.../placepage/PlacePageView.java`, `res/layout/place_page_latlon.xml` | the place card shows the point's height next to its coordinates (`GrovePlaceElevation.java`, `libs/map/grove_elevation.hpp`, Grove) |
 | `android/app/build.gradle` | stores `grove_brands.bin`, `grove_landcover_world.bin` and `grove_reviews.bin` uncompressed, so they are read in place |
 | `android/app/src/main/res/**`, `RoutingBottomMenuController.java` | Roboto references point to the app font (Geist, Inter for Greek), and the app themes hang under `values/grove_fonts.xml`; written by `tools/grove/android_fonts.py`, see "Fonts" |
 | `android/app/src/main/res/layout/place_page_details.xml`, `PlacePageView.java` | a container for the Mangrove reviews section and the one line that shows it (`GroveReviewsFragment`) |
@@ -203,6 +204,7 @@ Hills and mountains are shaded, as in Guru Maps: light comes mostly from the nor
 - **Drawing:** Grove's relief layer, an instance of upstream's raster tile renderer (`libs/drape_frontend/grove_raster_layers.hpp`), draws the overlay with normal alpha blending after areas and roads, under 3D buildings, routes, icons and labels. It works on OpenGL, Vulkan and Metal without shader changes.
 - **Switch:** Android Settings → "General settings" → "Shaded relief", under "3D buildings" (`GroveSettings.java`, JNI in `android/sdk/.../GroveRelief.cpp`), on by default. It takes effect at once: off stops downloads and frees the relief textures. The value is the `GroveRelief` settings key (`grove::SetReliefEnabled`). iOS and the desktop app have no switch yet.
 - **Online for now:** relief tiles download while browsing, which tells Amazon's servers which areas are viewed; the switch's summary says so.
+- **Height of a point:** every place card, including a dropped pin (long press), shows "▲ 575 m" next to the coordinates, in the user's units (`libs/map/grove_elevation.cpp`). It reads the most detailed Terrarium tile in the relief cache, or downloads the zoom 14 one (about 6 m pixels in Europe) when relief is on. In towns it can read several metres high (Amsterdam's Dam: 15 m), since the source measures the surface there; in the hills it is close (Innsbruck 576 m).
 - **Next: height data from the maps.** Relief should come from elevation data shipped with the downloaded maps, so it works offline and leaks nothing. Organic Maps already builds its contour lines from SRTM elevation data (`topography_generator_tool`); the same source can produce elevation tiles per map region. Only the tile source changes: `ShadeRelief` and the relief layer stay as they are.
 
 ## Land cover

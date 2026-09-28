@@ -56,6 +56,8 @@ set(SRC
   grove_measure.hpp
   grove_place_color.cpp
   grove_place_color.hpp
+  grove_elevation.cpp
+  grove_elevation.hpp
   grove_relief.cpp
   grove_relief.hpp
   grove_reviews.cpp
