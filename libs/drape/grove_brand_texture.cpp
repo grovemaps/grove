@@ -87,7 +87,7 @@ BrandPack::BrandPack()
         continue;
       std::vector<std::string_view> fields;
       strings::Tokenize(line, "\t", [&fields](std::string_view f) { fields.push_back(f); });
-      if (fields.size() != 6)
+      if (fields.size() != 6 && fields.size() != 7)  // The main colour is optional.
         continue;
 
       Brand brand;
@@ -97,6 +97,8 @@ BrandPack::BrandPack()
       if (fields[3] != "*")
         strings::Tokenize(fields[3], ";", [&brand](std::string_view c) { brand.m_countries.emplace_back(c); });
       strings::Tokenize(fields[5], ";", [&brand](std::string_view t) { brand.m_types.emplace_back(t); });
+      if (fields.size() == 7 && !fields[6].empty() && !strings::to_uint(fields[6], brand.m_color, 16))
+        brand.m_color = 0;
 
       size_t const i = m_brands.size();
       m_byQid.emplace(brand.m_qid, i);
@@ -143,6 +145,12 @@ std::string_view BrandPack::Find(std::string_view name, std::string_view country
     }
   }
   return anywhere;
+}
+
+uint32_t BrandPack::GetColor(std::string_view qid) const
+{
+  auto const it = m_byQid.find(std::string(qid));
+  return it != m_byQid.end() ? m_brands[it->second].m_color : 0;
 }
 
 std::vector<uint8_t> BrandPack::ReadBadge(std::string_view qid) const

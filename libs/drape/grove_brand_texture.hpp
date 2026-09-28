@@ -42,6 +42,9 @@ public:
   std::string_view Find(std::string_view name, std::string_view country,
                         std::vector<std::string> const & placeTypes) const;
 
+  // The logo's main colour (0xRRGGBB), or 0 for grey logos and unknown brands.
+  uint32_t GetColor(std::string_view qid) const;
+
   // The badge PNG, or empty if the brand is unknown.
   std::vector<uint8_t> ReadBadge(std::string_view qid) const;
 
@@ -55,6 +58,7 @@ private:
     uint32_t m_size = 0;
     std::vector<std::string> m_countries;  // Empty: anywhere.
     std::vector<std::string> m_types;
+    uint32_t m_color = 0;
   };
 
   std::vector<Brand> m_brands;                                    // Most used first.

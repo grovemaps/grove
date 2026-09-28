@@ -19,8 +19,8 @@ namespace grove
 // Places of chains show their logo badge instead of the category icon wherever the icon shows (see
 // drape/grove_brand_texture.hpp).
 
-// Replaces symbolName with the brand badge of the feature, if it has one and there is room in the badge texture.
-inline void UseBrandBadge(FeatureType & f, ref_ptr<dp::TextureManager> textures, std::string & symbolName)
+// The Wikidata id of the chain a place belongs to, if its logo is in the pack, or empty.
+inline std::string_view FindBrand(FeatureType & f)
 {
   // Brands are matched by name: the map generator drops the brand tag of places named like it (most of them),
   // and reading the stored brand of every place would slow tile loading. A branch name like "Albert Heijn Dam"
@@ -34,7 +34,7 @@ inline void UseBrandBadge(FeatureType & f, ref_ptr<dp::TextureManager> textures,
     brand = space == std::string_view::npos ? std::string_view{} : brand.substr(0, space);
   }
   if (brand.empty())
-    return;
+    return {};
 
   std::vector<std::string> placeTypes;
   auto const & c = classif();
@@ -46,7 +46,13 @@ inline void UseBrandBadge(FeatureType & f, ref_ptr<dp::TextureManager> textures,
 
   // Map files are named "<country>_<region>", e.g. "Netherlands_North Holland_Amsterdam".
   std::string const mwm = f.GetID().GetMwmName();
-  auto const qid = pack.Find(brand, std::string_view(mwm).substr(0, mwm.find('_')), placeTypes);
+  return pack.Find(brand, std::string_view(mwm).substr(0, mwm.find('_')), placeTypes);
+}
+
+// Replaces symbolName with the brand badge of the feature, if it has one and there is room in the badge texture.
+inline void UseBrandBadge(FeatureType & f, ref_ptr<dp::TextureManager> textures, std::string & symbolName)
+{
+  auto const qid = FindBrand(f);
   if (qid.empty())
     return;
 
@@ -55,6 +61,7 @@ inline void UseBrandBadge(FeatureType & f, ref_ptr<dp::TextureManager> textures,
   if (textures->GetSymbolRegionSafe(badge, region))
     symbolName = std::move(badge);
 }
+
 // A symbol rule for a chain whose category has no icon at this zoom yet, but whose name shows (its caption
 // rule): the logo then appears with the name, ranked like it. False for other places.
 inline bool EarlyBrandRule(FeatureType & f, drule::CaptionRule const * captionRule,
