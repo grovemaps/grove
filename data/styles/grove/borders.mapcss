@@ -1,0 +1,33 @@
+/* Grove: borders as in Apple Maps, where upstream's grey dashes vanish on land cover and relief.
+ * Countries: a solid muted violet line with a soft light glow; provinces and states: a lighter violet
+ * dashed line with a fainter glow, from zoom 5, and their names in the same hue. Colours in palette-*.mapcss.
+ * Imported by apple-look.mapcss. */
+
+line|z2-[boundary=administrative][admin_level=2]
+{color: @border_country; opacity: 0.9;}
+line|z4-[boundary=administrative][admin_level=2]
+{casing-width: 1.6; casing-color: @border_glow; casing-opacity: 0.85;}
+line|z4-5[boundary=administrative][admin_level=2]
+{width: 1.1;}
+line|z6-7[boundary=administrative][admin_level=2]
+{width: 1.4;}
+line|z8-9[boundary=administrative][admin_level=2]
+{width: 1.7;}
+line|z10-[boundary=administrative][admin_level=2]
+{width: 2;}
+
+line|z4[boundary=administrative][admin_level=3],
+line|z5-[boundary=administrative][admin_level=4]
+{color: @border_region; opacity: 1;}
+line|z5-9[boundary=administrative][admin_level=4]
+{casing-width: 1.2; casing-color: @border_glow; casing-opacity: 0.7;}
+line|z5-6[boundary=administrative][admin_level=4]
+{width: 1; dashes: 2.4,1.2;}
+line|z7-8[boundary=administrative][admin_level=4]
+{width: 1.2; dashes: 3,1.4;}
+line|z9-[boundary=administrative][admin_level=4]
+{width: 1.4; dashes: 3.6,1.6;}
+
+node|z5-10[place=state],
+node|z7-10[place=state]::int_name
+{text-color: @state_label;}

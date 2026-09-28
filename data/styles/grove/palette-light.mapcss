@@ -175,3 +175,9 @@
 @wetland_fill: #C6E6D2;
 @wetland_marsh: #BEE4CB;
 @wetland_bog: #CBE6CE;
+
+/* Borders (grove/borders.mapcss): muted violet, as in Apple Maps. */
+@border_country: #66559A;
+@border_region: #8878B8;
+@border_glow: #FBFAFE;
+@state_label: #7A6E9E;

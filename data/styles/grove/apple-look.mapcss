@@ -6,6 +6,7 @@
 @import("../../grove/landcover.mapcss");
 @import("../../grove/declutter.mapcss");
 @import("../../grove/paths.mapcss");
+@import("../../grove/borders.mapcss");
 
 /* Nature reserves and national parks: no hatching (hardcoded in drape_frontend/stylist.cpp for
  * these types). Apple Maps shows the landcover underneath and, for parks, a thin green border. */

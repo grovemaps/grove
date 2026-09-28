@@ -60,3 +60,9 @@
 
 /* Grove: footway casing (used by paths.mapcss). */
 @footway_casing: #2B2B2B;
+
+/* Borders (grove/borders.mapcss): muted violet, as in Apple Maps. */
+@border_country: #8E82B0;
+@border_region: #6E6391;
+@border_glow: #26222F;
+@state_label: #9489B6;
