@@ -229,6 +229,8 @@
     <string name="pref_prefer_cycle_routes_summary">Fietsroutes gebruiken bewegwijzerde fietsroutes en knooppuntnetwerken als de omweg kort is.</string>
     <!-- Grove: map button that shows and hides the logos of chain stores and restaurants (accessibility description) -->
     <string name="grove_brand_logos">Merklogo’s</string>
+    <!-- Grove: place card reviews section: the rating of the last half year's reviews when it differs from the older ones. %1$s is like "★ 2.0 ↓ (3)" -->
+    <string name="reviews_last_6_months">Laatste 6 maanden: %1$s</string>
     <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->
     <string name="reviews_by_mangrove">Beoordelingen van Mangrove</string>
     <!-- Grove: place card button that opens a website for writing a review of the place; %@ is the website's name (Mangrove). Ported from CoMaps. -->
