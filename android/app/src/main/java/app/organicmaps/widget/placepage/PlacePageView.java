@@ -474,6 +474,7 @@ public class PlacePageView extends Fragment
   {
     updateViewFragment(PlacePageTrackFragment.class, TRACK_FRAGMENT_TAG, R.id.place_page_track_fragment,
                        mMapObject.isTrack());
+    GroveTripRow.update(mPreview.findViewById(R.id.grove_trip_navigate), mMapObject);
   }
 
   private void updateTrackRecordingView()

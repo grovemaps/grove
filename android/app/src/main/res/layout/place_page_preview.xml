@@ -328,4 +328,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:layout="@layout/placepage_track_fragment" />
+
+  <!-- Grove: plan a saved route again with its stops, see GroveTripRow. -->
+  <LinearLayout
+    android:id="@+id/grove_trip_navigate"
+    style="@style/PlacePageItemFrame"
+    android:visibility="gone"
+    tools:visibility="visible">
+    <ImageView
+      style="@style/PlacePageMetadataIcon"
+      app:srcCompat="@drawable/ic_manage_route"
+      app:tint="?colorAccent" />
+    <TextView
+      style="@style/PlacePageMetadataText"
+      android:text="@string/navigate_trip"
+      android:textAppearance="@style/MwmTextAppearance.PlacePage.Accent" />
+  </LinearLayout>
 </LinearLayout>

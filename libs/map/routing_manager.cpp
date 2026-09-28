@@ -1439,7 +1439,48 @@ kml::TrackId RoutingManager::SaveRoute()
   std::string const from = GetNameFromPoint(routePoints.front());
   std::string const to = GetNameFromPoint(routePoints.back());
 
-  return m_bmManager->SaveRoute(std::move(junctions), from, to);
+  // Grove: keep the stops and the router, so the trip can be navigated again (GroveTripOfTrack).
+  kml::Properties properties;
+  if (auto const points = GetRoutePointsToSave(); points.size() >= 2)
+  {
+    properties[std::string(kGroveTripPoints)] = SerializeRoutePoints(points);
+    properties[std::string(kGroveTripRouter)] = strings::to_string(static_cast<int>(GetRouter()));
+  }
+  return m_bmManager->SaveRoute(std::move(junctions), from, to, std::move(properties));
+}
+
+std::optional<routing::RouterType> RoutingManager::GroveTripOfTrack(kml::TrackId trackId)
+{
+  auto const * track = m_bmManager->GetTrack(trackId);
+  if (!track)
+    return {};
+  auto const & properties = track->GetData().m_properties;
+  auto const points = properties.find(std::string(kGroveTripPoints));
+  auto const router = properties.find(std::string(kGroveTripRouter));
+  int routerType;
+  if (points == properties.end() || router == properties.end() || !strings::to_int(router->second, routerType) ||
+      routerType < 0 || routerType >= static_cast<int>(RouterType::Count) ||
+      DeserializeRoutePoints(points->second).empty())
+    return {};
+  return static_cast<RouterType>(routerType);
+}
+
+bool RoutingManager::GroveRestoreTrip(kml::TrackId trackId)
+{
+  if (!GroveTripOfTrack(trackId))
+    return false;
+  auto const & data = m_bmManager->GetTrack(trackId)->GetData().m_properties.at(std::string(kGroveTripPoints));
+  try
+  {
+    FileWriter writer(GetPlatform().SettingsPathForFile(kRoutePointsFile));
+    writer.Write(data.data(), data.size());
+    return true;
+  }
+  catch (RootException const & e)
+  {
+    LOG(LWARNING, ("Can't restore the trip:", e.Msg()));
+    return false;
+  }
 }
 
 bool RoutingManager::DisableFollowMode()

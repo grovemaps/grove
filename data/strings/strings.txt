@@ -6997,6 +6997,19 @@ pt = Colore florestas, campos e cidades com o mapa afastado. Transfere dados de 
 ru = Раскрашивает леса, поля и города на мелких масштабах. Загружает данные о земном покрове (ESA WorldCover), пока вы просматриваете карту.
 uk = Розфарбовує ліси, поля та міста на дрібних масштабах. Завантажує дані про земний покрив (ESA WorldCover), поки ви переглядаєте мапу.
 
+[navigate_trip]
+comment = Grove: place card of a saved route: plans the route again with all its stops, to navigate it
+tags = android-app
+en = Navigate this trip
+de = Diese Reise navigieren
+es = Navegar este viaje
+fr = Naviguer ce trajet
+it = Naviga questo viaggio
+nl = Deze route navigeren
+pt = Navegar esta viagem
+ru = Проложить этот маршрут
+uk = Прокласти цей маршрут
+
 [pref_prefer_cycle_routes_title]
 comment = Grove: Settings «Navigation» category: «Prefer cycle routes» switch title (bicycle routing takes signed cycle routes)
 tags = android-app
