@@ -296,6 +296,16 @@ void Navigator::SetRotationIn3dMode(double rotationAngle)
   m_Screen.SetRotationAngle(rotationAngle);
 }
 
+void Navigator::SetTilt(double angle, double maxAngle)
+{
+  if (angle <= 0)
+    Disable3dMode();
+  else if (m_Screen.isPerspective())
+    m_Screen.SetRotationAngle(angle);
+  else
+    m_Screen.ApplyPerspective(angle, maxAngle, m_Screen.GetAngleFOV());
+}
+
 void Navigator::Disable3dMode()
 {
   if (m_Screen.isPerspective())

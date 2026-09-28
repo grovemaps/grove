@@ -1087,6 +1087,11 @@ void UserEventStream::BeginScale(Touch const & t1, Touch const & t2)
   m2::PointD touch1(t1.m_location);
   m2::PointD touch2(t2.m_location);
 
+  // Grove: the gesture is decided once the fingers have moved, see grove_gestures.hpp.
+  m_groveGesture = grove::TwoFingerGesture::Undecided;
+  m_groveGestureStart = {touch1, touch2};
+  m_groveStartTilt = m_navigator.Screen().isPerspective() ? m_navigator.Screen().GetRotationAngle() : 0;
+
   if (m_listener)
   {
     m_listener->OnScaleStarted();
@@ -1103,6 +1108,23 @@ void UserEventStream::Scale(Touch const & t1, Touch const & t2)
 
   m2::PointD touch1(t1.m_location);
   m2::PointD touch2(t2.m_location);
+
+  // Grove: fingers sliding up or down together tilt the map instead, see grove_gestures.hpp.
+  if (m_groveGesture == grove::TwoFingerGesture::Undecided)
+  {
+    m_groveGesture = grove::ClassifyTwoFingers(m_groveGestureStart[0], m_groveGestureStart[1], touch1, touch2,
+                                               24 * VisualParams::Instance().GetVisualScale());
+    if (m_groveGesture == grove::TwoFingerGesture::Undecided)
+      return;
+  }
+  if (m_groveGesture == grove::TwoFingerGesture::Tilt)
+  {
+    double const dy = (touch1.y + touch2.y - m_groveGestureStart[0].y - m_groveGestureStart[1].y) / 2;
+    double const maxTilt = ScreenBase::CalculateAutoPerspectiveAngle(0);
+    m_navigator.SetTilt(grove::TiltAngle(m_groveStartTilt, dy, m_navigator.Screen().PixelRectIn3d().SizeY(), maxTilt),
+                        maxTilt);
+    return;
+  }
 
   if (m_listener)
   {
@@ -1123,6 +1145,13 @@ void UserEventStream::EndScale(Touch const & t1, Touch const & t2)
 
   m2::PointD touch1(t1.m_location);
   m2::PointD touch2(t2.m_location);
+
+  // Grove: a tilt or an undecided gesture leaves the scale as it started.
+  if (m_groveGesture != grove::TwoFingerGesture::Scale)
+  {
+    touch1 = m_groveGestureStart[0];
+    touch2 = m_groveGestureStart[1];
+  }
 
   if (m_listener)
   {

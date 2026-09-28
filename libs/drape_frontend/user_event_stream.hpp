@@ -1,5 +1,6 @@
 #pragma once
 
+#include "drape_frontend/grove_gestures.hpp"
 #include "drape_frontend/kinetic_scroller.hpp"
 #include "drape_frontend/navigator.hpp"
 
@@ -570,6 +571,10 @@ private:
 #endif
   m2::PointD m_startDragOrg;
   std::array<m2::PointF, 2> m_twoFingersTouches;
+  // Grove: two-finger tilt, see grove_gestures.hpp.
+  grove::TwoFingerGesture m_groveGesture = grove::TwoFingerGesture::Undecided;
+  std::array<m2::PointD, 2> m_groveGestureStart;
+  double m_groveStartTilt = 0;
   m2::PointD m_startDoubleTapAndHold;
 
   double const m_dragThreshold;
