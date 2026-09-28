@@ -6997,6 +6997,19 @@ pt = Colore florestas, campos e cidades com o mapa afastado. Transfere dados de 
 ru = Раскрашивает леса, поля и города на мелких масштабах. Загружает данные о земном покрове (ESA WorldCover), пока вы просматриваете карту.
 uk = Розфарбовує ліси, поля та міста на дрібних масштабах. Завантажує дані про земний покрив (ESA WorldCover), поки ви переглядаєте мапу.
 
+[grove_brand_logos]
+comment = Grove: map button that shows and hides the logos of chain stores and restaurants (accessibility description)
+tags = android-app
+en = Brand logos
+de = Markenlogos
+es = Logotipos de marcas
+fr = Logos de marques
+it = Loghi dei marchi
+nl = Merklogo’s
+pt = Logótipos de marcas
+ru = Логотипы брендов
+uk = Логотипи брендів
+
 [reviews_by_mangrove]
 comment = Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps.
 tags = android-app
