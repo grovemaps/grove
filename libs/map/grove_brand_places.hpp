@@ -6,6 +6,8 @@
 
 #include "geometry/rect2d.hpp"
 
+#include "base/thread.hpp"
+
 #include <condition_variable>
 #include <cstdint>
 #include <deque>
@@ -13,7 +15,6 @@
 #include <map>
 #include <mutex>
 #include <string>
-#include <thread>
 #include <vector>
 
 namespace grove
@@ -57,6 +58,7 @@ private:
   std::map<MwmSet::MwmId, std::vector<Entry>> m_places;
   std::deque<MwmSet::MwmId> m_queue;
   bool m_stop = false;
-  std::thread m_worker;
+  // Attached to the JVM on Android: onReady posts to the UI thread through JNI.
+  threads::SimpleThread m_worker;
 };
 }  // namespace grove
