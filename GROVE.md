@@ -51,6 +51,7 @@ Apple Maps sets the color palette.
   - kothic rejects selectors on tag keys Organic Maps doesn't know.
   - CoMaps-only selectors like `[sport=...]` compile to `extra_tag` runtime conditions that crash Organic Maps Debug builds.
   - Drawing a new kind of area needs an entry in upstream's priorities files.
+  - A new file in `data/` reaches the Android app only with a symlink in `android/sdk/src/main/assets/`.
   - Organic Maps' downloadable maps only hold features from the zoom where upstream's style draws them (see "Map data limits").
 - **Visual references:** the Apple Maps screenshots used for the palette aren't in the repo (Apple imagery). They're re-attached in chat when needed.
 
@@ -187,9 +188,9 @@ From zoom 16, places of chains (Albert Heijn, Jumbo, McDonald's, Shell, ING...) 
 - **Downloading:** everything is cached in `build-grove/brands-cache`, so reruns fetch only what is new, and `--cached-only` rebuilds the pack offline. Wikimedia blocks clients that go faster than about one request a second for 10 minutes (HTTP 429 with `Retry-After: 600`), and only serves its standard thumbnail sizes (https://w.wiki/GHai) to scripts; the script keeps to both, so a first full run takes about an hour. Commit the regenerated pack separately as `[brands] Regenerated`.
 - **Current pack is partial:** it was built in a cloud session that Wikimedia blocked after the 1,072 most used brands' logos, so it holds 278 badges (1.5 MB) of the 3,834 brands with a logo. Run `tools/grove/brand_logos.py` from another connection to add the rest.
 - **Trademarks:** the logo files are free of copyright but remain their owners' trademarks. They are shown only to mark where a chain's shops are.
-- **Matching:** the maps keep a place's `brand` tag only when it differs from its name (the generator drops it otherwise, which is most places), so the name stands in for it. `BrandPack::Find` looks it up by name (any case) and also requires the place's type to be one of the brand's (from the Name Suggestion Index, e.g. `shop-supermarket`), so an independent shop that shares a chain's name stays plain. A brand listed for the place's country (the map file name up to the first `_`, e.g. `Netherlands`) wins over a worldwide one, so the Dutch, Swiss and Danish Coops each get their own logo.
+- **Matching:** by the place's name, or its leading words ("Albert Heijn Dam" matches "Albert Heijn"). The maps keep a place's `brand` tag only when it differs from its name (the generator drops it otherwise, which is most places), and reading it for every place would slow tile loading. `BrandPack::Find` looks it up by name (any case) and also requires the place's type to be one of the brand's (from the Name Suggestion Index, e.g. `shop-supermarket`), so an independent shop that shares a chain's name stays plain. A brand listed for the place's country (the map file name up to the first `_`, e.g. `Netherlands`) wins over a worldwide one, so the Dutch, Swiss and Danish Coops each get their own logo.
 - **Rendering:** badges load on first use into one 1024×1024 texture of 20 dp slots (`BrandTexture`), downscaled to the screen density: 289 slots at 3×. When it is full, further brands keep category icons until the app restarts.
-- **Platforms:** Android and the desktop app read the pack from `data/`. iOS lists data files one by one in its Xcode project, so it needs the two files added there; until then it shows category icons.
+- **Platforms:** the desktop app reads the pack from `data/`; Android through the symlinks `android/sdk/src/main/assets/grove_brands.*` (Android packages only data files linked there). iOS lists data files one by one in its Xcode project, so it needs the two files added there; until then it shows category icons.
 
 ## Checking the look without a phone
 
@@ -199,6 +200,10 @@ tools/grove/render_screens.sh [points file] [output dir]
 ```
 
 This builds the Qt desktop app and renders screenshots in its screenshot mode. On Linux without a display it runs the app under `xvfb-run` with Mesa's software OpenGL (packages `xvfb`, Qt 6 dev); the first run needs `EulaAccepted=true` in `~/.config/OrganicMaps/settings.ini`, or the app waits on the license dialog. For tilted 3D views add `Allow3d=true` and `Buildings3d=true` to the same file; the desktop app then starts in perspective (only the first point of a run renders, the next one waits forever). Under Xvfb the app can hang in Mesa's buffer swap after its last screenshot, so the script stops it once the log says `state: Done`. It defaults to `tools/grove/amsterdam-points.txt`, the spots of the Apple Maps reference screenshots, at 2000×1256 and 2× scale. Region maps download on first use into `/Volumes/grove/desktop-data`. The Mac is a virtual machine without GPU passthrough, so the app renders in software, about 2 minutes per frame.
+
+### Vulkan, as on Android
+
+Android uses Vulkan by default; the desktop app only OpenGL. `tools/grove/render_vulkan.py LAT LON ZOOM out.png` renders a view with `dev_sandbox` (build target `dev_sandbox`) on Mesa's software Vulkan driver (packages `mesa-vulkan-drivers`, `xvfb`, `imagemagick`), using the maps downloaded by `render_screens.sh`. Pass `--api OpenGL` to compare. A Debug build (`build-grove-debug`) stops at failed assertions like the Android debug APK.
 
 ## Styles
 
