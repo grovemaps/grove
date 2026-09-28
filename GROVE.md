@@ -192,6 +192,10 @@ Places of chains (Albert Heijn, McDonald's, Lidl...) show the chain's logo inste
 - **Rendering:** badges load on first use into one 2048×1024 texture of 26 dp slots (`BrandTexture`), a little larger than category icons, downscaled to the screen density: 338 slots at 3× (8 MB). When it is full, further brands keep category icons until the app restarts.
 - **Platforms:** the desktop app reads the pack from `data/`; Android through the symlinks `android/sdk/src/main/assets/grove_brands.*` (Android packages only data files linked there). iOS lists data files one by one in its Xcode project, so it needs the two files added there; until then it shows category icons.
 
+## Place cards
+
+On Android, tapping a place opens a card tinted in the place's colour: its chain's logo colour (worked out by `tools/grove/brand_logos.py` as the logo's most common clear colour), otherwise its category colour, the label colour of its type in the current day or night style, which is also its icon circle's colour. Places without an icon keep a plain card. The card gets a 14% tint; the title takes the full colour, darkened (day) or lightened (night) until it reads. Code: `libs/map/grove_place_color.cpp`, JNI `android/sdk/.../GrovePlace.cpp`, card `android/app/.../placepage/GrovePlaceCard.java`, one call in `PlacePageView.refreshPreview`.
+
 ## Checking the look without a phone
 
 ```
