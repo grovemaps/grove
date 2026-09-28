@@ -23,8 +23,7 @@ inline bool IsWater(feature::TypesHolder const & types)
                                               {"natural", "strait"},
                                               {"place", "sea"},
                                               {"place", "ocean"},
-                                              {"landuse", "basin"},
-                                              {"landuse", "reservoir"}});
+                                              {"landuse", "basin"}});
   return checker(types);
 }
 
