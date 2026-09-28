@@ -223,6 +223,8 @@
     <string name="pref_map_landcover_title">Cobertura do solo</string>
     <!-- Grove: Settings «General» category: «Land cover» summary -->
     <string name="pref_map_landcover_summary">Colore florestas, campos e cidades com o mapa afastado. Transfere dados de cobertura do solo (ESA WorldCover) enquanto explora o mapa.</string>
+    <!-- Grove: map button that shows and hides the logos of chain stores and restaurants (accessibility description) -->
+    <string name="grove_brand_logos">Logótipos de marcas</string>
     <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->
     <string name="reviews_by_mangrove">Avaliações do Mangrove</string>
     <!-- Grove: place card button that opens a website for writing a review of the place; %@ is the website's name (Mangrove). Ported from CoMaps. -->

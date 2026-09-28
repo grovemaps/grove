@@ -223,6 +223,8 @@
     <string name="pref_map_landcover_title">Land cover</string>
     <!-- Grove: Settings «General» category: «Land cover» summary -->
     <string name="pref_map_landcover_summary">Colours forests, fields and towns when zoomed out. Downloads land cover data (ESA WorldCover) while you browse the map.</string>
+    <!-- Grove: map button that shows and hides the logos of chain stores and restaurants (accessibility description) -->
+    <string name="grove_brand_logos">Brand logos</string>
     <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->
     <string name="reviews_by_mangrove">Reviews from Mangrove</string>
     <!-- Grove: place card button that opens a website for writing a review of the place; %@ is the website's name (Mangrove). Ported from CoMaps. -->
