@@ -1621,7 +1621,7 @@ void FrontendRenderer::Render3dLayer(ScreenBase const & modelView)
   DEBUG_LABEL(m_context, "3D Layer");
   if (m_buildingsFramebuffer->IsSupported())
   {
-    float const kOpacity = 0.7f;
+    float const kOpacity = 0.9f;  // Grove: more solid buildings (upstream: 0.7).
     m_screenQuadRenderer->RenderTexture(m_context, make_ref(m_gpuProgramManager), m_buildingsFramebuffer->GetTexture(),
                                         kOpacity);
   }

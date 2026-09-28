@@ -20,5 +20,5 @@ layout (binding = 1) uniform sampler2D u_colorTex;
 void main()
 {
   vec4 finalColor = vec4(texture(u_colorTex, v_colorTexCoords).rgb, u_opacity);
-  v_FragColor = vec4((v_intensity * 0.2 + 0.8) * finalColor.rgb, finalColor.a);
+  v_FragColor = vec4(v_intensity * finalColor.rgb, finalColor.a);  // Grove: the vertex shader sets the brightness.
 }

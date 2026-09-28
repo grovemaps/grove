@@ -69,7 +69,9 @@ vertex Area3dFragment_T vsArea3d(const Area3dVertex_T in [[stage_in]],
                                  texture2d<half> u_colorTex [[texture(0)]],
                                  sampler u_colorTexSampler [[sampler(0)]])
 {
-  constexpr float4 kNormalizedLightDir = float4(0.3162, 0.0, 0.9486, 0.0);
+  // Grove: sun from the upper left of the screen; walls darken toward the ground. Same as area3d.vsh.glsl.
+  constexpr float4 kNormalizedLightDir = float4(0.4472, -0.4472, 0.7746, 0.0);
+  constexpr float kGroundShade = 0.8;
   
   Area3dFragment_T out;
 
@@ -87,6 +89,9 @@ vertex Area3dFragment_T vsArea3d(const Area3dVertex_T in [[stage_in]],
     out.intensity = max(0.0, -dot(kNormalizedLightDir, normalize(normDir)));
   else
     out.intensity = 0.0;
+  out.intensity = 0.72 + 0.36 * out.intensity;
+  if (in.a_position.z == 0.0)
+    out.intensity *= kGroundShade;
   
   out.position = uniforms.u_pivotTransform * pos;
   
@@ -99,7 +104,7 @@ vertex Area3dFragment_T vsArea3d(const Area3dVertex_T in [[stage_in]],
 
 fragment half4 fsArea3d(const Area3dFragment_T in [[stage_in]])
 {
-  return half4(in.color.rgb * (in.intensity * 0.2 + 0.8), in.color.a);
+  return half4(in.color.rgb * in.intensity, in.color.a);
 }
 
 // Area3dOutline
