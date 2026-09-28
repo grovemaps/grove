@@ -1,0 +1,70 @@
+# Grove: build the Android APK (F-Droid debug, arm64) and publish it as the "grove-latest" release.
+# Stable download link: https://github.com/<owner>/<repo>/releases/download/grove-latest/grove-debug.apk
+# Signed with android/app/debug.keystore like local debug builds, so it installs over them as an update.
+name: Grove Android APK
+on:
+  workflow_dispatch: # Manual trigger
+  push:
+    branches:
+      - grove
+    paths-ignore:
+      - GROVE.md
+      - docs/**
+      - iphone/**
+      - xcode/**
+      - qt/**
+      - tools/grove/**
+
+permissions:
+  contents: write
+
+env:
+  JAVA_HOME: /usr/lib/jvm/temurin-17-jdk-amd64 # Java 17 is required for the Android Gradle plugin
+
+concurrency:
+  group: grove-android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    name: Build and publish the Grove APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install build tools
+        shell: bash
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ninja-build
+
+      - name: Checkout sources
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 200
+
+      - name: Parallel submodules checkout
+        shell: bash
+        run: git submodule update --depth 1 --init --recursive --jobs=$(($(nproc) * 20))
+
+      - name: Configure ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: grove-android-fdroid-debug
+
+      - name: Build the APK
+        shell: bash
+        working-directory: android
+        env:
+          CMAKE_C_COMPILER_LAUNCHER: ccache
+          CMAKE_CXX_COMPILER_LAUNCHER: ccache
+        run: ./gradlew -Parm64 assembleFdroidDebug
+
+      - name: Publish the grove-latest release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp android/app/build/outputs/apk/fdroid/debug/*.apk grove-debug.apk
+          notes="Grove debug build from ${GITHUB_SHA::10}: $(git log -1 --format=%s)"
+          gh release delete grove-latest --cleanup-tag --yes || true
+          gh release create grove-latest grove-debug.apk --prerelease --target "$GITHUB_SHA" \
+            --title "Grove (latest build)" --notes "$notes"
