@@ -219,6 +219,10 @@
     <string name="pref_map_relief_title">Затенённый рельеф</string>
     <!-- Grove: Settings «General» category: «Shaded relief» summary -->
     <string name="pref_map_relief_summary">Затеняет холмы и горы. Загружает данные о высотах, пока вы просматриваете карту.</string>
+    <!-- Grove: Settings «General» category: «Land cover» title (colours of forests, fields and towns when zoomed out) -->
+    <string name="pref_map_landcover_title">Земной покров</string>
+    <!-- Grove: Settings «General» category: «Land cover» summary -->
+    <string name="pref_map_landcover_summary">Раскрашивает леса, поля и города на мелких масштабах. Загружает данные о земном покрове (ESA WorldCover), пока вы просматриваете карту.</string>
     <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->
     <string name="reviews_by_mangrove">Отзывы из Mangrove</string>
     <!-- Grove: place card button that opens a website for writing a review of the place; %@ is the website's name (Mangrove). Ported from CoMaps. -->

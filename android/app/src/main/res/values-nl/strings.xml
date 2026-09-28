@@ -219,6 +219,10 @@
     <string name="pref_map_relief_title">Schaduwreliëf</string>
     <!-- Grove: Settings «General» category: «Shaded relief» summary -->
     <string name="pref_map_relief_summary">Geeft heuvels en bergen schaduw. Downloadt hoogtegegevens terwijl je de kaart bekijkt.</string>
+    <!-- Grove: Settings «General» category: «Land cover» title (colours of forests, fields and towns when zoomed out) -->
+    <string name="pref_map_landcover_title">Bodembedekking</string>
+    <!-- Grove: Settings «General» category: «Land cover» summary -->
+    <string name="pref_map_landcover_summary">Kleurt bossen, velden en steden als je uitzoomt. Downloadt bodembedekkingsgegevens (ESA WorldCover) terwijl je de kaart bekijkt.</string>
     <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->
     <string name="reviews_by_mangrove">Beoordelingen van Mangrove</string>
     <!-- Grove: place card button that opens a website for writing a review of the place; %@ is the website's name (Mangrove). Ported from CoMaps. -->

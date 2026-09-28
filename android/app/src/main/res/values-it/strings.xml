@@ -219,6 +219,10 @@
     <string name="pref_map_relief_title">Rilievo ombreggiato</string>
     <!-- Grove: Settings «General» category: «Shaded relief» summary -->
     <string name="pref_map_relief_summary">Ombreggia colline e montagne. Scarica dati altimetrici mentre esplori la mappa.</string>
+    <!-- Grove: Settings «General» category: «Land cover» title (colours of forests, fields and towns when zoomed out) -->
+    <string name="pref_map_landcover_title">Copertura del suolo</string>
+    <!-- Grove: Settings «General» category: «Land cover» summary -->
+    <string name="pref_map_landcover_summary">Colora boschi, campi e città con la mappa rimpicciolita. Scarica dati di copertura del suolo (ESA WorldCover) mentre esplori la mappa.</string>
     <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->
     <string name="reviews_by_mangrove">Recensioni da Mangrove</string>
     <!-- Grove: place card button that opens a website for writing a review of the place; %@ is the website's name (Mangrove). Ported from CoMaps. -->
