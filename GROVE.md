@@ -20,6 +20,16 @@ Apple Maps sets the color palette.
   git show comaps/main:libs/editor/review.cpp
   ```
 
+## GitHub
+
+- Repository: https://github.com/grovemaps/grove, a public fork of Organic Maps.
+  - `grove` is the default branch and holds Grove's work.
+  - `master` stays a plain copy of upstream Organic Maps (GitHub's "Sync fork" button updates it).
+- Every push to `grove` runs `.github/workflows/grove-android.yaml`. It builds the F-Droid debug APK for arm64 and replaces the `grove-latest` release. Stable download link: https://github.com/grovemaps/grove/releases/download/grove-latest/grove-debug.apk
+  - The APK is signed with `android/app/debug.keystore`, like local debug builds, so it installs over them as an update.
+- Upstream's own workflows are disabled in the fork, so only Grove's build uses Actions.
+- After syncing with a newer Organic Maps (below), `git push origin grove` publishes the merge and triggers a new build.
+
 ## Staying mergeable with Organic Maps
 
 Grove must be able to take in new Organic Maps releases, so keep its changes out of upstream files wherever possible:
