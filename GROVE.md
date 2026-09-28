@@ -92,7 +92,7 @@ Current upstream hooks:
 | `libs/drape_frontend/tile_info.cpp` | after a tile's features, draws its logo layer (`grove::DrawBrandLayer`, `libs/drape_frontend/grove_brand_layer.hpp`, Grove) |
 | `libs/drape_frontend/poi_symbol_shape.cpp`, `libs/drape/overlay_tree.cpp` | logos get `grove::kBrandPriority`, above every map label and icon, and never hide each other |
 | `libs/drape_frontend/apply_feature_functors.cpp` (again) | chains get no category icon (the logo layer draws theirs), and from zoom 16 their name under the logo (`libs/drape_frontend/grove_brands.hpp`, Grove) |
-| `android/app/build.gradle` | stores `grove_brands.bin` uncompressed, so it is read in place |
+| `android/app/build.gradle` | stores `grove_brands.bin` and `grove_landcover_world.bin` uncompressed, so they are read in place |
 | `android/app/src/main/res/**`, `RoutingBottomMenuController.java` | Roboto references point to the app font (Geist, Inter for Greek), and the app themes hang under `values/grove_fonts.xml`; written by `tools/grove/android_fonts.py`, see "Fonts" |
 | `android/app/src/main/res/layout/place_page_details.xml`, `PlacePageView.java` | a container for the Mangrove reviews section and the one line that shows it (`GroveReviewsFragment`) |
 | `data/fonts/whitelist.txt` | Inter for Latin, Greek and Cyrillic blocks; drops the system Roboto entries for those blocks (a whitelisted system font loads last and would win) |
@@ -203,13 +203,13 @@ Hills and mountains are shaded, as in Guru Maps: light comes mostly from the nor
 
 ## Land cover
 
-Zoomed out (zoom 7 to 11), where Organic Maps' map files have no forests, fields or heath (zoom 9 and out only has the world map file, zoom 10 the countries' simplest shapes), the map is coloured by land cover: forests green, fields and grass paler, towns grey, bare ground and snow, in Grove's palette at its zoom 11 shades (dark ones in the dark style). The map's own areas are drawn over it and take over when zoomed in; from zoom 12 it is gone.
+Zoomed out (zoom 11 down to the whole world), where Organic Maps' map files have no forests, fields or heath (zoom 9 and out only has the world map file, zoom 10 the countries' simplest shapes), the map is coloured by land cover: forests green, fields and grass paler, towns grey, bare ground and snow, in Grove's palette at its zoom 11 shades (dark ones in the dark style). The map's own areas are drawn over it and take over when zoomed in; from zoom 12 it is gone.
 
 - **Data:** [ESA WorldCover 2021](https://esa-worldcover.org) (10 m, CC BY 4.0, credited in the app's copyright page), Cloud-Optimized GeoTIFFs on AWS Open Data: one file per 3° square, with overviews at 150, 300 and 600 m. `libs/map/grove_landcover.cpp` reads a square's header (its first 32 KB) and the one overview tile a map tile needs, with HTTP range requests, and caches both in `grove_landcover/` in the app's data folder (a square's header and its 600 m tile are about 100 KB; its whole file is up to 100 MB). Open sea has no files.
 - **Colours:** each map tile pixel averages 2×2 samples of the classes' colours, which smooths the 150–600 m pixels. Water is left transparent, since the map draws it.
 - **Drawing:** Grove's land cover layer (`libs/drape_frontend/grove_raster_layers.hpp`), drawn over the background and under the map's areas.
-- **Switch:** Android Settings → "General settings" → "Land cover" (`GroveLandcover` settings key), on by default. Like relief, it downloads while browsing, which tells Amazon's servers which areas are viewed.
-- **Later:** a bundled low-zoom pack would make it offline, and zoom 6 and out would need one (a tile there spans dozens of squares).
+- **Zoom 6 and out:** a tile there spans dozens of squares, so these zooms come from a bundled pack instead, offline: `tools/grove/landcover_world.py` reads every square's 600 m overview, mosaics them at 0.025° and cuts web mercator tiles for zooms 1–6 as 8-bit PNGs of WorldCover classes, which the app colours for the light and dark styles (`data/grove_landcover_world.bin` and `.txt`, about 4.4 MB, stored uncompressed in the APK). Small lakes take the class of the land around them, since zoomed out the map doesn't draw them and they would show as background-coloured dots.
+- **Switch:** Android Settings → "General settings" → "Land cover" (`GroveLandcover` settings key), on by default. Like relief, from zoom 7 it downloads while browsing, which tells Amazon's servers which areas are viewed.
 
 ## Brand logos
 

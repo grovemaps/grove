@@ -8,6 +8,7 @@
 
 #include "coding/file_reader.hpp"
 #include "coding/file_writer.hpp"
+#include "coding/reader.hpp"
 #include "coding/zlib.hpp"
 
 #include "geometry/mercator.hpp"
@@ -25,7 +26,10 @@
 #include <map>
 #include <mutex>
 #include <set>
+#include <tuple>
 #include <unordered_map>
+
+#include "3party/stb_image/stb_image.h"
 
 namespace grove::landcover
 {
@@ -34,8 +38,12 @@ namespace
 std::string_view constexpr kEnabledKey = "GroveLandcover";
 std::string_view constexpr kUrl = "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/";
 
-// Map zooms with land cover; further out a tile would need dozens of squares.
-int constexpr kMinZoom = 7;
+// From this zoom tiles come from WorldCover's files online; further out a tile would need dozens of them, so it comes
+// from the bundled world pack (tools/grove/landcover_world.py).
+int constexpr kMinOnlineZoom = 7;
+std::string_view constexpr kWorldPack = "grove_landcover_world.bin";
+std::string_view constexpr kWorldIndex = "grove_landcover_world.txt";
+int constexpr kMaxWorldZoom = 5;  // Web mercator.
 
 int constexpr kSquareDegrees = 3;
 // Pixels per degree of the full resolution level; each overview halves it.
@@ -106,7 +114,7 @@ public:
 
   bool RequestTile(df::TileKey const & tileKey, dp::BackgroundMode mode)
   {
-    if (tileKey.m_zoomLevel < kMinZoom || tileKey.m_zoomLevel > kLandcoverMaxZoom)
+    if (tileKey.m_zoomLevel < 1 || tileKey.m_zoomLevel > kLandcoverMaxZoom)
       return false;
     {
       std::lock_guard lock(m_mutex);
@@ -223,10 +231,83 @@ private:
     return pixels;
   }
 
+  // The bundled world pack's tile, decoded: WorldCover classes. Empty for tiles without land.
+  std::shared_ptr<std::vector<uint8_t> const> GetWorldTile(int z, int x, int y)
+  {
+    std::lock_guard lock(m_mutex);
+    if (!m_worldLoaded)
+    {
+      m_worldLoaded = true;
+      try
+      {
+        m_worldPack = GetPlatform().GetReader(std::string(kWorldPack));
+        std::string index;
+        GetPlatform().GetReader(std::string(kWorldIndex))->ReadAsString(index);
+        strings::Tokenize(index, "\n", [this](std::string_view line)
+        {
+          if (line.empty() || line.front() == '#')
+            return;
+          std::vector<std::string_view> f;
+          strings::Tokenize(line, "\t", [&f](std::string_view v) { f.push_back(v); });
+          int tz, tx, ty;
+          uint64_t offset, size;
+          if (f.size() == 5 && strings::to_int(f[0], tz) && strings::to_int(f[1], tx) && strings::to_int(f[2], ty) &&
+              strings::to_uint(f[3], offset) && strings::to_uint(f[4], size))
+            m_worldIndex[{tz, tx, ty}] = {offset, size};
+        });
+      }
+      catch (RootException const & e)
+      {
+        LOG(LWARNING, ("No world land cover:", e.Msg()));
+      }
+    }
+
+    auto const key = std::tuple(z, x, y);
+    if (auto const it = m_worldTiles.find(key); it != m_worldTiles.end())
+      return it->second;
+    std::shared_ptr<std::vector<uint8_t> const> tile;
+    if (auto const it = m_worldIndex.find(key); it != m_worldIndex.end() && m_worldPack)
+    {
+      std::vector<uint8_t> png(it->second.second);
+      m_worldPack->Read(it->second.first, png.data(), png.size());
+      int w = 0, h = 0, comp = 0;
+      if (stbi_uc * data = stbi_load_from_memory(png.data(), static_cast<int>(png.size()), &w, &h, &comp, 1))
+      {
+        if (w == int(kTileSize) && h == int(kTileSize))
+          tile = std::make_shared<std::vector<uint8_t> const>(data, data + kTileSize * kTileSize);
+        stbi_image_free(data);
+      }
+    }
+    // A zoomed-out view needs a few dozen of them at most: keep them all.
+    m_worldTiles[key] = tile;
+    return tile;
+  }
+
+  // The WorldCover class at a point, from the world pack at a web mercator zoom.
+  uint8_t WorldClass(double lat, double lon, int z)
+  {
+    double const n = 1 << z;
+    double const fx = (lon + 180) / 360 * n;
+    double const fy = (1 - std::asinh(std::tan(lat * M_PI / 180)) / M_PI) / 2 * n;
+    int const tx = std::clamp(static_cast<int>(fx), 0, int(n) - 1);
+    int const ty = std::clamp(static_cast<int>(fy), 0, int(n) - 1);
+    auto const tile = GetWorldTile(z, tx, ty);
+    if (!tile)
+      return kNoData;
+    auto const px = std::clamp(static_cast<int>((fx - tx) * kTileSize), 0, int(kTileSize) - 1);
+    auto const py = std::clamp(static_cast<int>((fy - ty) * kTileSize), 0, int(kTileSize) - 1);
+    return (*tile)[py * kTileSize + px];
+  }
+
   void MakeTile(df::TileKey const & tileKey, dp::BackgroundMode mode, bool dark)
   {
     if (!IsActive(tileKey))
       return;
+    if (tileKey.m_zoomLevel < kMinOnlineZoom)
+    {
+      MakeWorldTile(tileKey, mode, dark);
+      return;
+    }
 
     // The coarsest level that still has a pixel for each of the tile's: OM zoom Z is web-mercator zoom Z - 1.
     double const needed = kTileSize * double(1 << (tileKey.m_zoomLevel - 1)) / 360;
@@ -311,8 +392,55 @@ private:
         return;
     }
 
+    if (!empty)
+      Deliver(tileKey, mode, dark, std::move(rgba));
+  }
+
+  // Zoomed out: the bundled world pack, with 2x2 samples a pixel as online.
+  void MakeWorldTile(df::TileKey const & tileKey, dp::BackgroundMode mode, bool dark)
+  {
+    // OM zoom Z is web mercator zoom Z - 1.
+    int const z = std::min(tileKey.m_zoomLevel - 1, kMaxWorldZoom);
+    m2::RectD const rect = tileKey.GetGlobalRect();
+    std::vector<uint8_t> rgba(size_t{kTileSize} * kTileSize * 4, 0);
+    bool empty = true;
+    int constexpr kSamples = 2;
+    for (uint32_t row = 0; row < kTileSize; ++row)
+    {
+      for (uint32_t col = 0; col < kTileSize; ++col)
+      {
+        uint32_t sum[4] = {0, 0, 0, 0};
+        for (int sy = 0; sy < kSamples; ++sy)
+        {
+          for (int sx = 0; sx < kSamples; ++sx)
+          {
+            double const x = rect.minX() + rect.SizeX() * (col + (sx + 0.5) / kSamples) / kTileSize;
+            double const y = rect.minY() + rect.SizeY() * (row + (sy + 0.5) / kSamples) / kTileSize;
+            if (x < mercator::Bounds::kMinX || x > mercator::Bounds::kMaxX)
+              continue;
+            auto const color = ClassColor(WorldClass(mercator::YToLat(y), mercator::XToLon(x), z), dark);
+            for (int c = 0; c < 3; ++c)
+              sum[c] += color[c] * color[3];
+            sum[3] += color[3];
+          }
+        }
+        if (sum[3] == 0)
+          continue;
+        empty = false;
+        uint8_t * out = &rgba[(size_t{row} * kTileSize + col) * 4];
+        for (int c = 0; c < 3; ++c)
+          out[c] = static_cast<uint8_t>(sum[c] / sum[3]);
+        out[3] = static_cast<uint8_t>(sum[3] / (kSamples * kSamples));
+      }
+    }
+    if (!empty)
+      Deliver(tileKey, mode, dark, std::move(rgba));
+  }
+
+  void Deliver(df::TileKey const & tileKey, dp::BackgroundMode mode, bool dark, std::vector<uint8_t> && rgba)
+  {
     auto engine = m_getEngine();
-    if (empty || !engine || !IsActive(tileKey))
+    if (!engine || !IsActive(tileKey))
       return;
     CancelTile(tileKey, mode);
     std::string const uid = std::string(ImagePrefix(dp::BackgroundMode::Landcover)) + (dark ? "dark/" : "light/") +
@@ -330,6 +458,10 @@ private:
   std::unordered_map<std::string, std::vector<Level>> m_levels;
   std::list<std::string> m_tileOrder;  // Most recently used first.
   std::map<std::string, std::pair<Pixels, std::list<std::string>::iterator>> m_tiles;
+  bool m_worldLoaded = false;
+  std::unique_ptr<ModelReader> m_worldPack;
+  std::map<std::tuple<int, int, int>, std::pair<uint64_t, uint64_t>> m_worldIndex;
+  std::map<std::tuple<int, int, int>, std::shared_ptr<std::vector<uint8_t> const>> m_worldTiles;
 };
 
 uint32_t Read32(std::string const & s, size_t offset)
