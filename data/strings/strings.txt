@@ -6971,6 +6971,64 @@ pt = Sombreia colinas e montanhas. Transfere dados de elevação enquanto explor
 ru = Затеняет холмы и горы. Загружает данные о высотах, пока вы просматриваете карту.
 uk = Затіняє пагорби та гори. Завантажує дані про висоти, поки ви переглядаєте мапу.
 
+[reviews_by_mangrove]
+comment = Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps.
+tags = android-app
+en = Reviews from Mangrove
+ca = Ressenyes de Mangrove
+cs = Recenze ze služby Mangrove
+da = Anmeldelser fra Mangrove
+de = Rezensionen von Mangrove
+el = Κριτικές από Mangrove
+es = Reseñas de Mangrove
+et = Arvustused teenusest Mangrove
+fr = Avis provenant de Mangrove
+it = Recensioni da Mangrove
+nl = Beoordelingen van Mangrove
+pl = Recenzje z Mangrove
+pt = Avaliações do Mangrove
+pt-BR = Avaliações do Mangrove
+ru = Отзывы из Mangrove
+sr = Рецензије са Mangrove-a
+uk = Відгуки з Mangrove
+zh-Hans = 来自 Mangrove 的评价
+zh-Hant = Mangrove 提供的評論
+
+[add_review]
+comment = Grove: place card button that opens a website for writing a review of the place; %@ is the website's name (Mangrove). Ported from CoMaps.
+tags = android-app
+en = Add a Review via %@
+ca = Afegeix una ressenya amb %@
+cs = Přidejte recenzi na %@
+da = Tilføj en anmeldelse via %@
+de = Rezension über %@ schreiben
+el = Προσθέστε μια κριτική μέσω %@
+es = Añadir una reseña a través de %@
+et = Lisa arvustus siin: %@
+fr = Ajouter un avis via %@
+it = Aggiungi una recensione su %@
+nl = Beoordeling toevoegen via %@
+pl = Dodaj recenzję przez %@
+pt = Adicionar uma avaliação através de %@
+pt-BR = Adicione uma avaliação através de %@
+ru = Написать отзыв в %@
+sr = Додајте рецензију путем %@-а
+uk = Написати відгук у %@
+zh-Hant = 透過 %@ 新增評論
+
+[pref_mangrove_reviews_summary]
+comment = Grove: Settings «General» category: summary of the «Reviews from Mangrove» switch
+tags = android-app
+en = Shows reviews on the cards of shops, restaurants and other places. Asks mangrove.reviews for the reviews of the place you open.
+de = Zeigt Rezensionen auf den Karten von Geschäften, Restaurants und anderen Orten. Fragt mangrove.reviews nach den Rezensionen des geöffneten Ortes.
+es = Muestra reseñas en las fichas de tiendas, restaurantes y otros lugares. Pide a mangrove.reviews las reseñas del lugar que abres.
+fr = Affiche des avis sur les fiches des commerces, restaurants et autres lieux. Demande à mangrove.reviews les avis du lieu que vous ouvrez.
+it = Mostra le recensioni nelle schede di negozi, ristoranti e altri luoghi. Chiede a mangrove.reviews le recensioni del luogo che apri.
+nl = Toont beoordelingen op de kaarten van winkels, restaurants en andere plekken. Vraagt mangrove.reviews om de beoordelingen van de plek die je opent.
+pt = Mostra avaliações nos cartões de lojas, restaurantes e outros locais. Pede ao mangrove.reviews as avaliações do local que abre.
+ru = Показывает отзывы в карточках магазинов, ресторанов и других мест. Запрашивает у mangrove.reviews отзывы об открытом месте.
+uk = Показує відгуки в картках магазинів, ресторанів та інших місць. Запитує в mangrove.reviews відгуки про відкрите місце.
+
 [pref_bg_tiles_title]
 comment = Settings: title of the satellite imagery (custom raster tiles) screen
 tags = android-app,apple-maps
