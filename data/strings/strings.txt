@@ -6945,6 +6945,32 @@ vi = Tòa nhà 3D bị tắt ở chế độ tiết kiệm năng lượng
 zh-Hans = 3D 建筑在省电模式下处于关闭状态
 zh-Hant = 3D 建築在省電模式下將會關閉
 
+[pref_map_relief_title]
+comment = Grove: Settings «General» category: «Shaded relief» title (hillshading of hills and mountains)
+tags = android-app
+en = Shaded relief
+de = Reliefschattierung
+es = Relieve sombreado
+fr = Relief ombré
+it = Rilievo ombreggiato
+nl = Schaduwreliëf
+pt = Relevo sombreado
+ru = Затенённый рельеф
+uk = Затінений рельєф
+
+[pref_map_relief_summary]
+comment = Grove: Settings «General» category: «Shaded relief» summary
+tags = android-app
+en = Shades hills and mountains. Downloads elevation data while you browse the map.
+de = Schattiert Hügel und Berge. Lädt beim Betrachten der Karte Höhendaten herunter.
+es = Sombrea colinas y montañas. Descarga datos de elevación mientras exploras el mapa.
+fr = Ombre les collines et les montagnes. Télécharge des données d’altitude pendant que vous parcourez la carte.
+it = Ombreggia colline e montagne. Scarica dati altimetrici mentre esplori la mappa.
+nl = Geeft heuvels en bergen schaduw. Downloadt hoogtegegevens terwijl je de kaart bekijkt.
+pt = Sombreia colinas e montanhas. Transfere dados de elevação enquanto explora o mapa.
+ru = Затеняет холмы и горы. Загружает данные о высотах, пока вы просматриваете карту.
+uk = Затіняє пагорби та гори. Завантажує дані про висоти, поки ви переглядаєте мапу.
+
 [pref_bg_tiles_title]
 comment = Settings: title of the satellite imagery (custom raster tiles) screen
 tags = android-app,apple-maps
