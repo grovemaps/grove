@@ -3131,8 +3131,10 @@ void Framework::SaveTransitSchemeEnabled(bool enabled)
 
 bool Framework::LoadIsolinesEnabled()
 {
-  bool enabled;
-  return settings::Get(kIsolinesEnabledKey, enabled) && enabled;
+  // Grove: contour lines are on until switched off, as in Guru Maps. The maps have them only where terrain is.
+  bool enabled = true;
+  settings::TryGet(kIsolinesEnabledKey, enabled);
+  return enabled;
 }
 
 void Framework::SaveIsolinesEnabled(bool enabled)

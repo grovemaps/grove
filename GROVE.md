@@ -85,6 +85,7 @@ Current upstream hooks:
 | `libs/map/framework.cpp`, `framework.hpp` | creates the relief tile provider (`libs/map/grove_relief.cpp`, Grove) before the drape engine |
 | `libs/drape/texture_manager.cpp`, `.hpp` | owns the brand logo texture (`libs/drape/grove_brand_texture.hpp`, Grove); symbols named `brand:<Wikidata id>` come from it |
 | `libs/drape_frontend/rule_drawer.cpp`, `area_shape.hpp`; `texturing3d.fsh.glsl`, `map.metal` (`vsArea3d`) | 3D buildings with a place inside are see-through (`libs/drape_frontend/grove_buildings.hpp`, Grove): RuleDrawer holds a tile's 3D buildings until its places are read; the 3D shaders use the colour's alpha |
+| `libs/map/framework.cpp` (`LoadIsolinesEnabled`) | contour lines are on until switched off in the layers menu, as in Guru Maps; the maps have them only where there is terrain |
 | `libs/drape_frontend/tile_info.cpp` | after a tile's features, draws its logo layer (`grove::DrawBrandLayer`, `libs/drape_frontend/grove_brand_layer.hpp`, Grove) |
 | `libs/drape_frontend/poi_symbol_shape.cpp`, `libs/drape/overlay_tree.cpp` | logos get `grove::kBrandPriority`, above every map label and icon, and never hide each other |
 | `libs/drape_frontend/apply_feature_functors.cpp` (again) | chains get no category icon (the logo layer draws theirs), and from zoom 16 their name under the logo (`libs/drape_frontend/grove_brands.hpp`, Grove) |
