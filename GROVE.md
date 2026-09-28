@@ -101,6 +101,7 @@ Current upstream hooks:
 | `libs/map/raster_tile_provider.{hpp,cpp}` | `Params::m_offlineSubdir`: a folder of tiles saved for the downloaded maps, read before downloading and never evicted (relief) |
 | `libs/map/framework.{hpp,cpp}` (again) | queues every downloaded map region, at start and after each download, for saving its relief and land cover (`libs/map/grove_offline_layers.hpp`, Grove) |
 | `libs/map/routing_manager.{hpp,cpp}`, `bookmark_manager.{hpp,cpp}` (`SaveRoute`) | a route saved as a track keeps its stops and router in the track's properties (`grove_route_points`, `grove_router`), and `GroveRestoreTrip` plans it again; Android shows "Navigate this trip" on such a track's card (`GroveTripRow.java`, `place_page_preview.xml`) |
+| `libs/routing/index_router.cpp`, `route.hpp` (`SetTurnDirection`) | bicycle routes use `grove::BicycleDirectionsEngine` (`libs/routing/grove_turns.hpp`): the car directions, then bike path jogs merged (below) |
 | `android/app/build.gradle` | stores `grove_brands.bin`, `grove_landcover_world.bin` and `grove_reviews.bin` uncompressed, so they are read in place |
 | `android/app/src/main/res/**`, `RoutingBottomMenuController.java` | Roboto references point to the app font (Geist, Inter for Greek), and the app themes hang under `values/grove_fonts.xml`; written by `tools/grove/android_fonts.py`, see "Fonts" |
 | `android/app/src/main/res/layout/place_page_details.xml`, `PlacePageView.java` | a container for the Mangrove reviews section and the one line that shows it (`GroveReviewsFragment`) |
@@ -229,6 +230,12 @@ Zoomed out (zoom 11 down to the whole world), where Organic Maps' map files have
 
 - **Layer:** upstream's cycling layer draws a 3 dp stripe per route in the route's own colour (purple if it has none), side by side and dashed like the road under it. With the Dutch and Belgian node networks that covers whole towns in rainbow bands. Grove draws one solid line per road, in the colour of the highest cycle network the road belongs to, as Mapy.com does: deep magenta for national and international routes (`icn`, `ncn`), magenta for regional ones and node networks (`rcn`, translucent at zoom 12), light pink for local routes (`lcn`) and brown for mountain bike trails, both from zoom 14. Roads whose routes aren't drawn at a zoom keep the map style's visibility. Hiking and transit lines are unchanged.
 - **Routing:** bicycle routes prefer roads of signed cycle routes, which are usually quieter and nicer: their weight speed is raised by 20% (national, regional) or 10% (local), capped at the model's maximum so A* stays exact; ETAs are unchanged. Stronger factors sent a ride across Amsterdam 48% further round the regional routes, so the preference only buys short detours (`routing_integration_tests/grove_cycle_routes_test.cpp`, with the Utrecht and Amsterdam maps). Upstream's alternative route (the other strategy) still offers the direct way. Switch: Settings → Navigation → "Prefer cycle routes" (`GroveCycleRoutes` settings key), on by default, from the next route.
+
+## Turn instructions
+
+Bike paths along roads end at every side street and resume across it, or jog onto the carriageway and back, so upstream's bicycle routes made two turns a few metres apart that together keep the rider going the same way: "turn left", "turn right" where the rider rides straight on, or a right turn with a U-turn 10 m later. `grove::MergeJogs` (`libs/routing/grove_turns.cpp`) merges two turns within 45 m when the piece between has no name (a bike path, a crossing), is shorter than 15 m, or comes back onto the road left: dropped if the rider comes out within 30° of the way they came in, else one turn in the combined direction. Two turns into two named streets stay. On four test rides in Amsterdam and Utrecht this took a third of the turns out (tests: `routing_tests/grove_turns_tests.cpp`, and `routing_integration_tests/grove_cycle_routes_test.cpp` with the Amsterdam map).
+
+Still to do: naming unnamed bike paths in instructions ("continue on the bike path along X"), and the same review for walking and driving.
 
 ## Brand logos
 

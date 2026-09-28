@@ -1,5 +1,7 @@
 #include "routing/index_router.hpp"
 
+#include "routing/grove_turns.hpp"
+
 #include "routing/base/astar_progress.hpp"
 
 #include "routing/car_directions.hpp"
@@ -149,7 +151,8 @@ std::unique_ptr<DirectionsEngine> CreateDirectionsEngine(VehicleType vehicleType
   {
   case VehicleType::Pedestrian:
   case VehicleType::Transit: return std::make_unique<PedestrianDirectionsEngine>(dataSource, numMwmIds);
-  case VehicleType::Bicycle:
+  // Grove: bicycle turns without the jogs of bike paths along roads, see routing/grove_turns.hpp.
+  case VehicleType::Bicycle: return std::make_unique<grove::BicycleDirectionsEngine>(dataSource, numMwmIds);
   case VehicleType::Car: return std::make_unique<CarDirectionsEngine>(dataSource, numMwmIds);
   case VehicleType::Count: CHECK(false, ("Can't create DirectionsEngine for", vehicleType)); return nullptr;
   }

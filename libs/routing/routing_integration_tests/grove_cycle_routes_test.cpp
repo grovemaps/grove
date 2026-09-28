@@ -64,3 +64,26 @@ UNIT_TEST(Grove_Netherlands_Amsterdam_NoLongDetour)
   TEST_EQUAL(routes.m_preferM, routes.m_plainM, ());
 }
 }  // namespace grove_cycle_routes_test
+
+namespace grove_bicycle_turns_test
+{
+using namespace integration;
+using namespace routing;
+
+UNIT_TEST(Grove_Netherlands_Amsterdam_NoBikePathJogs)
+{
+  // Along the Wibautstraat's bike paths: before Grove merged jogs, turns came in pairs 15-40 m apart.
+  auto const [route, code] =
+      CalculateRoute(GetVehicleComponents(VehicleType::Bicycle), mercator::FromLatLon(52.3580, 4.9105), {0., 0.},
+                     mercator::FromLatLon(52.3440, 4.9185));
+  TEST_EQUAL(code, RouterResultCode::NoError, ());
+  double lastTurn = -1000;
+  for (auto const & s : route->GetRouteSegments())
+  {
+    if (s.GetTurn().IsTurnNone() || s.GetTurn().IsTurnReachedYourDestination())
+      continue;
+    TEST_GREATER(s.GetDistFromBeginningMeters() - lastTurn, 15.0, ());
+    lastTurn = s.GetDistFromBeginningMeters();
+  }
+}
+}  // namespace grove_bicycle_turns_test
