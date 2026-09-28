@@ -215,6 +215,10 @@
     <string name="pref_map_3d_buildings_title">Bâtiments en 3D</string>
     <!-- A message in Settings/Preferences explaining why is it not possible to enable 3D buildings when max power saving mode is enabled -->
     <string name="pref_map_3d_buildings_disabled_summary">Les bâtiments 3D sont désactivés en mode d\'économie d\'énergie</string>
+    <!-- Grove: Settings «General» category: «Shaded relief» title (hillshading of hills and mountains) -->
+    <string name="pref_map_relief_title">Relief ombré</string>
+    <!-- Grove: Settings «General» category: «Shaded relief» summary -->
+    <string name="pref_map_relief_summary">Ombre les collines et les montagnes. Télécharge des données d’altitude pendant que vous parcourez la carte.</string>
     <!-- Settings: title of the satellite imagery (custom raster tiles) screen -->
     <string name="pref_bg_tiles_title">Imagerie satellite</string>
     <!-- Settings «Satellite Imagery»: title of the tile server URL input field -->
