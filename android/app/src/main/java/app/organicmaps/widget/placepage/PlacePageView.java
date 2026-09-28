@@ -538,6 +538,7 @@ public class PlacePageView extends Fragment
     UiUtils.setTextAndHideIfEmpty(mTvAddress, mMapObject.getAddress());
 
     refreshCategoryPreview();
+    GrovePlaceCard.apply(this, mTvTitle);
 
     final String osmDescription = mMapObject.getOsmDescription();
     if (osmDescription.isEmpty())

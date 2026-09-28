@@ -29,6 +29,14 @@ UNIT_TEST(GroveBrands_Find)
 
   TEST_EQUAL(pack.Find("No Such Brand Anywhere", "Netherlands", supermarket), "", ());
 
+  // Logo colours: McDonald's red, Albert Heijn blue.
+  auto const red = pack.GetColor("Q38076");
+  TEST_GREATER((red >> 16) & 0xFF, 0xB0, (red));
+  TEST_LESS(red & 0xFF, 0x40, (red));
+  auto const blue = pack.GetColor("Q1653985");
+  TEST_GREATER(blue & 0xFF, 0xB0, (blue));
+  TEST_EQUAL(pack.GetColor("Q0"), 0, ());
+
   TEST(!pack.ReadBadge("Q1653985").empty(), ());
   TEST(pack.ReadBadge("Q0").empty(), ());
 }
