@@ -79,6 +79,7 @@ Current upstream hooks:
 | `libs/shaders/GL/area3d.vsh.glsl`, `texturing3d.fsh.glsl`, `libs/shaders/Metal/map.metal` (`vsArea3d`, `fsArea3d`) | 3D building lighting, see "Depth" below; `data/vulkan_shaders/*` are regenerated from the GL files |
 | `libs/drape_frontend/frontend_renderer.cpp` | 3D buildings at 90% opacity instead of 70%; Grove's raster layers (`libs/drape_frontend/grove_raster_layers.hpp`, Grove) get their tiles routed to them; land cover is drawn before the 2D layer, relief after it |
 | `libs/drape/drape_global.hpp` | adds `BackgroundMode::Relief` and `Landcover`, which give those layers' tiles their own texture pools |
+| `libs/drape_frontend/visual_params.cpp` | wider, softer label halos, like Mapy.com's white outlines (outline threshold 0.13, softness 0.025; was 0.2 and 0.01) |
 | `data/copyright.html` | credits ESA WorldCover, Mangrove and the Terrain Tiles |
 | `libs/map/framework.cpp`, `framework.hpp` | creates the relief tile provider (`libs/map/grove_relief.cpp`, Grove) before the drape engine |
 | `libs/drape/texture_manager.cpp`, `.hpp` | owns the brand logo texture (`libs/drape/grove_brand_texture.hpp`, Grove); symbols named `brand:<Wikidata id>` come from it |
@@ -180,7 +181,7 @@ LD_LIBRARY_PATH=<dir with libc++.so> python3 libs/shaders/vulkan_shaders_preproc
 
 ## Relief
 
-Hills and mountains are shaded, as in Guru and Apple Maps: slopes facing away from a northwest sun get a cool grey-blue shadow, slopes facing it a warm light, flat ground nothing. Water and flat countries like the Netherlands look unchanged.
+Hills and mountains are shaded, as in Guru and Apple Maps: slopes facing away from a northwest sun get a cool grey-blue shadow (up to 42% opacity), slopes facing it a warm light (up to 24%), flat ground nothing. Ground above 300 m also gets an elevation tint, as on printed physical maps and in Guru Maps: warm tan in the hills (up to 18% from 1,500 m), paler grey-brown above 2,500 m (`grove::ElevationTint`). Water and flat countries like the Netherlands look unchanged.
 
 - **Data:** [Terrarium elevation tiles](https://github.com/tilezen/joerd/blob/master/docs/formats.md#terrarium) (Tilezen/Mapzen on AWS Open Data: worldwide, free, no key, zoom 0–15; [attribution](https://github.com/tilezen/joerd/blob/master/docs/attribution.md)). Upstream's `RasterTileProvider` downloads them and caches up to 200 MB in `grove_relief/` in the app's data folder.
 - **Shading:** `grove::ShadeRelief` (`libs/map/grove_relief.cpp`) turns each elevation tile into a transparent overlay tile with Horn's slope method. Zoomed out, terrain is exaggerated (up to 4×) so it doesn't look flat. The cache keeps the raw elevation, so shading changes need no new downloads.

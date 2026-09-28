@@ -10,8 +10,10 @@
 #include "base/math.hpp"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <deque>
+#include <iterator>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -35,8 +37,8 @@ double constexpr kSunY = 0.5;
 double constexpr kSunZ = 0.70710678;
 
 // Strongest shading, reached on slopes facing straight away from or toward the sun.
-double constexpr kMaxShadowAlpha = 0.32;
-double constexpr kMaxLightAlpha = 0.2;
+double constexpr kMaxShadowAlpha = 0.42;
+double constexpr kMaxLightAlpha = 0.24;
 // Cool shadows and warm light read softer than black and white.
 uint8_t constexpr kShadowColor[] = {38, 48, 70};
 uint8_t constexpr kLightColor[] = {255, 252, 240};
@@ -72,12 +74,41 @@ private:
   std::mutex m_mutex;
 };
 
+// Elevation tints, as on printed physical maps and in Guru Maps: lowlands keep the map's colours, hills turn warm tan,
+// high mountains a paler grey-brown.
+struct TintStop
+{
+  double m_meters;
+  uint8_t m_rgb[3];
+  double m_alpha;
+};
+TintStop constexpr kTints[] = {
+    {300, {233, 223, 184}, 0.0},   {700, {228, 212, 162}, 0.1},   {1500, {212, 188, 142}, 0.16},
+    {2500, {198, 178, 150}, 0.18}, {3500, {216, 210, 204}, 0.12},
+};
+
 double DecodeTerrarium(uint8_t const * px)
 {
   // Clamped at sea level: no seabed relief under water.
   return std::max(0.0, px[0] * 256.0 + px[1] + px[2] / 256.0 - 32768.0);
 }
 }  // namespace
+
+std::array<double, 4> ElevationTint(double meters)
+{
+  if (meters <= kTints[0].m_meters)
+    return {0, 0, 0, 0};
+  auto const * hi = std::ranges::find_if(kTints, [meters](TintStop const & s) { return s.m_meters >= meters; });
+  if (hi == std::end(kTints))
+    hi = std::prev(std::end(kTints));
+  auto const * lo = hi == std::begin(kTints) ? hi : std::prev(hi);
+  double const t = hi == lo ? 1 : std::clamp((meters - lo->m_meters) / (hi->m_meters - lo->m_meters), 0.0, 1.0);
+  std::array<double, 4> tint;
+  for (int c = 0; c < 3; ++c)
+    tint[c] = lo->m_rgb[c] + (hi->m_rgb[c] - lo->m_rgb[c]) * t;
+  tint[3] = lo->m_alpha + (hi->m_alpha - lo->m_alpha) * t;
+  return tint;
+}
 
 void ShadeRelief(std::vector<uint8_t> & rgba, uint32_t width, uint32_t height, double metersPerPixel,
                  double exaggeration)
@@ -106,19 +137,29 @@ void ShadeRelief(std::vector<uint8_t> & rgba, uint32_t width, uint32_t height, d
       double const light = (-dzdx * kSunX - dzdy * kSunY + kSunZ) / std::sqrt(dzdx * dzdx + dzdy * dzdy + 1);
       double const delta = light - kSunZ;  // Relative to flat ground.
 
-      uint8_t * px = &rgba[(size_t{static_cast<size_t>(y)} * width + x) * 4];
+      uint8_t const * shade;
       double alpha;
       if (delta < 0)
       {
-        std::copy(std::begin(kShadowColor), std::end(kShadowColor), px);
+        shade = kShadowColor;
         alpha = kMaxShadowAlpha * std::min(1.0, -delta / kSunZ);
       }
       else
       {
-        std::copy(std::begin(kLightColor), std::end(kLightColor), px);
+        shade = kLightColor;
         alpha = kMaxLightAlpha * std::min(1.0, delta / (1 - kSunZ));
       }
-      px[3] = static_cast<uint8_t>(std::lround(alpha * 255));
+
+      // The shade over the elevation tint, as one colour with alpha.
+      auto const tint = ElevationTint(e(x, y));
+      double const outAlpha = alpha + tint[3] * (1 - alpha);
+      uint8_t * px = &rgba[(size_t{static_cast<size_t>(y)} * width + x) * 4];
+      for (int c = 0; c < 3; ++c)
+      {
+        double const premultiplied = shade[c] * alpha + tint[c] * tint[3] * (1 - alpha);
+        px[c] = outAlpha > 0 ? static_cast<uint8_t>(std::lround(premultiplied / outAlpha)) : 0;
+      }
+      px[3] = static_cast<uint8_t>(std::lround(outAlpha * 255));
     }
   }
 }

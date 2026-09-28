@@ -6,6 +6,7 @@
 
 #include "drape/pointers.hpp"
 
+#include <array>
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -20,6 +21,9 @@ std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<d
 // The settings switch (key "GroveRelief", on by default). Takes effect at once.
 bool IsReliefEnabled();
 void SetReliefEnabled(ref_ptr<df::DrapeEngine> engine, bool enabled);
+
+// The elevation tint of ground at this height: RGB and alpha (0..1), clear in the lowlands.
+std::array<double, 4> ElevationTint(double meters);
 
 // Turns a decoded Terrarium tile (RGBA8, rows south to north) into relief shading: dark with alpha on slopes
 // facing away from a northwest sun, light with alpha on slopes facing it, transparent on flat ground.
