@@ -12,76 +12,82 @@
 
 namespace grove
 {
-// Shaded relief (hillshading) over the map. It reuses upstream's raster tile background renderer as a second
-// instance in dp::BackgroundMode::Relief, drawn after the 2D layer: its tiles are black (shadow) and white (sunlit)
-// with alpha, so they darken and lighten the map under roads' labels and icons. The tiles come from
-// map/grove_relief.cpp, which registers its reader here before the drape engine starts.
-struct ReliefSource
+// Grove's raster layers: upstream's raster tile background renderer, one instance per layer, each in its own
+// dp::BackgroundMode and drawn at its own place in the frame:
+// - land cover (map/grove_landcover.cpp): colours for forests, fields, heath... when zoomed out, where the map files
+//   have none; drawn over the background, under the map's areas, which take over when zoomed in.
+// - shaded relief (map/grove_relief.cpp): black (shadow) and white (sunlit) with alpha, drawn after the 2D layer,
+//   under roads' labels and icons.
+// The map side registers each layer's tile reader here before the drape engine starts.
+struct RasterLayerSource
 {
   df::MapDataProvider::TTileBackgroundReadFn m_read;
   df::MapDataProvider::TCancelTileBackgroundReadingFn m_cancel;
 };
 
-inline ReliefSource & GetReliefSource()
+inline size_t LayerIndex(dp::BackgroundMode mode)
 {
-  static ReliefSource source;
-  return source;
+  return mode == dp::BackgroundMode::Landcover ? 1 : 0;
 }
 
-// The settings switch. When off, the layer draws nothing and requests no tiles.
-inline std::atomic<bool> & ReliefEnabled()
+inline RasterLayerSource & GetRasterLayerSource(dp::BackgroundMode mode)
 {
-  static std::atomic<bool> enabled{true};
-  return enabled;
+  static RasterLayerSource sources[2];
+  return sources[LayerIndex(mode)];
 }
 
-// Image uids of relief tiles start with this, so their tile bindings reach the relief renderer.
-std::string_view constexpr kReliefImagePrefix = "relief/";
+// Settings switches. When off, a layer draws nothing and requests no tiles.
+inline std::atomic<bool> & RasterLayerEnabled(dp::BackgroundMode mode)
+{
+  static std::atomic<bool> enabled[2] = {true, true};
+  return enabled[LayerIndex(mode)];
+}
 
-class ReliefLayer
+// Image uids of a layer's tiles start with its prefix, so their tile bindings reach the layer's renderer.
+inline std::string_view ImagePrefix(dp::BackgroundMode mode)
+{
+  return mode == dp::BackgroundMode::Landcover ? "landcover/" : "relief/";
+}
+
+// Land cover shows up to zoom 11, fading out there as the map's own areas take over.
+int constexpr kLandcoverMaxZoom = 11;
+
+class RasterLayer
 {
 public:
-  ReliefLayer()
+  RasterLayer(dp::BackgroundMode mode, int maxZoom) : m_mode(mode), m_maxZoom(maxZoom)
   {
-    auto source = GetReliefSource();
+    auto source = GetRasterLayerSource(mode);
     if (source.m_read)
-    {
-      m_renderer = make_unique_dp<df::TileBackgroundRenderer>(std::move(source.m_read), std::move(source.m_cancel),
-                                                              dp::BackgroundMode::Relief);
-    }
+      m_renderer =
+          make_unique_dp<df::TileBackgroundRenderer>(std::move(source.m_read), std::move(source.m_cancel), mode);
   }
 
-  // The renderer that owns tiles of this mode or image.
-  ref_ptr<df::TileBackgroundRenderer> Route(ref_ptr<df::TileBackgroundRenderer> background,
-                                            dp::BackgroundMode mode) const
-  {
-    return m_renderer && mode == dp::BackgroundMode::Relief ? make_ref(m_renderer) : background;
-  }
-  ref_ptr<df::TileBackgroundRenderer> Route(ref_ptr<df::TileBackgroundRenderer> background,
-                                            std::string_view imageUid) const
-  {
-    return m_renderer && imageUid.starts_with(kReliefImagePrefix) ? make_ref(m_renderer) : background;
-  }
+  bool Owns(dp::BackgroundMode mode) const { return m_renderer && mode == m_mode; }
+  bool Owns(std::string_view imageUid) const { return m_renderer && imageUid.starts_with(ImagePrefix(m_mode)); }
+  ref_ptr<df::TileBackgroundRenderer> Renderer() { return make_ref(m_renderer); }
 
   void OnUpdateViewport(ref_ptr<dp::GraphicsContext> context, df::CoverageResult const & coverage, int zoomLevel)
   {
     if (!m_renderer)
       return;
-    if (ReliefEnabled())
-    {
-      m_renderer->OnUpdateViewport(context, coverage, zoomLevel);
-    }
-    else if (context != nullptr)
+    if (!RasterLayerEnabled(m_mode))
     {
       // Switched off: cancel requests and free the textures.
-      m_renderer->ClearContextDependentResources(context);
+      if (context != nullptr)
+        m_renderer->ClearContextDependentResources(context);
+    }
+    else if (zoomLevel <= m_maxZoom)
+    {
+      // Zoomed in further, the layer keeps its tiles for zooming back out.
+      m_renderer->OnUpdateViewport(context, coverage, zoomLevel);
     }
   }
 
   void Render(ref_ptr<dp::GraphicsContext> context, ref_ptr<gpu::ProgramManager> mng, ScreenBase const & screen,
               int zoomLevel, df::FrameValues const & frameValues)
   {
-    if (m_renderer && ReliefEnabled())
+    if (m_renderer && RasterLayerEnabled(m_mode) && zoomLevel <= m_maxZoom)
       m_renderer->Render(context, mng, screen, zoomLevel, frameValues);
   }
 
@@ -94,6 +100,58 @@ public:
   void Reset() { m_renderer.reset(); }
 
 private:
+  dp::BackgroundMode const m_mode;
+  int const m_maxZoom;
   drape_ptr<df::TileBackgroundRenderer> m_renderer;
+};
+
+class RasterLayers
+{
+public:
+  // The renderer that owns tiles of this mode or image: a Grove layer's, or upstream's background.
+  template <typename ModeOrUid>
+  ref_ptr<df::TileBackgroundRenderer> Route(ref_ptr<df::TileBackgroundRenderer> background, ModeOrUid const & key)
+  {
+    for (auto * layer : {&m_landcover, &m_relief})
+      if (layer->Owns(key))
+        return layer->Renderer();
+    return background;
+  }
+
+  // Over the background, under the map's areas.
+  void RenderUnderMap(ref_ptr<dp::GraphicsContext> context, ref_ptr<gpu::ProgramManager> mng, ScreenBase const & screen,
+                      int zoomLevel, df::FrameValues const & frameValues)
+  {
+    m_landcover.Render(context, mng, screen, zoomLevel, frameValues);
+  }
+
+  // Over areas and roads, under 3D buildings, routes and labels.
+  void RenderOverMap(ref_ptr<dp::GraphicsContext> context, ref_ptr<gpu::ProgramManager> mng, ScreenBase const & screen,
+                     int zoomLevel, df::FrameValues const & frameValues)
+  {
+    m_relief.Render(context, mng, screen, zoomLevel, frameValues);
+  }
+
+  void OnUpdateViewport(ref_ptr<dp::GraphicsContext> context, df::CoverageResult const & coverage, int zoomLevel)
+  {
+    m_landcover.OnUpdateViewport(context, coverage, zoomLevel);
+    m_relief.OnUpdateViewport(context, coverage, zoomLevel);
+  }
+
+  void ClearContextDependentResources(ref_ptr<dp::GraphicsContext> context)
+  {
+    m_landcover.ClearContextDependentResources(context);
+    m_relief.ClearContextDependentResources(context);
+  }
+
+  void Reset()
+  {
+    m_landcover.Reset();
+    m_relief.Reset();
+  }
+
+private:
+  RasterLayer m_landcover{dp::BackgroundMode::Landcover, kLandcoverMaxZoom};
+  RasterLayer m_relief{dp::BackgroundMode::Relief, 20};
 };
 }  // namespace grove

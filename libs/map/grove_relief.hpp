@@ -13,7 +13,7 @@
 
 namespace grove
 {
-// Shaded relief (hillshading) from Terrarium elevation tiles, drawn by drape_frontend/grove_relief.hpp.
+// Shaded relief (hillshading) from Terrarium elevation tiles, drawn by drape_frontend/grove_raster_layers.hpp.
 // Creates the tile provider and registers it with the renderer; call before the drape engine is created.
 std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<df::DrapeEngine>()> getEngine);
 

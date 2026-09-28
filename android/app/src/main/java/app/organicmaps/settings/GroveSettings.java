@@ -2,6 +2,7 @@ package app.organicmaps.settings;
 
 import androidx.annotation.NonNull;
 import androidx.preference.TwoStatePreference;
+import app.organicmaps.sdk.GroveLandcover;
 import app.organicmaps.sdk.GroveRelief;
 import app.organicmaps.sdk.GroveReviews;
 
@@ -16,6 +17,13 @@ final class GroveSettings
     relief.setChecked(GroveRelief.nativeIsEnabled());
     relief.setOnPreferenceChangeListener((preference, newValue) -> {
       GroveRelief.nativeSetEnabled((Boolean) newValue);
+      return true;
+    });
+
+    final TwoStatePreference landcover = fragment.getPreference("GroveLandcover");
+    landcover.setChecked(GroveLandcover.nativeIsEnabled());
+    landcover.setOnPreferenceChangeListener((preference, newValue) -> {
+      GroveLandcover.nativeSetEnabled((Boolean) newValue);
       return true;
     });
 

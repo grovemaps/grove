@@ -1,6 +1,6 @@
 #include "map/grove_relief.hpp"
 
-#include "drape_frontend/grove_relief.hpp"
+#include "drape_frontend/grove_raster_layers.hpp"
 
 #include "platform/settings.hpp"
 
@@ -125,7 +125,7 @@ void ShadeRelief(std::vector<uint8_t> & rgba, uint32_t width, uint32_t height, d
 
 std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<df::DrapeEngine>()> getEngine)
 {
-  ReliefEnabled() = IsReliefEnabled();
+  RasterLayerEnabled(dp::BackgroundMode::Relief) = IsReliefEnabled();
 
   RasterTileProvider::Params params;
   params.m_urlTemplate = kTerrariumUrl;
@@ -145,7 +145,7 @@ std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<d
       return;
 
     static ShadedCache cache;
-    std::string const uid = std::string(kReliefImagePrefix) + imageUid;
+    std::string const uid = std::string(ImagePrefix(dp::BackgroundMode::Relief)) + imageUid;
     auto shaded = cache.Find(uid);
     if (!shaded)
     {
@@ -170,8 +170,9 @@ std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<d
   });
 
   RasterTileProvider * p = provider.get();
-  GetReliefSource() = {[p](df::TileKey const & key, dp::BackgroundMode mode) { return p->RequestTile(key, mode); },
-                       [p](df::TileKey const & key, dp::BackgroundMode mode) { p->CancelTile(key, mode); }};
+  GetRasterLayerSource(dp::BackgroundMode::Relief) = {[p](df::TileKey const & key, dp::BackgroundMode mode)
+  { return p->RequestTile(key, mode); }, [p](df::TileKey const & key, dp::BackgroundMode mode)
+  { p->CancelTile(key, mode); }};
   return provider;
 }
 
@@ -185,7 +186,7 @@ bool IsReliefEnabled()
 void SetReliefEnabled(ref_ptr<df::DrapeEngine> engine, bool enabled)
 {
   settings::Set(kEnabledKey, enabled);
-  ReliefEnabled() = enabled;
+  RasterLayerEnabled(dp::BackgroundMode::Relief) = enabled;
   // Re-reads the visible tiles, which also updates the relief layer's viewport (requests or drops its tiles).
   if (engine)
     engine->InvalidateRect(mercator::Bounds::FullRect());

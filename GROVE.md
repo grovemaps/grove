@@ -77,8 +77,9 @@ Current upstream hooks:
 | `libs/map/framework.cpp` | tile feature reading goes through `libs/map/grove_landcover_reading.hpp` (Grove), which adds the zoom 12 index at zoom 11 (landcover); creates the chains' place lists (`libs/map/grove_brand_places.hpp`, Grove) for the logo layer |
 | `libs/drape_frontend/apply_feature_functors.cpp` | after each place icon, `grove::InsertPoiDot` (`libs/drape_frontend/grove_poi_dot.hpp`, Grove) adds its dot; `grove::StyleCaption`, `grove::StylePathText` and `grove::StyleNumber` (house numbers, road shields; `libs/drape_frontend/grove_typography.hpp`, Grove) pick each label's typography; road shields are sized from the styled text |
 | `libs/shaders/GL/area3d.vsh.glsl`, `texturing3d.fsh.glsl`, `libs/shaders/Metal/map.metal` (`vsArea3d`, `fsArea3d`) | 3D building lighting, see "Depth" below; `data/vulkan_shaders/*` are regenerated from the GL files |
-| `libs/drape_frontend/frontend_renderer.cpp` | 3D buildings at 90% opacity instead of 70%; the relief layer (`libs/drape_frontend/grove_relief.hpp`, Grove) gets its tiles routed to it and is drawn after the 2D layer |
-| `libs/drape/drape_global.hpp` | adds `BackgroundMode::Relief`, which gives relief tiles their own texture pool |
+| `libs/drape_frontend/frontend_renderer.cpp` | 3D buildings at 90% opacity instead of 70%; Grove's raster layers (`libs/drape_frontend/grove_raster_layers.hpp`, Grove) get their tiles routed to them; land cover is drawn before the 2D layer, relief after it |
+| `libs/drape/drape_global.hpp` | adds `BackgroundMode::Relief` and `Landcover`, which give those layers' tiles their own texture pools |
+| `data/copyright.html` | credits ESA WorldCover, Mangrove and the Terrain Tiles |
 | `libs/map/framework.cpp`, `framework.hpp` | creates the relief tile provider (`libs/map/grove_relief.cpp`, Grove) before the drape engine |
 | `libs/drape/texture_manager.cpp`, `.hpp` | owns the brand logo texture (`libs/drape/grove_brand_texture.hpp`, Grove); symbols named `brand:<Wikidata id>` come from it |
 | `libs/drape_frontend/tile_info.cpp` | after a tile's features, draws its logo layer (`grove::DrawBrandLayer`, `libs/drape_frontend/grove_brand_layer.hpp`, Grove) |
@@ -183,10 +184,20 @@ Hills and mountains are shaded, as in Guru and Apple Maps: slopes facing away fr
 
 - **Data:** [Terrarium elevation tiles](https://github.com/tilezen/joerd/blob/master/docs/formats.md#terrarium) (Tilezen/Mapzen on AWS Open Data: worldwide, free, no key, zoom 0–15; [attribution](https://github.com/tilezen/joerd/blob/master/docs/attribution.md)). Upstream's `RasterTileProvider` downloads them and caches up to 200 MB in `grove_relief/` in the app's data folder.
 - **Shading:** `grove::ShadeRelief` (`libs/map/grove_relief.cpp`) turns each elevation tile into a transparent overlay tile with Horn's slope method. Zoomed out, terrain is exaggerated (up to 4×) so it doesn't look flat. The cache keeps the raw elevation, so shading changes need no new downloads.
-- **Drawing:** a second instance of upstream's raster tile renderer (`libs/drape_frontend/grove_relief.hpp`) draws the overlay with normal alpha blending after areas and roads, under 3D buildings, routes, icons and labels. It works on OpenGL, Vulkan and Metal without shader changes.
+- **Drawing:** Grove's relief layer, an instance of upstream's raster tile renderer (`libs/drape_frontend/grove_raster_layers.hpp`), draws the overlay with normal alpha blending after areas and roads, under 3D buildings, routes, icons and labels. It works on OpenGL, Vulkan and Metal without shader changes.
 - **Switch:** Android Settings → "General settings" → "Shaded relief", under "3D buildings" (`GroveSettings.java`, JNI in `android/sdk/.../GroveRelief.cpp`), on by default. It takes effect at once: off stops downloads and frees the relief textures. The value is the `GroveRelief` settings key (`grove::SetReliefEnabled`). iOS and the desktop app have no switch yet.
 - **Online for now:** relief tiles download while browsing, which tells Amazon's servers which areas are viewed; the switch's summary says so.
 - **Next: height data from the maps.** Relief should come from elevation data shipped with the downloaded maps, so it works offline and leaks nothing. Organic Maps already builds its contour lines from SRTM elevation data (`topography_generator_tool`); the same source can produce elevation tiles per map region. Only the tile source changes: `ShadeRelief` and the relief layer stay as they are.
+
+## Land cover
+
+Zoomed out (zoom 7 to 11), where Organic Maps' map files have no forests, fields or heath (zoom 9 and out only has the world map file, zoom 10 the countries' simplest shapes), the map is coloured by land cover: forests green, fields and grass paler, towns grey, bare ground and snow, in Grove's palette at its zoom 11 shades (dark ones in the dark style). The map's own areas are drawn over it and take over when zoomed in; from zoom 12 it is gone.
+
+- **Data:** [ESA WorldCover 2021](https://esa-worldcover.org) (10 m, CC BY 4.0, credited in the app's copyright page), Cloud-Optimized GeoTIFFs on AWS Open Data: one file per 3° square, with overviews at 150, 300 and 600 m. `libs/map/grove_landcover.cpp` reads a square's header (its first 32 KB) and the one overview tile a map tile needs, with HTTP range requests, and caches both in `grove_landcover/` in the app's data folder (a square's header and its 600 m tile are about 100 KB; its whole file is up to 100 MB). Open sea has no files.
+- **Colours:** each map tile pixel averages 2×2 samples of the classes' colours, which smooths the 150–600 m pixels. Water is left transparent, since the map draws it.
+- **Drawing:** Grove's land cover layer (`libs/drape_frontend/grove_raster_layers.hpp`), drawn over the background and under the map's areas.
+- **Switch:** Android Settings → "General settings" → "Land cover" (`GroveLandcover` settings key), on by default. Like relief, it downloads while browsing, which tells Amazon's servers which areas are viewed.
+- **Later:** a bundled low-zoom pack would make it offline, and zoom 6 and out would need one (a tile there spans dozens of squares).
 
 ## Brand logos
 
