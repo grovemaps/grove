@@ -19,7 +19,8 @@ namespace
 {
 std::string_view constexpr kIndexFile = "grove_brands.txt";
 std::string_view constexpr kPackFile = "grove_brands.bin";
-uint32_t constexpr kTextureSize = 1024;
+// 338 badges at 3x density (8 MB); further brands in a session keep their category icons.
+m2::PointU constexpr kTextureSize(2048, 1024);
 
 std::string Normalize(std::string_view name)
 {
@@ -224,9 +225,9 @@ void BrandIndex::UploadResources(ref_ptr<dp::GraphicsContext> context, ref_ptr<d
 }
 
 BrandTexture::BrandTexture(ref_ptr<dp::HWTextureAllocator> allocator, double visualScale)
-  : m_index({kTextureSize, kTextureSize}, static_cast<uint32_t>(std::lround(kBrandBadgeDp * visualScale)))
+  : m_index(kTextureSize, static_cast<uint32_t>(std::lround(kBrandBadgeDp * visualScale)))
 {
   Base::Init(allocator, make_ref(&m_index),
-             {{kTextureSize, kTextureSize}, dp::TextureFormat::RGBA8, dp::TextureFilter::Nearest, false});
+             {kTextureSize, dp::TextureFormat::RGBA8, dp::TextureFilter::Nearest, false});
 }
 }  // namespace grove

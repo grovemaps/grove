@@ -4,6 +4,7 @@
 #include "drape/texture_manager.hpp"
 
 #include "indexer/classificator.hpp"
+#include "indexer/drules_struct.hpp"
 #include "indexer/feature.hpp"
 #include "indexer/feature_data.hpp"
 
@@ -15,17 +16,12 @@
 
 namespace grove
 {
-// Places of chains show their logo badge instead of the category icon when zoomed in (see
-// drape/grove_brand_texture.hpp). Zoomed out they keep category icons and dots.
-int constexpr kMinBrandZoom = 16;
+// Places of chains show their logo badge instead of the category icon wherever the icon shows (see
+// drape/grove_brand_texture.hpp).
 
 // Replaces symbolName with the brand badge of the feature, if it has one and there is room in the badge texture.
-inline void UseBrandBadge(FeatureType & f, int zoomLevel, ref_ptr<dp::TextureManager> textures,
-                          std::string & symbolName)
+inline void UseBrandBadge(FeatureType & f, ref_ptr<dp::TextureManager> textures, std::string & symbolName)
 {
-  if (zoomLevel < kMinBrandZoom)
-    return;
-
   // Brands are matched by name: the map generator drops the brand tag of places named like it (most of them),
   // and reading the stored brand of every place would slow tile loading. A branch name like "Albert Heijn Dam"
   // matches by its leading words. Matching the place type too keeps an independent shop that happens to share
@@ -58,5 +54,20 @@ inline void UseBrandBadge(FeatureType & f, int zoomLevel, ref_ptr<dp::TextureMan
   dp::TextureManager::SymbolRegion region;
   if (textures->GetSymbolRegionSafe(badge, region))
     symbolName = std::move(badge);
+}
+// A symbol rule for a chain whose category has no icon at this zoom yet, but whose name shows (its caption
+// rule): the logo then appears with the name, ranked like it. False for other places.
+inline bool EarlyBrandRule(FeatureType & f, drule::CaptionRule const * captionRule,
+                           ref_ptr<dp::TextureManager> textures, drule::SymbolRule & rule)
+{
+  if (!captionRule)
+    return false;
+  std::string symbol;
+  UseBrandBadge(f, textures, symbol);
+  if (symbol.empty())
+    return false;
+  rule.name = std::move(symbol);
+  rule.priority = captionRule->priority;
+  return true;
 }
 }  // namespace grove

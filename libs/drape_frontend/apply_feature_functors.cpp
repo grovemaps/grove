@@ -407,6 +407,12 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
   auto const [createdByEditor, obsoleteInEditor] = m_params.GetEditStatus(m_f.GetID());
   m2::PointF symbolSize(0, 0);
 
+  // Grove: a chain's logo shows from the zoom its name does, before its category icon, see grove_brands.hpp.
+  drule::SymbolRule groveBrandRule;
+  bool const groveEarlyBrand = !symbolRule && grove::EarlyBrandRule(m_f, captionRule, texMng, groveBrandRule);
+  if (groveEarlyBrand)
+    symbolRule = &groveBrandRule;
+
   if (symbolRule)
   {
     PoiSymbolViewParams params;
@@ -429,7 +435,7 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
 
     // Grove: a chain's logo badge instead of its category icon, see grove_brands.hpp.
     std::string const categoryIcon = params.m_symbolName;
-    grove::UseBrandBadge(m_f, m_params.m_tileKey.m_zoomLevel, texMng, params.m_symbolName);
+    grove::UseBrandBadge(m_f, texMng, params.m_symbolName);
 
     dp::TextureManager::SymbolRegion region;
     texMng->GetSymbolRegion(params.m_symbolName, region);
@@ -466,6 +472,8 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
     params.m_depth = PriorityToDepth(captionRule->priority, drule::caption, 0);
     params.m_hasArea = HasArea();
     params.m_createdByEditor = createdByEditor;
+    if (groveEarlyBrand && params.m_titleDecl.m_anchor == dp::Anchor::Center)
+      params.m_titleDecl.m_anchor = GetAnchor(0, 1);  // Grove: the name goes under the early logo.
 
     ASSERT(!(symbolRule && params.m_titleDecl.m_anchor == dp::Anchor::Center),
            ("A `text-offset: *` is not set in styles.", m_f.GetID(), m_f.DebugString()));

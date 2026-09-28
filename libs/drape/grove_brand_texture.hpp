@@ -26,8 +26,8 @@ namespace grove
 // BrandTexture, which loads each badge on first use into a slot of one dynamic texture.
 std::string_view constexpr kBrandSymbolPrefix = "brand:";
 
-// Badge size on screen, like the category icons it replaces.
-double constexpr kBrandBadgeDp = 20.0;
+// Badge size on screen: a little larger than the category icons, so logos stay recognisable.
+double constexpr kBrandBadgeDp = 26.0;
 
 class BrandPack
 {
