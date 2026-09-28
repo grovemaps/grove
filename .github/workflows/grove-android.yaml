@@ -1,5 +1,6 @@
-# Grove: build the Android APK (F-Droid debug, arm64) and publish it as the "grove-latest" release.
-# Stable download link: https://github.com/<owner>/<repo>/releases/download/grove-latest/grove-debug.apk
+# Grove: build the Android APK (F-Droid debug), test that it starts in an Android emulator, and publish it as
+# the "grove-latest" release. Stable download link:
+#   https://github.com/<owner>/<repo>/releases/download/grove-latest/grove-debug.apk
 # Signed with android/app/debug.keystore like local debug builds, so it installs over them as an update.
 name: Grove Android APK
 on:
@@ -13,7 +14,6 @@ on:
       - iphone/**
       - xcode/**
       - qt/**
-      - tools/grove/**
 
 permissions:
   contents: write
@@ -26,9 +26,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  apk:
-    name: Build and publish the Grove APK
+  build:
+    name: Build the ${{ matrix.arch }} APK
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # arm64 for phones, x86_64 for the emulator test.
+        arch: [arm64, x86_64]
     steps:
       - name: Install build tools
         shell: bash
@@ -46,9 +50,9 @@ jobs:
         run: git submodule update --depth 1 --init --recursive --jobs=$(($(nproc) * 20))
 
       - name: Configure ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@v1.2.24
         with:
-          key: grove-android-fdroid-debug
+          key: grove-android-fdroid-debug-${{ matrix.arch }}
 
       - name: Build the APK
         shell: bash
@@ -56,15 +60,75 @@ jobs:
         env:
           CMAKE_C_COMPILER_LAUNCHER: ccache
           CMAKE_CXX_COMPILER_LAUNCHER: ccache
-        run: ./gradlew -Parm64 assembleFdroidDebug
+        run: ./gradlew -P${{ matrix.arch }} assembleFdroidDebug
 
-      - name: Publish the grove-latest release
+      - name: Upload the APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: apk-${{ matrix.arch }}
+          path: android/app/build/outputs/apk/fdroid/debug/*.apk
+          retention-days: 14
+
+  smoke-test:
+    name: Launch in an Android emulator
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Enable KVM for the emulator
+        shell: bash
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Download the x86_64 APK
+        uses: actions/download-artifact@v8
+        with:
+          name: apk-x86_64
+          path: apk
+
+      - name: Start the app in the emulator
+        uses: reactivecircus/android-emulator-runner@v2.38.0
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: bash tools/grove/android_smoke_test.sh "$(ls apk/*.apk | head -1)"
+
+      - name: Upload the emulator log and screenshot
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: smoke-test
+          path: smoke/
+          retention-days: 14
+
+  publish:
+    name: Publish the grove-latest release
+    needs: [build, smoke-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Download the arm64 APK
+        uses: actions/download-artifact@v8
+        with:
+          name: apk-arm64
+          path: apk
+
+      - name: Publish
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp android/app/build/outputs/apk/fdroid/debug/*.apk grove-debug.apk
-          notes="Grove debug build from ${GITHUB_SHA::10}: $(git log -1 --format=%s)"
+          cp apk/*.apk grove-debug.apk
+          notes="Grove debug build from ${GITHUB_SHA::10}: $(git log -1 --format=%s). Started fine in an Android emulator."
           gh release delete grove-latest --cleanup-tag --yes || true
           gh release create grove-latest grove-debug.apk --prerelease --target "$GITHUB_SHA" \
             --title "Grove (latest build)" --notes "$notes"
