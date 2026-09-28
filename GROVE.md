@@ -74,6 +74,8 @@ Current upstream hooks:
 | `libs/drape/glyph_manager.cpp` | keeps the Inter twins out of unicode block selection; `ShapeText` reads a label's typography marker (`libs/drape/grove_text_style.hpp`, Grove): twin fonts, letter spacing |
 | `libs/map/framework.cpp` | tile feature reading goes through `libs/map/grove_landcover_reading.hpp` (Grove), which adds the zoom 12 landcover at zoom 11 |
 | `libs/drape_frontend/apply_feature_functors.cpp` | after each place icon, `grove::InsertPoiDot` (`libs/drape_frontend/grove_poi_dot.hpp`, Grove) adds its dot; `grove::StyleCaption` and `grove::StylePathText` (`libs/drape_frontend/grove_typography.hpp`, Grove) pick each label's typography |
+| `libs/shaders/GL/area3d.vsh.glsl`, `texturing3d.fsh.glsl`, `libs/shaders/Metal/map.metal` (`vsArea3d`, `fsArea3d`) | 3D building lighting, see "Depth" below; `data/vulkan_shaders/*` are regenerated from the GL files |
+| `libs/drape_frontend/frontend_renderer.cpp` | 3D buildings at 90% opacity instead of 70% |
 | `data/fonts/whitelist.txt` | Inter for Latin, Greek and Cyrillic blocks; drops the system Roboto entries for those blocks (a whitelisted system font loads last and would win) |
 
 Grove style files in `data/styles/grove/`:
@@ -146,6 +148,19 @@ Spaced capitals only apply to scripts with letter case, so Arabic, Chinese and s
 
 Geist was considered instead of Inter and left out: it has no Greek, about half of Cyrillic and little of Latin Extended-B and Vietnamese (Geist 1.7.2), so names in those scripts would switch fonts mid-word.
 
+## Depth
+
+3D buildings are lit like a shaded relief map: the sun comes from the upper left of the screen, roofs are brightest, walls facing the sun are almost as bright and walls in shade drop to 72%. Walls also darken toward the ground (to 80% at the base), which makes buildings read as standing on the street. Buildings are 90% opaque instead of upstream's 70%.
+
+The lighting lives in the shaders, which exist twice: GLSL (`libs/shaders/GL`, also compiled for Vulkan) and Metal (`libs/shaders/Metal/map.metal`). Keep both in step. After changing a GL shader, regenerate the Vulkan pack and commit it separately as `[shaders] Regenerated`. Use the NDK's `glslc` (r29 reproduces the committed pack byte for byte; Ubuntu's `glslc` doesn't):
+
+```
+LD_LIBRARY_PATH=<dir with libc++.so> python3 libs/shaders/vulkan_shaders_preprocessor.py libs/shaders/GL shader_index.txt \
+  shaders_lib.glsl data/vulkan_shaders <ndk>/shader-tools/linux-x86_64/glslc empty
+```
+
+(`tools/unix/generate_vulkan_shaders.sh` does the same when it finds the NDK.)
+
 ## Checking the look without a phone
 
 ```
@@ -153,7 +168,7 @@ source /Volumes/grove/tools/env.sh
 tools/grove/render_screens.sh [points file] [output dir]
 ```
 
-This builds the Qt desktop app and renders screenshots in its screenshot mode. On Linux without a display it runs the app under `xvfb-run` with Mesa's software OpenGL (packages `xvfb`, Qt 6 dev); the first run needs `EulaAccepted=true` in `~/.config/OrganicMaps/settings.ini`, or the app waits on the license dialog. It defaults to `tools/grove/amsterdam-points.txt`, the spots of the Apple Maps reference screenshots, at 2000×1256 and 2× scale. Region maps download on first use into `/Volumes/grove/desktop-data`. The Mac is a virtual machine without GPU passthrough, so the app renders in software, about 2 minutes per frame.
+This builds the Qt desktop app and renders screenshots in its screenshot mode. On Linux without a display it runs the app under `xvfb-run` with Mesa's software OpenGL (packages `xvfb`, Qt 6 dev); the first run needs `EulaAccepted=true` in `~/.config/OrganicMaps/settings.ini`, or the app waits on the license dialog. For tilted 3D views add `Allow3d=true` and `Buildings3d=true` to the same file; the desktop app then starts in perspective (only the first point of a run renders, the next one waits forever). It defaults to `tools/grove/amsterdam-points.txt`, the spots of the Apple Maps reference screenshots, at 2000×1256 and 2× scale. Region maps download on first use into `/Volumes/grove/desktop-data`. The Mac is a virtual machine without GPU passthrough, so the app renders in software, about 2 minutes per frame.
 
 ## Styles
 
