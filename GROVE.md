@@ -78,6 +78,9 @@ Current upstream hooks:
 | `libs/drape_frontend/frontend_renderer.cpp` | 3D buildings at 90% opacity instead of 70%; the relief layer (`libs/drape_frontend/grove_relief.hpp`, Grove) gets its tiles routed to it and is drawn after the 2D layer |
 | `libs/drape/drape_global.hpp` | adds `BackgroundMode::Relief`, which gives relief tiles their own texture pool |
 | `libs/map/framework.cpp`, `framework.hpp` | creates the relief tile provider (`libs/map/grove_relief.cpp`, Grove) before the drape engine |
+| `libs/drape/texture_manager.cpp`, `.hpp` | owns the brand logo texture (`libs/drape/grove_brand_texture.hpp`, Grove); symbols named `brand:<Wikidata id>` come from it |
+| `libs/drape_frontend/apply_feature_functors.cpp` (again) | `grove::UseBrandBadge` (`libs/drape_frontend/grove_brands.hpp`, Grove) swaps a chain's category icon for its logo badge |
+| `android/app/build.gradle` | stores `grove_brands.bin` uncompressed, so it is read in place |
 | `data/fonts/whitelist.txt` | Inter for Latin, Greek and Cyrillic blocks; drops the system Roboto entries for those blocks (a whitelisted system font loads last and would win) |
 
 Grove style files in `data/styles/grove/`:
@@ -173,6 +176,19 @@ Hills and mountains are shaded, as in Guru and Apple Maps: slopes facing away fr
 - **Switch:** Android Settings → "General settings" → "Shaded relief", under "3D buildings" (`GroveSettings.java`, JNI in `android/sdk/.../GroveRelief.cpp`), on by default. It takes effect at once: off stops downloads and frees the relief textures. The value is the `GroveRelief` settings key (`grove::SetReliefEnabled`). iOS and the desktop app have no switch yet.
 - **Online for now:** relief tiles download while browsing, which tells Amazon's servers which areas are viewed; the switch's summary says so.
 - **Next: height data from the maps.** Relief should come from elevation data shipped with the downloaded maps, so it works offline and leaks nothing. Organic Maps already builds its contour lines from SRTM elevation data (`topography_generator_tool`); the same source can produce elevation tiles per map region. Only the tile source changes: `ShadeRelief` and the relief layer stay as they are.
+
+## Brand logos
+
+From zoom 16, places of chains (Albert Heijn, Jumbo, McDonald's, Shell, ING...) show the chain's logo on a small rounded badge instead of the category icon. Zoomed out, and for places without a known brand, the Apple-style category icons stay. A displaced badge leaves the category-coloured dot, like any icon.
+
+- **Data:** `tools/grove/brand_logos.py` builds `data/grove_brands.txt` (index) and `data/grove_brands.bin` (badge PNGs, 96 px). Brands come from the [Name Suggestion Index](https://github.com/osmlab/name-suggestion-index) (names and countries), kept if at least 25 OpenStreetMap places carry their `brand:wikidata` ([taginfo](https://taginfo.openstreetmap.org/keys/brand:wikidata)). Logos are Wikidata's "small logo or icon", "icon" or "logo image", as 250 px PNG thumbnails from Wikimedia Commons, which only hosts free or public-domain files. Logos drawn in white get a dark badge.
+- **Only readable logos:** wordmarks wider than 1.8:1 (Primark, Starbucks, Hugo Boss) are unreadable at icon size, so those brands keep their category icons; compact marks (McDonald's M, AH, Dunkin', Shell) become badges. JPEG "logos" full of colours are usually photos of shop signs and are skipped too.
+- **Downloading:** everything is cached in `build-grove/brands-cache`, so reruns fetch only what is new, and `--cached-only` rebuilds the pack offline. Wikimedia blocks clients that go faster than about one request a second for 10 minutes (HTTP 429 with `Retry-After: 600`), and only serves its standard thumbnail sizes (https://w.wiki/GHai) to scripts; the script keeps to both, so a first full run takes about an hour. Commit the regenerated pack separately as `[brands] Regenerated`.
+- **Current pack is partial:** it was built in a cloud session that Wikimedia blocked after the 1,072 most used brands' logos, so it holds 278 badges (1.5 MB) of the 3,834 brands with a logo. Run `tools/grove/brand_logos.py` from another connection to add the rest.
+- **Trademarks:** the logo files are free of copyright but remain their owners' trademarks. They are shown only to mark where a chain's shops are.
+- **Matching:** the maps keep a place's `brand` tag only when it differs from its name (the generator drops it otherwise, which is most places), so the name stands in for it. `BrandPack::Find` looks it up by name (any case) and also requires the place's type to be one of the brand's (from the Name Suggestion Index, e.g. `shop-supermarket`), so an independent shop that shares a chain's name stays plain. A brand listed for the place's country (the map file name up to the first `_`, e.g. `Netherlands`) wins over a worldwide one, so the Dutch, Swiss and Danish Coops each get their own logo.
+- **Rendering:** badges load on first use into one 1024×1024 texture of 20 dp slots (`BrandTexture`), downscaled to the screen density: 289 slots at 3×. When it is full, further brands keep category icons until the app restarts.
+- **Platforms:** Android and the desktop app read the pack from `data/`. iOS lists data files one by one in its Xcode project, so it needs the two files added there; until then it shows category icons.
 
 ## Checking the look without a phone
 
