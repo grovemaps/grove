@@ -59,6 +59,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment implements La
     initLargeFontSizePrefsCallbacks();
     initTransliterationPrefsCallbacks();
     init3dModePrefsCallbacks();
+    GroveSettings.init(this);
     initPerspectivePrefsCallbacks();
     initAutoZoomPrefsCallbacks();
     initLoggingEnabledPrefsCallbacks();
