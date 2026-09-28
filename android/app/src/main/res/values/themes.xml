@@ -39,7 +39,7 @@
 
   <style name="MwmTheme.DialogTitleBase">
     <item name="android:textSize">@dimen/text_size_alert_dialog_title</item>
-    <item name="android:fontFamily">@font/inter_medium</item>
+    <item name="android:fontFamily">@font/ui_medium</item>
   </style>
 
   <style name="MwmTheme.DialogTitleStyle" parent="MwmTheme.DialogTitleBase">
@@ -48,7 +48,7 @@
 
   <style name="MwmTheme.DialogFragment.TitleStyle" parent="Base.DialogWindowTitle.AppCompat">
     <item name="android:textAppearance">@style/MwmTextAppearance.Title</item>
-    <item name="android:fontFamily">@font/inter_medium</item>
+    <item name="android:fontFamily">@font/ui_medium</item>
   </style>
 
   <style name="MwmTheme.DialogFragment.Fullscreen" parent="Grove.Theme.AppCompat">
@@ -61,7 +61,7 @@
     <item name="android:textColorHint">@color/text_dark_hint</item>
     <item name="android:textViewStyle">@style/MwmWidget.TextView</item>
     <item name="android:colorBackgroundCacheHint">@null</item>
-    <item name="android:fontFamily">@font/inter</item>
+    <item name="android:fontFamily">@font/ui</item>
     <item name="android:windowTranslucentStatus">true</item>
     <item name="android:statusBarColor">@android:color/transparent</item>
   </style>
@@ -91,7 +91,7 @@
   <style name="MwmMain.DialogFragment.TimePicker" parent="MwmTheme.AlertDialog">
     <item name="colorAccent">@color/base_accent</item>
     <item name="colorPrimary">?buttonDialogTextColor</item>
-    <item name="android:fontFamily">@font/inter_medium</item>
+    <item name="android:fontFamily">@font/ui_medium</item>
   </style>
 
   <style name="MwmTheme.ProgressDialog" parent="MwmTheme.AlertDialog">

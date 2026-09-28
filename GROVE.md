@@ -84,7 +84,7 @@ Current upstream hooks:
 | `libs/drape_frontend/rule_drawer.cpp` | draws chains' logos a zoom early (`grove::EarlyLogoRule`), and nothing else of the places read only for that |
 | `libs/drape_frontend/apply_feature_functors.cpp` (again) | `grove::UseBrandBadge` (`libs/drape_frontend/grove_brands.hpp`, Grove) swaps a chain's category icon for its logo badge |
 | `android/app/build.gradle` | stores `grove_brands.bin` uncompressed, so it is read in place |
-| `android/app/src/main/res/**`, `RoutingBottomMenuController.java` | Roboto references point to Inter, and the app themes hang under `values/grove_fonts.xml`; written by `tools/grove/android_fonts.py`, see "Fonts" |
+| `android/app/src/main/res/**`, `RoutingBottomMenuController.java` | Roboto references point to the app font (Geist, Inter for Greek), and the app themes hang under `values/grove_fonts.xml`; written by `tools/grove/android_fonts.py`, see "Fonts" |
 | `data/fonts/whitelist.txt` | Inter for Latin, Greek and Cyrillic blocks; drops the system Roboto entries for those blocks (a whitelisted system font loads last and would win) |
 
 Grove style files in `data/styles/grove/`:
@@ -155,9 +155,11 @@ Typography that the drawing rules can't express is chosen in code, by feature ty
 
 Spaced capitals only apply to scripts with letter case, so Arabic, Chinese and similar names stay as they are. The style rides in front of the label text as one private-use character, which `GlyphManager::ShapeText` takes off (`libs/drape/grove_text_style.hpp`). That keeps the upstream text layout code untouched. The italic and semibold files serve no unicode block of their own, so unstyled text never picks them.
 
-The Android app uses Inter too: Regular for text, Medium where upstream uses `sans-serif-medium` (buttons, titles), and SemiBold and Bold for bold text (`android/app/src/main/res/font/`; Medium and SemiBold link to the map's files). `tools/grove/android_fonts.py` replaces upstream's Roboto references (`@string/robotoRegular`, `robotoMedium`, `robotoLight`) in layouts, styles and spans, and sets the app themes' parents to the Grove themes in `values/grove_fonts.xml`, which give Material's text appearances Inter. After syncing with upstream, run it again (`--check` lists what still names Roboto), then clang-format the Java files it changed. Android 8+ and the AppCompat views get Inter; plain framework views on older Android keep Roboto.
+Geist was considered for the labels and left out: it has no Greek and only part of the Cyrillic and Vietnamese blocks (Geist 1.8, npm `geist` 1.7.2), so place names would switch fonts mid-word.
 
-Geist was considered instead of Inter and left out: it has no Greek, about half of Cyrillic and little of Latin Extended-B and Vietnamese (Geist 1.7.2), so names in those scripts would switch fonts mid-word.
+The Android app uses Geist instead (SIL Open Font License, `data/fonts/geist_LICENSE.txt`), which sets the interface apart from the map: Regular for text, Medium where upstream uses `sans-serif-medium` (buttons, titles), SemiBold and Bold for bold text. Layouts and styles name the families `@font/ui` and `@font/ui_medium`. For translations using letters Geist lacks but Inter has (Greek for now), `res/font-<language>/` switches the families to Inter (`android/app/src/main/res/font/inter_*`; Medium and SemiBold link to the map's files). Scripts neither font covers (Arabic, CJK, Hindi...) use the system fonts either way.
+
+`tools/grove/android_fonts.py` writes all of this: it replaces upstream's Roboto references (`@string/robotoRegular`, `robotoMedium`, `robotoLight`) in layouts, styles and spans, sets the app themes' parents to the Grove themes in `values/grove_fonts.xml`, which give Material's text appearances the app font, and writes the per-language font folders from the translations' letters. After syncing with upstream or adding translations, run it again (`--check` lists what is out of date), then clang-format the Java files it changed. Android 8+ and the AppCompat views get the new fonts; plain framework views on older Android keep Roboto.
 
 ## Depth
 

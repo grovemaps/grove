@@ -57,7 +57,7 @@
           android:id="@+id/altitude_difference"
           android:layout_width="wrap_content"
           android:layout_height="@dimen/altitude_chart_time_distance_height"
-          android:fontFamily="@font/inter_medium"
+          android:fontFamily="@font/ui_medium"
           android:gravity="center"
           android:textAppearance="@style/MwmTextAppearance.Body3"
           android:textColor="?colorAccent"

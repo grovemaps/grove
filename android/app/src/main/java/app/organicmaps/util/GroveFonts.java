@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import app.organicmaps.R;
 
-// Grove: Inter for text spans, like the rest of the app (tools/grove/android_fonts.py).
+// Grove: the app font for text spans, like the rest of the app (tools/grove/android_fonts.py).
 public final class GroveFonts
 {
   private GroveFonts() {}
@@ -19,9 +19,9 @@ public final class GroveFonts
     // Spans take a typeface from Android 9; older versions keep the system font.
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
     {
-      final Typeface inter = ResourcesCompat.getFont(context, R.font.inter_medium);
-      if (inter != null)
-        return new TypefaceSpan(inter);
+      final Typeface font = ResourcesCompat.getFont(context, R.font.ui_medium);
+      if (font != null)
+        return new TypefaceSpan(font);
     }
     return new TypefaceSpan("sans-serif-medium");
   }
