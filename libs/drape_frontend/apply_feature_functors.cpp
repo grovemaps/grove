@@ -5,6 +5,7 @@
 #include "drape_frontend/color_constants.hpp"
 #include "drape_frontend/colored_symbol_shape.hpp"
 #include "drape_frontend/grove_poi_dot.hpp"
+#include "drape_frontend/grove_typography.hpp"
 #include "drape_frontend/line_shape.hpp"
 #include "drape_frontend/path_symbol_shape.hpp"
 #include "drape_frontend/path_text_shape.hpp"
@@ -454,6 +455,7 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
       params.m_titleDecl.m_secondaryLang = m_captions.GetAuxTextLang();
     }
     ASSERT(!params.m_titleDecl.m_primaryText.empty(), ());
+    grove::StyleCaption(m_f, symbolRule != nullptr, params.m_titleDecl);
 
     ExtractCaptionParams(capRule, auxRule, params);
     params.m_depth = PriorityToDepth(captionRule->priority, drule::caption, 0);
@@ -974,6 +976,7 @@ void ApplyLineFeatureAdditional::ProcessAdditionalLineRules(drule::PathTextRule 
     params.m_textFont = fontDecl;
     params.m_baseGtoPScale = m_params.m_currentScaleGtoP;
     params.m_lang = m_captions.GetMainTextLang();
+    grove::StylePathText(m_f, params);
 
     uint32_t textIndex = kPathTextBaseTextIndex;
     for (auto const & spline : m_clippedSplines)
