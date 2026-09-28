@@ -1,5 +1,7 @@
 #include "drape/grove_text_style.hpp"
 
+#include <algorithm>
+
 #include <unicode/locid.h>
 #include <unicode/uchar.h>
 #include <unicode/unistr.h>
@@ -15,6 +17,7 @@ uint8_t constexpr kMarkerBase = 0x80;
 std::string_view constexpr kRegularFont = "fonts/08_inter_medium.ttf";
 std::string_view constexpr kSemiboldFont = "fonts/08_inter_semibold.ttf";
 std::string_view constexpr kItalicFont = "fonts/08_inter_medium_italic.ttf";
+std::string_view constexpr kGeistFont = "fonts/08_geist_medium.ttf";
 
 // About 0.09 em at the glyph manager's base font size, like Apple's small spaced capitals.
 int32_t constexpr kTrackingPixels = 2;
@@ -43,6 +46,8 @@ std::string ApplyTextStyle(uint8_t style, std::string_view text)
     style &= ~kSpacedCaps;
     styled = text;
   }
+  if (std::ranges::any_of(styled, [](char c) { return static_cast<unsigned char>(c) >= 0x80; }))
+    style &= ~kGeist;
 
   if (style == kPlain)
     return styled;
@@ -90,6 +95,8 @@ bool FontVariants::OnFontLoaded(std::string_view fileName, int fontIndex)
     m_semibold = fontIndex;
   else if (fileName == kItalicFont)
     m_italic = fontIndex;
+  else if (fileName == kGeistFont)
+    m_geist = fontIndex;
   else
     return false;
 

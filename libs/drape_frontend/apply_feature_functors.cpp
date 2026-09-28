@@ -494,6 +494,7 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
     params.m_titleDecl.m_primaryText = m_captions.GetHouseNumberText();
     params.m_titleDecl.m_primaryLang = m_captions.GetMwmRegionLang();
     ASSERT(!params.m_titleDecl.m_primaryText.empty(), ());
+    grove::StyleNumber(params.m_titleDecl.m_primaryText);
 
     ExtractCaptionParams(capRule, nullptr, params);
     params.m_depth = PriorityToDepth(houseNumberRule->priority, drule::caption, 0);
@@ -863,6 +864,7 @@ void ApplyLineFeatureAdditional::GetRoadShieldsViewParams(ref_ptr<dp::TextureMan
   auto const regionLang = m_captions.GetMwmRegionLang();
   textParams.m_titleDecl.m_anchor = anchor;
   textParams.m_titleDecl.m_primaryText = roadNumber;
+  grove::StyleNumber(textParams.m_titleDecl.m_primaryText);
   textParams.m_titleDecl.m_primaryLang = regionLang;
   textParams.m_titleDecl.m_secondaryLang = regionLang;
   textParams.m_titleDecl.m_primaryTextFont = font;
@@ -871,7 +873,7 @@ void ApplyLineFeatureAdditional::GetRoadShieldsViewParams(ref_ptr<dp::TextureMan
   textParams.m_titleDecl.m_secondaryOptional = false;
   textParams.m_startOverlayRank = dp::OverlayRank1;
 
-  auto const textMetrics = texMng->ShapeSingleTextLine(roadNumber, regionLang, nullptr);
+  auto const textMetrics = texMng->ShapeSingleTextLine(textParams.m_titleDecl.m_primaryText, regionLang, nullptr);
   float const textRatio = font.m_size * fontScale / dp::kBaseFontSizePixels;
   float const textWidthInPixels = textMetrics.m_lineWidthInPixels * textRatio;
   float const textHeightInPixels = textMetrics.m_maxLineHeightInPixels * textRatio;

@@ -12,8 +12,8 @@
 namespace grove
 {
 // Label typography after Apple Maps (see drape/grove_text_style.hpp): semibold places with an icon, cities, towns
-// and countries; spaced capitals for states, districts, neighbourhoods and streets; italic water names. Everything
-// else keeps the regular Inter Medium.
+// and countries; spaced capitals for states, districts, neighbourhoods and streets; italic water names; Geist, the
+// app's font, for road numbers, house numbers and contour heights. Everything else keeps the regular Inter Medium.
 
 inline bool IsWater(feature::TypesHolder const & types)
 {
@@ -66,7 +66,13 @@ inline void StyleCaption(FeatureType & f, bool hasIcon, dp::TitleDecl & title)
     title.m_secondaryText = ApplyTextStyle(style, title.m_secondaryText);
 }
 
-// Names along streets and waterways.
+// Road shield numbers and house numbers.
+inline void StyleNumber(std::string & text)
+{
+  text = ApplyTextStyle(kGeist, text);
+}
+
+// Names along streets and waterways, heights along contour lines.
 inline void StylePathText(FeatureType & f, df::PathTextViewParams & params)
 {
   feature::TypesHolder const types(f);
@@ -79,6 +85,8 @@ inline void StylePathText(FeatureType & f, df::PathTextViewParams & params)
   }
   else if (IsWater(types))
     style = kItalic;
+  else if (ftypes::IsIsolineChecker::Instance()(types))
+    style = kGeist;
   else
     return;
 

@@ -72,10 +72,10 @@ Current upstream hooks:
 | `data/styles/default/dark/style.mapcss` | imports `grove/palette-dark.mapcss` after `colors.mapcss`, `grove/poi-label-colors.mapcss` after `Icons.mapcss`, and `grove/apple-look.mapcss` last |
 | `data/styles/outdoors/{light,dark}/colors.mapcss` | imports the matching Grove palette, placed before the outdoors-only overrides so those still win |
 | `data/styles/outdoors/{light,dark}/style.mapcss` | imports `grove/poi-label-colors.mapcss` after `Icons.mapcss` |
-| `libs/platform/platform.cpp` | adds Inter Medium and its italic and semibold twins (`fonts/08_inter_*.ttf`) to the bundled font list |
+| `libs/platform/platform.cpp` | adds Inter Medium and its italic, semibold and Geist twins (`fonts/08_inter_*.ttf`, `fonts/08_geist_medium.ttf`) to the bundled font list |
 | `libs/drape/glyph_manager.cpp` | keeps the Inter twins out of unicode block selection; `ShapeText` reads a label's typography marker (`libs/drape/grove_text_style.hpp`, Grove): twin fonts, letter spacing |
 | `libs/map/framework.cpp` | tile feature reading goes through `libs/map/grove_landcover_reading.hpp` (Grove), which adds the zoom 12 index at zoom 11 (landcover) and the zoom 16 index at zoom 15 (chains' logos) |
-| `libs/drape_frontend/apply_feature_functors.cpp` | after each place icon, `grove::InsertPoiDot` (`libs/drape_frontend/grove_poi_dot.hpp`, Grove) adds its dot; `grove::StyleCaption` and `grove::StylePathText` (`libs/drape_frontend/grove_typography.hpp`, Grove) pick each label's typography |
+| `libs/drape_frontend/apply_feature_functors.cpp` | after each place icon, `grove::InsertPoiDot` (`libs/drape_frontend/grove_poi_dot.hpp`, Grove) adds its dot; `grove::StyleCaption`, `grove::StylePathText` and `grove::StyleNumber` (house numbers, road shields; `libs/drape_frontend/grove_typography.hpp`, Grove) pick each label's typography; road shields are sized from the styled text |
 | `libs/shaders/GL/area3d.vsh.glsl`, `texturing3d.fsh.glsl`, `libs/shaders/Metal/map.metal` (`vsArea3d`, `fsArea3d`) | 3D building lighting, see "Depth" below; `data/vulkan_shaders/*` are regenerated from the GL files |
 | `libs/drape_frontend/frontend_renderer.cpp` | 3D buildings at 90% opacity instead of 70%; the relief layer (`libs/drape_frontend/grove_relief.hpp`, Grove) gets its tiles routed to it and is drawn after the 2D layer |
 | `libs/drape/drape_global.hpp` | adds `BackgroundMode::Relief`, which gives relief tiles their own texture pool |
@@ -152,8 +152,9 @@ Typography that the drawing rules can't express is chosen in code, by feature ty
 | places with an icon (POIs), cities, towns, countries | semibold (`08_inter_semibold.ttf`) |
 | states, suburbs, quarters, neighbourhoods, streets | spaced capitals: upper case, +0.09 em letter spacing; street names at 90% size |
 | water: seas, bays, lakes, rivers, canals | italic (`08_inter_medium_italic.ttf`) |
+| road shields, house numbers, contour heights | Geist Medium (`08_geist_medium.ttf`), the app's font; only for ASCII text, so a label never mixes fonts |
 
-Spaced capitals only apply to scripts with letter case, so Arabic, Chinese and similar names stay as they are. The style rides in front of the label text as one private-use character, which `GlyphManager::ShapeText` takes off (`libs/drape/grove_text_style.hpp`). That keeps the upstream text layout code untouched. The italic and semibold files serve no unicode block of their own, so unstyled text never picks them.
+Spaced capitals only apply to scripts with letter case, so Arabic, Chinese and similar names stay as they are. The style rides in front of the label text as one private-use character, which `GlyphManager::ShapeText` takes off (`libs/drape/grove_text_style.hpp`). That keeps the upstream text layout code untouched. The italic, semibold and Geist files serve no unicode block of their own, so unstyled text never picks them.
 
 Geist was considered for the labels and left out: it has no Greek and only part of the Cyrillic and Vietnamese blocks (Geist 1.8, npm `geist` 1.7.2), so place names would switch fonts mid-word.
 

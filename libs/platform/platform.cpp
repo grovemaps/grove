@@ -190,7 +190,8 @@ void Platform::GetFontNames(FilesList & res) const
       "fonts/06_code2000.ttf",
       "fonts/07_roboto_medium.ttf",
       // Grove: Inter replaces Roboto for Latin, Greek and Cyrillic (see fonts/whitelist.txt).
-      // Its italic and semibold twins only serve styled labels, see drape/grove_text_style.hpp.
+      // Its italic, semibold and Geist twins only serve styled labels, see drape/grove_text_style.hpp.
+      "fonts/08_geist_medium.ttf",
       "fonts/08_inter_medium.ttf",
       "fonts/08_inter_medium_italic.ttf",
       "fonts/08_inter_semibold.ttf",

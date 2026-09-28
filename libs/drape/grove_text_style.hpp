@@ -8,7 +8,7 @@
 
 namespace grove
 {
-// Label typography that Organic Maps' drawing rules can't express: semibold, italic and spaced capitals.
+// Label typography that Organic Maps' drawing rules can't express: semibold, italic, spaced capitals and Geist.
 // The style travels as one private-use character (U+F0000 + flags) in front of a caption's text. That way it reaches
 // GlyphManager::ShapeText, and its metrics cache key, without new parameters through every text layout class.
 enum TextStyle : uint8_t
@@ -18,6 +18,9 @@ enum TextStyle : uint8_t
   // Upper case with letter spacing. Applied only to text in a script with letter case.
   kSpacedCaps = 2,
   kItalic = 4,
+  // Geist, the app's font, for numbers and codes: road shields, house numbers, contour heights. Applied only to
+  // ASCII text, which Geist fully covers, so a label never mixes the two fonts.
+  kGeist = 8,
 };
 
 // Returns the text to put in a caption: the style marker, then the text, upper-cased for kSpacedCaps.
@@ -29,8 +32,8 @@ uint8_t TakeTextStyle(std::string_view & utf8);
 // Letter spacing for kSpacedCaps, added to shaped glyph advances.
 void ApplyTracking(uint8_t style, dp::text::TextMetrics & metrics);
 
-// Semibold and italic twins of the regular label font. They are loaded like any other font but serve no unicode block
-// themselves: styled text swaps them in for the regular font.
+// Semibold, italic and Geist twins of the regular label font. They are loaded like any other font but serve no unicode
+// block themselves: styled text swaps them in for the regular font.
 class FontVariants
 {
 public:
@@ -42,6 +45,8 @@ public:
   {
     if (fontIndex < 0 || fontIndex != m_regular || c == U' ')
       return fontIndex;
+    if ((style & kGeist) && m_geist >= 0)
+      return m_geist;
     if ((style & kItalic) && m_italic >= 0)
       return m_italic;
     if ((style & kSemibold) && m_semibold >= 0)
@@ -53,5 +58,6 @@ private:
   int m_regular = -1;
   int m_semibold = -1;
   int m_italic = -1;
+  int m_geist = -1;
 };
 }  // namespace grove

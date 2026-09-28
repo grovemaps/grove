@@ -59,6 +59,17 @@ UNIT_TEST(GroveTextStyle_CapsOnlyForCasedScripts)
   TEST_EQUAL(text, "中关村", ());
 }
 
+UNIT_TEST(GroveTextStyle_GeistOnlyForAscii)
+{
+  std::string_view text;
+  TEST_EQUAL(Take(ApplyTextStyle(kGeist, "A10"), text), kGeist, ());
+  TEST_EQUAL(text, "A10", ());
+
+  // A Cyrillic road number or a house number with a letter Geist may lack stays in the label font.
+  TEST_EQUAL(ApplyTextStyle(kGeist, "М10"), "М10", ());
+  TEST_EQUAL(ApplyTextStyle(kGeist, "12ä"), "12ä", ());
+}
+
 UNIT_TEST(GroveTextStyle_Shaping)
 {
   dp::GlyphManager::Params args;
@@ -85,6 +96,15 @@ UNIT_TEST(GroveTextStyle_Shaping)
   auto const italic = mng.ShapeText(ApplyTextStyle(kItalic, "Den Haag"), lang);
   TEST_NOT_EQUAL(italic.m_glyphs[0].m_key.m_fontIndex, plain.m_glyphs[0].m_key.m_fontIndex, ());
   TEST_NOT_EQUAL(italic.m_glyphs[0].m_key.m_fontIndex, semibold.m_glyphs[0].m_key.m_fontIndex, ());
+
+  auto const number = mng.ShapeText("A10", lang);
+  auto const geist = mng.ShapeText(ApplyTextStyle(kGeist, "A10"), lang);
+  TEST_EQUAL(geist.m_glyphs.size(), 3, ());
+  for (size_t i = 0; i < 3; ++i)
+  {
+    TEST_NOT_EQUAL(geist.m_glyphs[i].m_key.m_fontIndex, number.m_glyphs[i].m_key.m_fontIndex, (i));
+    TEST_NOT_EQUAL(geist.m_glyphs[i].m_key.m_fontIndex, semibold.m_glyphs[0].m_key.m_fontIndex, (i));
+  }
 
   // The plain text's cached metrics must not be affected by the styled one.
   TEST(mng.ShapeText("Den Haag", lang).m_glyphs[0].m_key == plain.m_glyphs[0].m_key, ());
