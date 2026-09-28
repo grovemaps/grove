@@ -22,7 +22,7 @@ class EngineContext;
 
 namespace grove
 {
-// The logo layer: chains' logos from zoom 13 to 15 (see grove_brands.hpp), before the map draws their places, and
+// The logo layer: chains' logos from zoom 11 (see grove_brands.hpp), before the map draws their places, and
 // wherever they are. The places come from a list of each map's chains (map/grove_brand_places.hpp), since the map
 // files index most places only from zoom 16. Places closer than a logo's width are bundled: one row of logos, one
 // per chain, most common chains first. Logos are pinned (drape/grove_brand_texture.hpp).

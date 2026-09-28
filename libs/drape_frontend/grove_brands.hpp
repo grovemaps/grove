@@ -48,9 +48,9 @@ inline std::string_view FindBrand(FeatureType & f)
   return pack.Find(brand, std::string_view(mwm).substr(0, mwm.find('_')), placeTypes);
 }
 
-// Chains show their logo from zoom 13, drawn by the logo layer (grove_brand_layer.hpp) wherever they are, whether
+// Chains show their logo from zoom 11, drawn by the logo layer (grove_brand_layer.hpp) wherever they are, whether
 // or not the map's style draws their category yet. Their names show from zoom 16, under the logo.
-int constexpr kBrandLayerMinZoom = 13;
+int constexpr kBrandLayerMinZoom = 11;
 int constexpr kChainNameZoom = 16;
 
 inline bool IsBrandLayerZoom(int zoomLevel)

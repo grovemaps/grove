@@ -1779,7 +1779,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
   if (!m_groveRelief)
     m_groveRelief = grove::CreateReliefProvider([this] { return make_ref(m_drapeEngine); });
 
-  // Grove: chains' logos from zoom 13, see map/grove_brand_places.hpp.
+  // Grove: chains' logos from zoom 11, see map/grove_brand_places.hpp.
   if (!m_groveBrandPlaces)
   {
     m_groveBrandPlaces = std::make_unique<grove::BrandPlaces>(
