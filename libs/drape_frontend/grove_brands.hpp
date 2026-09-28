@@ -10,6 +10,7 @@
 
 #include "coding/string_utf8_multilang.hpp"
 
+#include <atomic>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -53,6 +54,13 @@ inline std::string_view FindBrand(FeatureType & f)
 int constexpr kBrandLayerMinZoom = 12;
 int constexpr kChainNameZoom = 16;
 
+// The map's brands button (map/grove_brand_places.hpp): when off, chains show like other places.
+inline std::atomic<bool> & BrandsShown()
+{
+  static std::atomic<bool> shown{true};
+  return shown;
+}
+
 inline bool IsBrandLayerZoom(int zoomLevel)
 {
   return zoomLevel >= kBrandLayerMinZoom;
@@ -67,7 +75,7 @@ inline bool ShowsChainName(int zoomLevel)
 // and for chains whose logo doesn't fit in the texture, which keep their category icon.
 inline bool ChainLogoSize(FeatureType & f, int zoomLevel, ref_ptr<dp::TextureManager> textures, m2::PointF & size)
 {
-  if (!IsBrandLayerZoom(zoomLevel))
+  if (!BrandsShown() || !IsBrandLayerZoom(zoomLevel))
     return false;
   auto const qid = FindBrand(f);
   if (qid.empty())

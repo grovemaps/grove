@@ -4,6 +4,8 @@
 
 #include "indexer/data_source.hpp"
 
+#include "drape/pointers.hpp"
+
 #include "geometry/rect2d.hpp"
 
 #include "base/thread.hpp"
@@ -17,8 +19,18 @@
 #include <string>
 #include <vector>
 
+namespace df
+{
+class DrapeEngine;
+}  // namespace df
+
 namespace grove
 {
+// The map's brands button (settings key "GroveBrands", on by default): chains' logos, or chains shown like other
+// places. Takes effect at once.
+bool AreBrandsShown();
+void SetBrandsShown(ref_ptr<df::DrapeEngine> engine, bool shown);
+
 // The chains' places of each map file, for the logo layer (drape_frontend/grove_brand_layer.hpp). The map files
 // index most places only from zoom 16, so the list is made by reading a whole map file once, in the background,
 // and cached on disk until the map or the logo pack changes. Until a map's list is ready, its tiles show no logos;

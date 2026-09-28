@@ -7,7 +7,12 @@
 #include "indexer/feature.hpp"
 #include "indexer/scales.hpp"
 
+#include "drape_frontend/drape_engine.hpp"
+
 #include "platform/platform.hpp"
+#include "platform/settings.hpp"
+
+#include "geometry/mercator.hpp"
 
 #include "coding/file_reader.hpp"
 #include "coding/file_writer.hpp"
@@ -27,7 +32,23 @@ namespace grove
 namespace
 {
 uint32_t constexpr kCacheFormat = 1;
+std::string_view constexpr kBrandsShownKey = "GroveBrands";
 }  // namespace
+
+bool AreBrandsShown()
+{
+  bool shown = true;
+  settings::TryGet(kBrandsShownKey, shown);
+  return shown;
+}
+
+void SetBrandsShown(ref_ptr<df::DrapeEngine> engine, bool shown)
+{
+  settings::Set(kBrandsShownKey, shown);
+  BrandsShown() = shown;
+  if (engine)
+    engine->InvalidateRect(mercator::Bounds::FullRect());
+}
 
 BrandPlaces::BrandPlaces(DataSource const & dataSource, std::string cacheDir,
                          std::function<void(m2::RectD const &)> onReady)

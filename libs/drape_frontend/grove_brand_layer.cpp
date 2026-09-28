@@ -98,7 +98,7 @@ std::vector<BrandCluster> ClusterBrandPlaces(std::vector<BrandPlace> const & pla
 void DrawBrandLayer(df::TileKey const & tileKey, std::set<MwmSet::MwmId> const & mwms,
                     ref_ptr<df::EngineContext> context)
 {
-  if (!IsBrandLayerZoom(tileKey.m_zoomLevel) || !Source())
+  if (!BrandsShown() || !IsBrandLayerZoom(tileKey.m_zoomLevel) || !Source())
     return;
 
   m2::RectD const rect = tileKey.GetGlobalRect();

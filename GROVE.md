@@ -80,6 +80,7 @@ Current upstream hooks:
 | `libs/drape_frontend/frontend_renderer.cpp` | 3D buildings at 90% opacity instead of 70%; Grove's raster layers (`libs/drape_frontend/grove_raster_layers.hpp`, Grove) get their tiles routed to them; land cover is drawn before the 2D layer, relief after it |
 | `libs/drape/drape_global.hpp` | adds `BackgroundMode::Relief` and `Landcover`, which give those layers' tiles their own texture pools |
 | `libs/drape_frontend/visual_params.cpp` | wider, softer label halos, like Mapy.com's white outlines (outline threshold 0.13, softness 0.025; was 0.2 and 0.01) |
+| `android/app/.../maplayer/MapButtonsController.java` | the top-left map button (upstream's help and donation button) shows and hides brand logos (`GroveBrandsButton.java`); help and donating stay in the main menu |
 | `data/copyright.html` | credits ESA WorldCover, Mangrove and the Terrain Tiles |
 | `libs/map/framework.cpp`, `framework.hpp` | creates the relief tile provider (`libs/map/grove_relief.cpp`, Grove) before the drape engine |
 | `libs/drape/texture_manager.cpp`, `.hpp` | owns the brand logo texture (`libs/drape/grove_brand_texture.hpp`, Grove); symbols named `brand:<Wikidata id>` come from it |
@@ -205,6 +206,7 @@ Zoomed out (zoom 7 to 11), where Organic Maps' map files have no forests, fields
 Places of chains (Albert Heijn, McDonald's, Lidl...) show the chain's logo instead of the category icon: the logo itself, transparent around it, with a soft halo like map labels (dark for logos drawn in white). Places without a known brand keep the Apple-style category icons.
 
 - **Logo layer:** logos show from zoom 12, before buildings do, for every chain place in view, whether or not the map's style draws its category yet (`libs/drape_frontend/grove_brand_layer.hpp`). They are pinned: no label or icon hides them, and they never hide each other, so they don't come and go while zooming. Places closer than a logo's width are bundled into one row of logos centered on them, one per chain and at most three, most common chains first; zooming in splits the row. Zoomed out they thin out: at zoom 12 rows hold two logos and a chain shows once within six logo widths, at 13 within four, at 14 within three; from 15 every place shows. From zoom 16 the chain's name shows under its logo, and gives way to other labels. Tapping a logo opens its place.
+- **Brands button:** the top-left map button shows and hides the logos (settings key `GroveBrands`, `grove::SetBrandsShown`): hidden, chains show like other places, with their category icons and names. It is accent-coloured while logos show.
 - **Chains' place lists:** the downloaded maps only contain a place from the zoom where upstream's style draws it (see "Map data limits"), so the layer doesn't read tiles' features: `libs/map/grove_brand_places.cpp` reads each map file once, in the background, when its area first shows, and keeps the list of its chain places in `grove_brand_places/<map>.bin` in the app's data folder, until the map or the logo pack changes. That takes about 1 s for Amsterdam's map on a desktop; meanwhile the map shows no logos there, then redraws.
 
 

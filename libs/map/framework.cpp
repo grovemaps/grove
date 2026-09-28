@@ -1786,6 +1786,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
   // Grove: chains' logos from zoom 12, see map/grove_brand_places.hpp.
   if (!m_groveBrandPlaces)
   {
+    grove::BrandsShown() = grove::AreBrandsShown();
     m_groveBrandPlaces = std::make_unique<grove::BrandPlaces>(
         m_featuresFetcher.GetDataSource(), base::JoinPath(GetPlatform().WritableDir(), "grove_brand_places"),
         [this](m2::RectD const & rect)

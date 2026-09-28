@@ -148,8 +148,12 @@ public class MapButtonsController extends Fragment
         }
       });
     }
+    // Grove: the brands button, see GroveBrandsButton.
     if (helpButton != null)
-      helpButton.setOnClickListener((v) -> mMapButtonClickListener.onMapButtonClick(MapButtons.help));
+      helpButton.setOnClickListener((v) -> {
+        GroveBrandsButton.toggle();
+        updateHelpButtonIcon();
+      });
 
     mSearchWheel =
         new SearchWheel(mFrame,
@@ -296,6 +300,9 @@ public class MapButtonsController extends Fragment
   {
     final View view = mButtonsMap.get(MapButtons.help);
     if (!(view instanceof FloatingActionButton helpButton))
+      return;
+    // Grove: the brands button, see GroveBrandsButton.
+    if (GroveBrandsButton.update(helpButton))
       return;
 
     if (Framework.nativeCanShowCrowdfundingPromo() && !TextUtils.isEmpty(Utils.getDonateUrl(requireContext())))
