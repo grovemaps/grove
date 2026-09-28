@@ -4,17 +4,20 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 import app.organicmaps.R;
 import app.organicmaps.sdk.GrovePlace;
 import app.organicmaps.util.ThemeUtils;
+import com.google.android.material.shape.MaterialShapeDrawable;
 import java.lang.ref.WeakReference;
 
 // Grove: the place card takes the colour of the place, its chain's logo colour or its category colour: a light tint
@@ -65,23 +68,32 @@ final class GrovePlaceCard
 
   private static void tint(@NonNull View view, @ColorInt int cards, @ColorInt int panel)
   {
-    if (view.getBackground() instanceof ColorDrawable background)
+    final int base = baseColor(view.getBackground());
+    if (base != 0 && (base == cards || base == panel))
     {
-      final int base = background.getColor();
-      if (base == cards || base == panel)
-      {
-        // Only on changes: this runs on every layout of the card.
-        final int wanted = sColor == 0 ? 0 : ColorUtils.blendARGB(base, sColor, CARD_TINT);
-        final ColorStateList current = view.getBackgroundTintList();
-        if ((current == null ? 0 : current.getDefaultColor()) != wanted)
-          view.setBackgroundTintList(wanted == 0 ? null : ColorStateList.valueOf(wanted));
-      }
+      // Only on changes: this runs on every layout of the card.
+      final int wanted = sColor == 0 ? 0 : ColorUtils.blendARGB(base, sColor, CARD_TINT);
+      final ColorStateList current = view.getBackgroundTintList();
+      if ((current == null ? 0 : current.getDefaultColor()) != wanted)
+        view.setBackgroundTintList(wanted == 0 ? null : ColorStateList.valueOf(wanted));
     }
     if (view instanceof ViewGroup group)
     {
       for (int i = 0; i < group.getChildCount(); ++i)
         tint(group.getChildAt(i), cards, panel);
     }
+  }
+
+  // The colour a background paints, without tint: sections have plain colours, the card's top is the bottom sheet's
+  // rounded shape.
+  @ColorInt
+  private static int baseColor(@Nullable Drawable background)
+  {
+    if (background instanceof ColorDrawable color)
+      return color.getColor();
+    if (background instanceof MaterialShapeDrawable shape && shape.getFillColor() != null)
+      return shape.getFillColor().getDefaultColor();
+    return 0;
   }
 
   @ColorInt
