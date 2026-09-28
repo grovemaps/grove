@@ -11,6 +11,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <deque>
+#include <memory>
+#include <mutex>
 #include <string>
 
 namespace grove
@@ -43,6 +46,31 @@ double Exaggeration(int demZoom)
 {
   return std::clamp(std::pow(2.0, (12 - demZoom) * 0.35), 1.0, 4.0);
 }
+
+// Recently shaded tiles: zoomed in, several map tiles share one elevation tile.
+class ShadedCache
+{
+public:
+  std::shared_ptr<std::vector<uint8_t> const> Find(std::string const & uid)
+  {
+    std::lock_guard lock(m_mutex);
+    auto const it = std::ranges::find(m_entries, uid, &Entry::first);
+    return it != m_entries.end() ? it->second : nullptr;
+  }
+
+  void Add(std::string const & uid, std::shared_ptr<std::vector<uint8_t> const> pixels)
+  {
+    std::lock_guard lock(m_mutex);
+    m_entries.emplace_back(uid, std::move(pixels));
+    if (m_entries.size() > 16)
+      m_entries.pop_front();
+  }
+
+private:
+  using Entry = std::pair<std::string, std::shared_ptr<std::vector<uint8_t> const>>;
+  std::deque<Entry> m_entries;
+  std::mutex m_mutex;
+};
 
 double DecodeTerrarium(uint8_t const * px)
 {
@@ -116,14 +144,28 @@ std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<d
     if (!engine)
       return;
 
-    // OM zoom Z is web-mercator zoom Z - 1; deeper tiles reuse part of the deepest DEM tile.
-    int const demZoom = std::min(static_cast<int>(tileKey.m_zoomLevel) - 1, kMaxDemZoom);
-    double const lat = mercator::YToLat(tileKey.GetGlobalRect().Center().y);
-    double const metersPerPixel = kEarthCircumference * std::cos(math::DegToRad(lat)) / (width * (1 << demZoom));
-    ShadeRelief(rgba, width, height, metersPerPixel, Exaggeration(demZoom));
-
+    static ShadedCache cache;
     std::string const uid = std::string(kReliefImagePrefix) + imageUid;
-    engine->AddTileBackgroundImage(uid, width, height, dp::TextureFormat::RGBA8, mode, std::move(rgba));
+    auto shaded = cache.Find(uid);
+    if (!shaded)
+    {
+      // OM zoom Z is web-mercator zoom Z - 1; deeper tiles reuse part of the deepest DEM tile.
+      int const demZoom = std::min(static_cast<int>(tileKey.m_zoomLevel) - 1, kMaxDemZoom);
+      double const lat = mercator::YToLat(tileKey.GetGlobalRect().Center().y);
+      double const metersPerPixel = kEarthCircumference * std::cos(math::DegToRad(lat)) / (width * (1 << demZoom));
+      ShadeRelief(rgba, width, height, metersPerPixel, Exaggeration(demZoom));
+      shaded = std::make_shared<std::vector<uint8_t> const>(std::move(rgba));
+      cache.Add(uid, shaded);
+    }
+
+    // Flat ground (and sea) gets no shading: skip the upload and the drawing.
+    bool flat = true;
+    for (size_t i = 3; i < shaded->size() && flat; i += 4)
+      flat = (*shaded)[i] == 0;
+    if (flat)
+      return;
+
+    engine->AddTileBackgroundImage(uid, width, height, dp::TextureFormat::RGBA8, mode, std::vector<uint8_t>(*shaded));
     engine->SetTileBackgroundData(tileKey, uid, rect);
   });
 
@@ -132,6 +174,7 @@ std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<d
                        [p](df::TileKey const & key, dp::BackgroundMode mode) { p->CancelTile(key, mode); }};
   return provider;
 }
+
 bool IsReliefEnabled()
 {
   bool enabled = true;
