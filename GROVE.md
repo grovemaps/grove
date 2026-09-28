@@ -87,6 +87,8 @@ Current upstream hooks:
 | `libs/drape_frontend/rule_drawer.cpp`, `area_shape.hpp`; `texturing3d.fsh.glsl`, `map.metal` (`vsArea3d`) | 3D buildings with a place inside are see-through (`libs/drape_frontend/grove_buildings.hpp`, Grove): RuleDrawer holds a tile's 3D buildings until its places are read; the 3D shaders use the colour's alpha |
 | `libs/map/framework.cpp` (`LoadIsolinesEnabled`) | contour lines are on until switched off in the layers menu, as in Guru Maps; the maps have them only where there is terrain |
 | `libs/drape_frontend/user_event_stream.cpp`, `navigator.cpp` | two fingers sliding up or down together tilt the map into 3D at any zoom (`libs/drape_frontend/grove_gestures.hpp`, Grove); other two-finger moves zoom and rotate as before |
+| `libs/drape_frontend/frontend_renderer.cpp` (`OnTwoFingersTap`), `user_event_stream.hpp` | a two-finger tap shows the distance between the fingers instead of zooming out, as in Guru Maps (`libs/drape_frontend/grove_measure.hpp`, `libs/map/grove_measure.cpp`, Android `GroveMeasureOverlay.java`: a line and a label that fade after 3 s) |
+| `android/app/.../maplayer/MapButtonsController.java` (again) | adds the distance overlay under the map buttons |
 | `libs/drape_frontend/tile_info.cpp` | after a tile's features, draws its logo layer (`grove::DrawBrandLayer`, `libs/drape_frontend/grove_brand_layer.hpp`, Grove) |
 | `libs/drape_frontend/poi_symbol_shape.cpp`, `libs/drape/overlay_tree.cpp` | logos get `grove::kBrandPriority`, above every map label and icon, and never hide each other |
 | `libs/drape_frontend/apply_feature_functors.cpp` (again) | chains get no category icon (the logo layer draws theirs), and from zoom 16 their name under the logo (`libs/drape_frontend/grove_brands.hpp`, Grove) |

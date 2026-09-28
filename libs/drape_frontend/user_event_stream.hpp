@@ -464,6 +464,9 @@ public:
   void SetTestBridge(TTestBridge const & fn) { m_testFn = fn; }
 #endif
 
+  // Grove: where the fingers of the last two-finger tap were, see grove_measure.hpp.
+  std::array<m2::PointF, 2> const & GetTwoFingersTouches() const { return m_twoFingersTouches; }
+
 private:
   bool OnSetScale(ref_ptr<ScaleEvent> scaleEvent);
   bool OnMove(ref_ptr<MoveEvent> moveEvent);

@@ -5,6 +5,7 @@
 #include "map/grove_brand_places.hpp"
 #include "map/grove_landcover.hpp"
 #include "map/grove_landcover_reading.hpp"
+#include "map/grove_measure.hpp"
 #include "map/grove_relief.hpp"
 #include "map/place_page_info.hpp"
 #include "map/raster_tile_provider.hpp"
@@ -1779,6 +1780,8 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
   // Grove: shaded relief, see map/grove_relief.hpp.
   if (!m_groveRelief)
     m_groveRelief = grove::CreateReliefProvider([this] { return make_ref(m_drapeEngine); });
+  // Grove: two-finger tap distance, see map/grove_measure.hpp.
+  grove::InitMeasure();
   // Grove: land cover when zoomed out, see map/grove_landcover.hpp.
   grove::landcover::CreateProvider([this] { return make_ref(m_drapeEngine); },
                                    [this] { return MapStyleIsDark(GetMapStyle()); });

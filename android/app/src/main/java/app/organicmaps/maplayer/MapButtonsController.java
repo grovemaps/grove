@@ -459,6 +459,9 @@ public class MapButtonsController extends Fragment
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
   {
     super.onViewCreated(view, savedInstanceState);
+    // Grove: two-finger tap distance, see GroveMeasureOverlay.
+    if (view instanceof ViewGroup group)
+      GroveMeasureOverlay.attach(group);
     // FragmentStateManager requests insets for the frame before onViewCreated(), but the dispatch
     // itself only happens on the next layout pass — so a listener attached here still receives it.
     // Attaching in onResume() is too late: the dispatch has already run and nothing re-requests
@@ -560,5 +563,12 @@ public class MapButtonsController extends Fragment
       mMapButtonsViewModel.setBottomButtonsHeight(getBottomButtonsHeight());
       mContentView.removeOnLayoutChangeListener(this);
     }
+  }
+
+  @Override
+  public void onDestroyView()
+  {
+    super.onDestroyView();
+    GroveMeasureOverlay.detach(); // Grove: see GroveMeasureOverlay.
   }
 }

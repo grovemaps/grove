@@ -4,6 +4,7 @@
 #include "drape_frontend/debug_rect_renderer.hpp"
 #include "drape_frontend/drape_measurer.hpp"
 #include "drape_frontend/drape_notifier.hpp"
+#include "drape_frontend/grove_measure.hpp"
 #include "drape_frontend/gui/drape_gui.hpp"
 #include "drape_frontend/gui/ruler_helper.hpp"
 #include "drape_frontend/message_subclasses.hpp"
@@ -2162,6 +2163,14 @@ void FrontendRenderer::OnDoubleTap(m2::PointD const & pt)
 void FrontendRenderer::OnTwoFingersTap()
 {
   ScreenBase const & screen = m_userEventStream.GetCurrentScreen();
+  // Grove: the distance between the fingers, see grove_measure.hpp.
+  if (auto const & measure = grove::GetMeasureFn())
+  {
+    auto const & [p1, p2] = m_userEventStream.GetTwoFingersTouches();
+    m2::PointD const pixel1(p1), pixel2(p2);
+    measure(pixel1, pixel2, screen.PtoG(screen.P3dtoP(pixel1)), screen.PtoG(screen.P3dtoP(pixel2)));
+    return;
+  }
   m_userEventStream.AddEvent(
       make_unique_dp<ScaleEvent>(0.5 /* scale factor */, screen.PixelRect().Center(), true /* animated */));
 }
