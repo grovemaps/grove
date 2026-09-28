@@ -84,6 +84,7 @@ Current upstream hooks:
 | `libs/drape_frontend/rule_drawer.cpp` | draws chains' logos a zoom early (`grove::EarlyLogoRule`), and nothing else of the places read only for that |
 | `libs/drape_frontend/apply_feature_functors.cpp` (again) | `grove::UseBrandBadge` (`libs/drape_frontend/grove_brands.hpp`, Grove) swaps a chain's category icon for its logo badge |
 | `android/app/build.gradle` | stores `grove_brands.bin` uncompressed, so it is read in place |
+| `android/app/src/main/res/**`, `RoutingBottomMenuController.java` | Roboto references point to Inter, and the app themes hang under `values/grove_fonts.xml`; written by `tools/grove/android_fonts.py`, see "Fonts" |
 | `data/fonts/whitelist.txt` | Inter for Latin, Greek and Cyrillic blocks; drops the system Roboto entries for those blocks (a whitelisted system font loads last and would win) |
 
 Grove style files in `data/styles/grove/`:
@@ -153,6 +154,8 @@ Typography that the drawing rules can't express is chosen in code, by feature ty
 | water: seas, bays, lakes, rivers, canals | italic (`08_inter_medium_italic.ttf`) |
 
 Spaced capitals only apply to scripts with letter case, so Arabic, Chinese and similar names stay as they are. The style rides in front of the label text as one private-use character, which `GlyphManager::ShapeText` takes off (`libs/drape/grove_text_style.hpp`). That keeps the upstream text layout code untouched. The italic and semibold files serve no unicode block of their own, so unstyled text never picks them.
+
+The Android app uses Inter too: Regular for text, Medium where upstream uses `sans-serif-medium` (buttons, titles), and SemiBold and Bold for bold text (`android/app/src/main/res/font/`; Medium and SemiBold link to the map's files). `tools/grove/android_fonts.py` replaces upstream's Roboto references (`@string/robotoRegular`, `robotoMedium`, `robotoLight`) in layouts, styles and spans, and sets the app themes' parents to the Grove themes in `values/grove_fonts.xml`, which give Material's text appearances Inter. After syncing with upstream, run it again (`--check` lists what still names Roboto), then clang-format the Java files it changed. Android 8+ and the AppCompat views get Inter; plain framework views on older Android keep Roboto.
 
 Geist was considered instead of Inter and left out: it has no Greek, about half of Cyrillic and little of Latin Extended-B and Vietnamese (Geist 1.7.2), so names in those scripts would switch fonts mid-word.
 

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Grove: Inter for the whole app. The app themes hang under these (tools/grove/android_fonts.py), which set
+     Material's text appearances to Inter: explicit text appearances win over the theme's default font. -->
+<resources>
+  <style name="Grove.Theme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+    <item name="textAppearanceHeadline1">@style/Grove.TextAppearance.Headline1</item>
+    <item name="textAppearanceHeadline2">@style/Grove.TextAppearance.Headline2</item>
+    <item name="textAppearanceHeadline3">@style/Grove.TextAppearance.Headline3</item>
+    <item name="textAppearanceHeadline4">@style/Grove.TextAppearance.Headline4</item>
+    <item name="textAppearanceHeadline5">@style/Grove.TextAppearance.Headline5</item>
+    <item name="textAppearanceHeadline6">@style/Grove.TextAppearance.Headline6</item>
+    <item name="textAppearanceSubtitle1">@style/Grove.TextAppearance.Subtitle1</item>
+    <item name="textAppearanceSubtitle2">@style/Grove.TextAppearance.Subtitle2</item>
+    <item name="textAppearanceBody1">@style/Grove.TextAppearance.Body1</item>
+    <item name="textAppearanceBody2">@style/Grove.TextAppearance.Body2</item>
+    <item name="textAppearanceButton">@style/Grove.TextAppearance.Button</item>
+    <item name="textAppearanceCaption">@style/Grove.TextAppearance.Caption</item>
+    <item name="textAppearanceOverline">@style/Grove.TextAppearance.Overline</item>
+  </style>
+
+  <style name="Grove.Theme.AlertDialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+    <item name="textAppearanceSubtitle1">@style/Grove.TextAppearance.Subtitle1</item>
+    <item name="textAppearanceBody2">@style/Grove.TextAppearance.Body2</item>
+    <item name="textAppearanceButton">@style/Grove.TextAppearance.Button</item>
+  </style>
+
+  <style name="Grove.ThemeOverlay.Dialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+    <item name="textAppearanceSubtitle1">@style/Grove.TextAppearance.Subtitle1</item>
+    <item name="textAppearanceBody2">@style/Grove.TextAppearance.Body2</item>
+    <item name="textAppearanceButton">@style/Grove.TextAppearance.Button</item>
+  </style>
+
+  <style name="Grove.Theme.AppCompat" parent="Theme.AppCompat.DayNight">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+  </style>
+
+  <style name="Grove.TextAppearance.Toolbar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <item name="android:fontFamily">@font/inter_medium</item>
+    <item name="fontFamily">@font/inter_medium</item>
+  </style>
+
+  <!-- Material's regular styles take Inter, its medium ones (sans-serif-medium) Inter Medium. -->
+  <style name="Grove.TextAppearance.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+  </style>
+  <style name="Grove.TextAppearance.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+  </style>
+  <style name="Grove.TextAppearance.Headline3" parent="TextAppearance.MaterialComponents.Headline3">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+  </style>
+  <style name="Grove.TextAppearance.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+  </style>
+  <style name="Grove.TextAppearance.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+  </style>
+  <style name="Grove.TextAppearance.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+    <item name="android:fontFamily">@font/inter_medium</item>
+    <item name="fontFamily">@font/inter_medium</item>
+  </style>
+  <style name="Grove.TextAppearance.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+  </style>
+  <style name="Grove.TextAppearance.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
+    <item name="android:fontFamily">@font/inter_medium</item>
+    <item name="fontFamily">@font/inter_medium</item>
+  </style>
+  <style name="Grove.TextAppearance.Body1" parent="TextAppearance.MaterialComponents.Body1">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+  </style>
+  <style name="Grove.TextAppearance.Body2" parent="TextAppearance.MaterialComponents.Body2">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+  </style>
+  <style name="Grove.TextAppearance.Button" parent="TextAppearance.MaterialComponents.Button">
+    <item name="android:fontFamily">@font/inter_medium</item>
+    <item name="fontFamily">@font/inter_medium</item>
+  </style>
+  <style name="Grove.TextAppearance.Caption" parent="TextAppearance.MaterialComponents.Caption">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+  </style>
+  <style name="Grove.TextAppearance.Overline" parent="TextAppearance.MaterialComponents.Overline">
+    <item name="android:fontFamily">@font/inter</item>
+    <item name="fontFamily">@font/inter</item>
+  </style>
+</resources>
