@@ -22,7 +22,7 @@ import time
 import urllib.parse
 import urllib.request
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageFilter
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CACHE = os.path.join(ROOT, "build-grove", "brands-cache")
@@ -34,12 +34,12 @@ COMMONS_API = "https://commons.wikimedia.org/w/api.php"
 # A standard Wikimedia thumbnail width: usually already rendered, so Commons doesn't throttle it.
 THUMB_WIDTH = 250
 
-# Badge source size; the renderer scales it down to 20 dp at the screen density.
+# Symbol source size; the renderer scales it down to 26 dp at the screen density.
 BADGE = 96
-BADGE_RADIUS = 22
-LOGO_BOX = 72
-# Wide wordmarks may use more of the badge's width.
-WIDE_LOGO_WIDTH = 86
+# The logo fills most of it; the rest is room for the halo.
+LOGO_BOX = 86
+WIDE_LOGO_WIDTH = 88
+HALO_RADIUS = 3
 # Wider logos are wordmarks, unreadable at icon size: those brands keep their category icons.
 MAX_ASPECT = 1.8
 # Wikidata properties in order of preference: small logo or icon, icon, logo image.
@@ -183,16 +183,21 @@ def make_badge(logo, source_url):
     scale = min(box_width / logo.width, LOGO_BOX / logo.height)
     logo = logo.resize((max(1, round(logo.width * scale)), max(1, round(logo.height * scale))), Image.LANCZOS)
 
-    # Logos drawn in white for dark backgrounds get a dark badge.
+    # The logo itself, transparent where it is, with a soft halo like map labels have, so it reads over roads,
+    # buildings and water. Logos drawn in white get a dark halo.
     rgba = logo.tobytes()
     pixels = [rgba[i : i + 4] for i in range(0, len(rgba), 4) if rgba[i + 3] > 128]
     light = pixels and sum(0.3 * p[0] + 0.59 * p[1] + 0.11 * p[2] for p in pixels) / len(pixels) > 225
-    background = (58, 58, 60, 255) if light else (255, 255, 255, 255)
+    halo_color = (58, 58, 60) if light else (255, 255, 255)
 
     badge = Image.new("RGBA", (BADGE, BADGE), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(badge)
-    draw.rounded_rectangle((1, 1, BADGE - 2, BADGE - 2), BADGE_RADIUS, fill=background, outline=(0, 0, 0, 46), width=2)
     badge.alpha_composite(logo, ((BADGE - logo.width) // 2, (BADGE - logo.height) // 2))
+    halo_alpha = badge.getchannel("A").filter(ImageFilter.MaxFilter(2 * HALO_RADIUS + 1))
+    halo_alpha = halo_alpha.filter(ImageFilter.GaussianBlur(1.2)).point(lambda a: a * 230 // 255)
+    halo = Image.new("RGBA", badge.size, halo_color + (0,))
+    halo.putalpha(halo_alpha)
+    halo.alpha_composite(badge)
+    badge = halo
     out = io.BytesIO()
     badge.save(out, "PNG", optimize=True)
     return out.getvalue()
