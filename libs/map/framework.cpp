@@ -2,6 +2,7 @@
 #include "base/assert.hpp"
 #include "map/benchmark_tools.hpp"
 #include "map/gps_tracker.hpp"
+#include "map/grove_landcover_reading.hpp"
 #include "map/place_page_info.hpp"
 #include "map/raster_tile_provider.hpp"
 #include "map/relation_track.hpp"
@@ -1729,7 +1730,10 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
 {
   auto idReadFn = [this](auto const & fn, m2::RectD const & r, int scale)
   {
-    m_featuresFetcher.ForEachFeatureID(r, fn, scale);
+    if (grove::ReadsLandcoverIndex(scale))
+      grove::ForEachFeatureIDWithLandcover(m_featuresFetcher, r, fn, scale);
+    else
+      m_featuresFetcher.ForEachFeatureID(r, fn, scale);
 
     if (m_showDownloadedRegions && scale <= 7)
     {
