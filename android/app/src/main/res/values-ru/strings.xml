@@ -223,6 +223,8 @@
     <string name="pref_map_landcover_title">Земной покров</string>
     <!-- Grove: Settings «General» category: «Land cover» summary -->
     <string name="pref_map_landcover_summary">Раскрашивает леса, поля и города на мелких масштабах. Загружает данные о земном покрове (ESA WorldCover), пока вы просматриваете карту.</string>
+    <!-- Grove: place card of a saved route: plans the route again with all its stops, to navigate it -->
+    <string name="navigate_trip">Проложить этот маршрут</string>
     <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» switch title (bicycle routing takes signed cycle routes) -->
     <string name="pref_prefer_cycle_routes_title">Предпочитать веломаршруты</string>
     <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» summary -->

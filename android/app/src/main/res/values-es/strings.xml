@@ -223,6 +223,8 @@
     <string name="pref_map_landcover_title">Cobertura del suelo</string>
     <!-- Grove: Settings «General» category: «Land cover» summary -->
     <string name="pref_map_landcover_summary">Colorea bosques, campos y ciudades al alejar el mapa. Descarga datos de cobertura del suelo (ESA WorldCover) mientras exploras el mapa.</string>
+    <!-- Grove: place card of a saved route: plans the route again with all its stops, to navigate it -->
+    <string name="navigate_trip">Navegar este viaje</string>
     <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» switch title (bicycle routing takes signed cycle routes) -->
     <string name="pref_prefer_cycle_routes_title">Preferir rutas ciclistas</string>
     <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» summary -->
