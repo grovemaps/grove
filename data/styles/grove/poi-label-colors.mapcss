@@ -6,8 +6,11 @@
  *
  * The first part is copied from CoMaps (Apache-2.0),
  * data/styles/default/include/Icons_Label_Colors.mapcss at 2528fbb919 (2026-07-24),
- * so it can be diffed against newer CoMaps versions. One line was dropped: node[social_facility],
- * because Organic Maps has no social_facility key and kothic rejects unknown keys.
+ * so it can be diffed against newer CoMaps versions. Three lines were dropped:
+ * - node[social_facility]: Organic Maps has no social_facility key and kothic rejects unknown keys.
+ * - node[leisure=sports_centre][sport=scuba_diving] and [sport=swimming]: they compile to "extra_tag" runtime
+ *   selectors that only CoMaps' engine understands. Organic Maps logs an error for them, and Debug builds stop on
+ *   that error at startup.
  * Selectors for values only CoMaps has (e.g. amenity=planetarium) compile but match nothing
  * until Organic Maps adds those types. Grove's own changes are at the end.
  */
@@ -135,8 +138,6 @@ node[landuse=plant_nursery],
 node[amenity=public_bath],
 node[leisure=beach_resort],
 node[leisure=marina],
-node[leisure=sports_centre][sport=scuba_diving],
-node[leisure=sports_centre][sport=swimming],
 node[leisure=water_park],
 {text-color: @water_light_label;text-halo-radius: 0.1;text-halo-opacity: 0.7;text-halo-color: @label_halo_light;}
 
