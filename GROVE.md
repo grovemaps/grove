@@ -70,9 +70,10 @@ Current upstream hooks:
 | `data/styles/default/dark/style.mapcss` | imports `grove/palette-dark.mapcss` after `colors.mapcss`, `grove/poi-label-colors.mapcss` after `Icons.mapcss`, and `grove/apple-look.mapcss` last |
 | `data/styles/outdoors/{light,dark}/colors.mapcss` | imports the matching Grove palette, placed before the outdoors-only overrides so those still win |
 | `data/styles/outdoors/{light,dark}/style.mapcss` | imports `grove/poi-label-colors.mapcss` after `Icons.mapcss` |
-| `libs/platform/platform.cpp` | adds `fonts/08_inter_medium.ttf` to the bundled font list |
+| `libs/platform/platform.cpp` | adds Inter Medium and its italic and semibold twins (`fonts/08_inter_*.ttf`) to the bundled font list |
+| `libs/drape/glyph_manager.cpp` | keeps the Inter twins out of unicode block selection; `ShapeText` reads a label's typography marker (`libs/drape/grove_text_style.hpp`, Grove): twin fonts, letter spacing |
 | `libs/map/framework.cpp` | tile feature reading goes through `libs/map/grove_landcover_reading.hpp` (Grove), which adds the zoom 12 landcover at zoom 11 |
-| `libs/drape_frontend/apply_feature_functors.cpp` | after each place icon, `grove::InsertPoiDot` (`libs/drape_frontend/grove_poi_dot.hpp`, Grove) adds its dot |
+| `libs/drape_frontend/apply_feature_functors.cpp` | after each place icon, `grove::InsertPoiDot` (`libs/drape_frontend/grove_poi_dot.hpp`, Grove) adds its dot; `grove::StyleCaption` and `grove::StylePathText` (`libs/drape_frontend/grove_typography.hpp`, Grove) pick each label's typography |
 | `data/fonts/whitelist.txt` | Inter for Latin, Greek and Cyrillic blocks; drops the system Roboto entries for those blocks (a whitelisted system font loads last and would win) |
 
 Grove style files in `data/styles/grove/`:
@@ -131,7 +132,19 @@ Prototype (zoom 11): `grove_landcover_reading.hpp` makes zoom 11 tiles also read
 
 ## Fonts
 
-Labels use Inter Medium (`data/fonts/08_inter_medium.ttf`, SIL Open Font License, see `08_inter_LICENSE.txt`) for Latin, Greek and Cyrillic, instead of Roboto. Other scripts keep upstream's Noto and fallback fonts.
+Labels use Inter 4.1 Medium (`data/fonts/08_inter_medium.ttf`, SIL Open Font License, see `08_inter_LICENSE.txt`) for Latin, Greek and Cyrillic, instead of Roboto. Other scripts keep upstream's Noto and fallback fonts.
+
+Typography that the drawing rules can't express is chosen in code, by feature type (`libs/drape_frontend/grove_typography.hpp`):
+
+| Labels | Style |
+|---|---|
+| places with an icon (POIs), cities, towns, countries | semibold (`08_inter_semibold.ttf`) |
+| states, suburbs, quarters, neighbourhoods, streets | spaced capitals: upper case, +0.09 em letter spacing; street names at 90% size |
+| water: seas, bays, lakes, rivers, canals | italic (`08_inter_medium_italic.ttf`) |
+
+Spaced capitals only apply to scripts with letter case, so Arabic, Chinese and similar names stay as they are. The style rides in front of the label text as one private-use character, which `GlyphManager::ShapeText` takes off (`libs/drape/grove_text_style.hpp`). That keeps the upstream text layout code untouched. The italic and semibold files serve no unicode block of their own, so unstyled text never picks them.
+
+Geist was considered instead of Inter and left out: it has no Greek, about half of Cyrillic and little of Latin Extended-B and Vietnamese (Geist 1.7.2), so names in those scripts would switch fonts mid-word.
 
 ## Checking the look without a phone
 
@@ -140,7 +153,7 @@ source /Volumes/grove/tools/env.sh
 tools/grove/render_screens.sh [points file] [output dir]
 ```
 
-This builds the Qt desktop app and renders screenshots in its screenshot mode. It defaults to `tools/grove/amsterdam-points.txt`, the spots of the Apple Maps reference screenshots, at 2000×1256 and 2× scale. Region maps download on first use into `/Volumes/grove/desktop-data`. The Mac is a virtual machine without GPU passthrough, so the app renders in software, about 2 minutes per frame.
+This builds the Qt desktop app and renders screenshots in its screenshot mode. On Linux without a display it runs the app under `xvfb-run` with Mesa's software OpenGL (packages `xvfb`, Qt 6 dev); the first run needs `EulaAccepted=true` in `~/.config/OrganicMaps/settings.ini`, or the app waits on the license dialog. It defaults to `tools/grove/amsterdam-points.txt`, the spots of the Apple Maps reference screenshots, at 2000×1256 and 2× scale. Region maps download on first use into `/Volumes/grove/desktop-data`. The Mac is a virtual machine without GPU passthrough, so the app renders in software, about 2 minutes per frame.
 
 ## Styles
 
