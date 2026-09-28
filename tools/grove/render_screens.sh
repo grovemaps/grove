@@ -33,5 +33,15 @@ cmake --build "$BUILD" --target desktop > /dev/null
 mkdir -p "$OUT" "$MAPS"
 rm -f "$OUT"/point_*.png
 "${RUN[@]}" "$APP" --resources_path="$ROOT/data/" --data_path="$MAPS/" --points="$POINTS" --dst_path="$OUT/" \
-  --width=$((1000 * SCALE)) --height=$((628 * SCALE)) --dpi_scale="$SCALE" > "$OUT/render.log" 2>&1
+  --width=$((1000 * SCALE)) --height=$((628 * SCALE)) --dpi_scale="$SCALE" > "$OUT/render.log" 2>&1 &
+RUN_PID=$!
+# Under Xvfb the app can hang in Mesa's buffer swap after the last screenshot: stop it once it is done.
+while kill -0 "$RUN_PID" 2> /dev/null; do
+  if grep -q "state: Done" "$OUT/render.log"; then
+    pkill -f -- "^$APP --resources_path" || true
+    break
+  fi
+  sleep 2
+done
+wait "$RUN_PID" || true
 ls "$OUT"/point_*.png
