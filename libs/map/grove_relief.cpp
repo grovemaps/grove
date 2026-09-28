@@ -31,17 +31,25 @@ int constexpr kMaxDemZoom = 15;
 
 double constexpr kEarthCircumference = 2 * math::pi * 6378137.0;
 
-// Sun from the northwest at 45 degrees, as in classic shaded relief; the same side as the 3D building light.
-double constexpr kSunX = -0.5;
-double constexpr kSunY = 0.5;
+// Light from several directions at 45 degrees, mostly the northwest as in classic shaded relief (the same side as
+// the 3D building light), some from the west and north: ridges read whatever way they run (multidirectional
+// hillshading, as in Guru Maps). Weights add up to 1; x is east, y north.
+struct Light
+{
+  double m_x, m_y, m_weight;
+};
 double constexpr kSunZ = 0.70710678;
+Light constexpr kLights[] = {{-0.5, 0.5, 0.6}, {-0.70710678, 0, 0.2}, {0, 0.70710678, 0.2}};
 
-// Strongest shading, reached on slopes facing straight away from or toward the sun.
-double constexpr kMaxShadowAlpha = 0.42;
-double constexpr kMaxLightAlpha = 0.24;
-// Cool shadows and warm light read softer than black and white.
-uint8_t constexpr kShadowColor[] = {38, 48, 70};
-uint8_t constexpr kLightColor[] = {255, 252, 240};
+// Strongest shading, reached on slopes facing straight away from or toward the light. Shadows are nearly black:
+// blended over the map, black at alpha a multiplies its colours by 1 - a, so a forest in shadow turns deep green
+// instead of grey, as in Guru Maps.
+double constexpr kMaxShadowAlpha = 0.6;
+double constexpr kMaxLightAlpha = 0.3;
+// Steep ground darkens whichever way it faces (slope shading), for depth.
+double constexpr kMaxSlopeAlpha = 0.24;
+uint8_t constexpr kShadowColor[] = {18, 22, 32};
+uint8_t constexpr kLightColor[] = {255, 250, 236};
 
 // Terrain looks flat when zoomed out, where a pixel covers hundreds of meters; exaggerate it there.
 double Exaggeration(int demZoom)
@@ -122,7 +130,19 @@ void ShadeRelief(std::vector<uint8_t> & rgba, uint32_t width, uint32_t height, d
     elevation[i] = DecodeTerrarium(&rgba[i * 4]);
 
   // Neighbours outside the tile repeat the edge.
-  auto const e = [&](int x, int y) { return elevation[std::clamp(y, 0, h - 1) * w + std::clamp(x, 0, w - 1)]; };
+  auto const raw = [&](int x, int y) { return elevation[std::clamp(y, 0, h - 1) * w + std::clamp(x, 0, w - 1)]; };
+
+  // Zoomed in, elevation tiles are upsampled from coarser data in steps, which strong shading turns into staircases:
+  // a light [1 2 1] blur each way smooths them.
+  std::vector<double> smooth(elevation.size());
+  for (int y = 0; y < h; ++y)
+    for (int x = 0; x < w; ++x)
+      smooth[y * w + x] = (raw(x - 1, y) + 2 * raw(x, y) + raw(x + 1, y)) / 4;
+  for (int y = 0; y < h; ++y)
+    for (int x = 0; x < w; ++x)
+      elevation[y * w + x] =
+          (smooth[std::max(y - 1, 0) * w + x] + 2 * smooth[y * w + x] + smooth[std::min(y + 1, h - 1) * w + x]) / 4;
+  auto const e = raw;
 
   double const k = exaggeration / (8 * metersPerPixel);
   for (int y = 0; y < h; ++y)
@@ -134,32 +154,34 @@ void ShadeRelief(std::vector<uint8_t> & rgba, uint32_t width, uint32_t height, d
                                (e(x - 1, y + 1) + 2 * e(x - 1, y) + e(x - 1, y - 1)));
       double const dzdy = k * ((e(x - 1, y + 1) + 2 * e(x, y + 1) + e(x + 1, y + 1)) -
                                (e(x - 1, y - 1) + 2 * e(x, y - 1) + e(x + 1, y - 1)));
-      double const light = (-dzdx * kSunX - dzdy * kSunY + kSunZ) / std::sqrt(dzdx * dzdx + dzdy * dzdy + 1);
+      double const norm = std::sqrt(dzdx * dzdx + dzdy * dzdy + 1);
+      double light = 0;
+      for (auto const & l : kLights)
+        light += l.m_weight * (-dzdx * l.m_x - dzdy * l.m_y + kSunZ) / norm;
       double const delta = light - kSunZ;  // Relative to flat ground.
 
-      uint8_t const * shade;
-      double alpha;
-      if (delta < 0)
-      {
-        shade = kShadowColor;
-        alpha = kMaxShadowAlpha * std::min(1.0, -delta / kSunZ);
-      }
-      else
-      {
-        shade = kLightColor;
-        alpha = kMaxLightAlpha * std::min(1.0, delta / (1 - kSunZ));
-      }
-
-      // The shade over the elevation tint, as one colour with alpha.
+      // Layers from the bottom: elevation tint, highlight or shadow, slope shading; as one colour with alpha.
       auto const tint = ElevationTint(e(x, y));
-      double const outAlpha = alpha + tint[3] * (1 - alpha);
+      double color[3] = {tint[0], tint[1], tint[2]};
+      double alpha = tint[3];
+      auto const over = [&](uint8_t const * layer, double layerAlpha)
+      {
+        double const outAlpha = layerAlpha + alpha * (1 - layerAlpha);
+        if (outAlpha > 0)
+          for (int c = 0; c < 3; ++c)
+            color[c] = (layer[c] * layerAlpha + color[c] * alpha * (1 - layerAlpha)) / outAlpha;
+        alpha = outAlpha;
+      };
+      if (delta < 0)
+        over(kShadowColor, kMaxShadowAlpha * std::min(1.0, -delta / kSunZ));
+      else
+        over(kLightColor, kMaxLightAlpha * std::min(1.0, delta / (1 - kSunZ)));
+      over(kShadowColor, kMaxSlopeAlpha * std::min(1.0, std::sqrt(dzdx * dzdx + dzdy * dzdy)));
+
       uint8_t * px = &rgba[(size_t{static_cast<size_t>(y)} * width + x) * 4];
       for (int c = 0; c < 3; ++c)
-      {
-        double const premultiplied = shade[c] * alpha + tint[c] * tint[3] * (1 - alpha);
-        px[c] = outAlpha > 0 ? static_cast<uint8_t>(std::lround(premultiplied / outAlpha)) : 0;
-      }
-      px[3] = static_cast<uint8_t>(std::lround(outAlpha * 255));
+        px[c] = static_cast<uint8_t>(std::lround(std::clamp(color[c], 0.0, 255.0)));
+      px[3] = static_cast<uint8_t>(std::lround(alpha * 255));
     }
   }
 }
