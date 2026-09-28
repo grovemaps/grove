@@ -2,6 +2,7 @@
 
 #include "drape_frontend/apply_feature_functors.hpp"
 #include "drape_frontend/engine_context.hpp"
+#include "drape_frontend/grove_brands.hpp"
 #include "drape_frontend/metaline_manager.hpp"
 #include "drape_frontend/traffic_renderer.hpp"
 
@@ -430,8 +431,15 @@ void RuleDrawer::operator()(FeatureType & f)
   Stylist const s(f, m_zoomLevel, m_deviceLang, forceOutdoorStyle);
 
   // No drawing rules.
-  if (!s.m_symbolRule && !s.m_captionRule && !s.m_houseNumberRule && s.m_lineRules.empty() && !s.m_areaRule &&
-      !s.m_hatchingRule)
+  bool const noRules = !s.m_symbolRule && !s.m_captionRule && !s.m_houseNumberRule && s.m_lineRules.empty() &&
+                       !s.m_areaRule && !s.m_hatchingRule;
+  // Grove: a chain shows its logo a zoom before its place is drawn; places read only for that show nothing else.
+  // See grove_brands.hpp.
+  bool const groveBorrowed = m_zoomLevel == grove::kEarlyLogoZoom && grove::BorrowedFeatures().contains(f.GetID());
+  drule::SymbolRule groveLogo;
+  bool const groveEarlyLogo =
+      (noRules || groveBorrowed) && grove::EarlyLogoRule(f, m_zoomLevel, m_context->GetTextureManager(), groveLogo);
+  if ((noRules || groveBorrowed) && !groveEarlyLogo)
     return;
 
 #ifdef DEBUG
@@ -451,7 +459,13 @@ void RuleDrawer::operator()(FeatureType & f)
   if (!m_applyParams.m_tileRect.IsIntersect(f.GetLimitRect(m_zoomLevel)))
     return;
 
-  if (geomType == feature::GeomType::Area)
+  if (groveEarlyLogo)
+  {
+    ApplyPointFeature apply(m_applyParams, f, s.m_captionDescriptor);
+    auto const center = geomType == feature::GeomType::Point ? f.GetCenter() : f.GetLimitRect(m_zoomLevel).Center();
+    apply.ProcessPointRules(&groveLogo, nullptr, nullptr, center, m_context->GetTextureManager());
+  }
+  else if (geomType == feature::GeomType::Area)
   {
     ProcessAreaAndPointStyle(f, s);
   }

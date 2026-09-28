@@ -4,12 +4,16 @@
 #include "drape/texture_manager.hpp"
 
 #include "indexer/classificator.hpp"
+#include "indexer/drawing_rules.hpp"
 #include "indexer/drules_struct.hpp"
 #include "indexer/feature.hpp"
 #include "indexer/feature_data.hpp"
+#include "indexer/feature_visibility.hpp"
 
 #include "coding/string_utf8_multilang.hpp"
 
+#include <algorithm>
+#include <set>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -75,6 +79,44 @@ inline bool EarlyBrandRule(FeatureType & f, drule::CaptionRule const * captionRu
     return false;
   rule.name = std::move(symbol);
   rule.priority = captionRule->priority;
+  return true;
+}
+// Places a tile reads only from the next zoom's index, for their early logo: map/grove_landcover_reading.hpp
+// collects them and RuleDrawer draws the same tile's features right after, on the same thread.
+inline std::set<FeatureID> & BorrowedFeatures()
+{
+  thread_local std::set<FeatureID> ids;
+  return ids;
+}
+
+// Chains show their logo from zoom 15, a zoom before most of their places are drawn (map/grove_landcover_reading.hpp
+// reads the zoom 16 index for zoom 15).
+int constexpr kEarlyLogoZoom = 15;
+
+// For a place without drawing rules at this zoom: its logo's symbol rule, if it is a chain and its type gets an icon
+// one zoom later (ranked like that icon). False for other places.
+inline bool EarlyLogoRule(FeatureType & f, int zoomLevel, ref_ptr<dp::TextureManager> textures,
+                          drule::SymbolRule & rule)
+{
+  if (zoomLevel != kEarlyLogoZoom || f.GetGeomType() == feature::GeomType::Line)
+    return false;
+  // Only places not drawn at this zoom anyway.
+
+  drule::KeysT keys;
+  feature::GetDrawRule(feature::TypesHolder(f), zoomLevel + 1, keys);
+  auto const icon = std::ranges::find_if(keys, [](drule::Key const & k) { return k.m_type == drule::symbol; });
+  if (icon == keys.end())
+    return false;
+
+  std::string symbol;
+  UseBrandBadge(f, textures, symbol);
+  if (symbol.empty())
+    return false;
+
+  auto const * later = drule::GetCurrentRules().Find(*icon)->GetSymbol();
+  rule.name = std::move(symbol);
+  rule.priority = later->priority;
+  rule.min_distance = later->min_distance;
   return true;
 }
 }  // namespace grove

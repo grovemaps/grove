@@ -1731,8 +1731,8 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
 {
   auto idReadFn = [this](auto const & fn, m2::RectD const & r, int scale)
   {
-    if (grove::ReadsLandcoverIndex(scale))
-      grove::ForEachFeatureIDWithLandcover(m_featuresFetcher, r, fn, scale);
+    if (grove::ExtraIndexScale(scale) >= 0)
+      grove::ForEachFeatureIDWithExtraIndex(m_featuresFetcher, r, fn, scale);
     else
       m_featuresFetcher.ForEachFeatureID(r, fn, scale);
 
