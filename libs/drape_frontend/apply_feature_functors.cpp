@@ -4,6 +4,7 @@
 #include "drape_frontend/area_shape.hpp"
 #include "drape_frontend/color_constants.hpp"
 #include "drape_frontend/colored_symbol_shape.hpp"
+#include "drape_frontend/grove_poi_dot.hpp"
 #include "drape_frontend/line_shape.hpp"
 #include "drape_frontend/path_symbol_shape.hpp"
 #include "drape_frontend/path_text_shape.hpp"
@@ -429,9 +430,14 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
     symbolSize = region.GetPixelSize();
 
     if (region.IsValid())
+    {
       m_params.m_insertShape(make_unique_dp<PoiSymbolShape>(centerPoint, params, m_params.m_tileKey, 0));
+      grove::InsertPoiDot(m_params.m_insertShape, texMng, centerPoint, params);
+    }
     else
+    {
       LOG(LERROR, ("Style error. Symbol name must be valid for feature", m_f.GetID()));
+    }
   }
 
   if (captionRule)
