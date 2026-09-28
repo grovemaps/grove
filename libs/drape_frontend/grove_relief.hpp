@@ -6,6 +6,7 @@
 #include "drape/drape_global.hpp"
 #include "drape/pointers.hpp"
 
+#include <atomic>
 #include <string_view>
 #include <utility>
 
@@ -25,6 +26,13 @@ inline ReliefSource & GetReliefSource()
 {
   static ReliefSource source;
   return source;
+}
+
+// The settings switch. When off, the layer draws nothing and requests no tiles.
+inline std::atomic<bool> & ReliefEnabled()
+{
+  static std::atomic<bool> enabled{true};
+  return enabled;
 }
 
 // Image uids of relief tiles start with this, so their tile bindings reach the relief renderer.
@@ -57,14 +65,23 @@ public:
 
   void OnUpdateViewport(ref_ptr<dp::GraphicsContext> context, df::CoverageResult const & coverage, int zoomLevel)
   {
-    if (m_renderer)
+    if (!m_renderer)
+      return;
+    if (ReliefEnabled())
+    {
       m_renderer->OnUpdateViewport(context, coverage, zoomLevel);
+    }
+    else if (context != nullptr)
+    {
+      // Switched off: cancel requests and free the textures.
+      m_renderer->ClearContextDependentResources(context);
+    }
   }
 
   void Render(ref_ptr<dp::GraphicsContext> context, ref_ptr<gpu::ProgramManager> mng, ScreenBase const & screen,
               int zoomLevel, df::FrameValues const & frameValues)
   {
-    if (m_renderer)
+    if (m_renderer && ReliefEnabled())
       m_renderer->Render(context, mng, screen, zoomLevel, frameValues);
   }
 

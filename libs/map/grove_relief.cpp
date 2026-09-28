@@ -97,10 +97,7 @@ void ShadeRelief(std::vector<uint8_t> & rgba, uint32_t width, uint32_t height, d
 
 std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<df::DrapeEngine>()> getEngine)
 {
-  bool enabled = true;
-  settings::TryGet(kEnabledKey, enabled);
-  if (!enabled)
-    return nullptr;
+  ReliefEnabled() = IsReliefEnabled();
 
   RasterTileProvider::Params params;
   params.m_urlTemplate = kTerrariumUrl;
@@ -134,5 +131,20 @@ std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<d
   GetReliefSource() = {[p](df::TileKey const & key, dp::BackgroundMode mode) { return p->RequestTile(key, mode); },
                        [p](df::TileKey const & key, dp::BackgroundMode mode) { p->CancelTile(key, mode); }};
   return provider;
+}
+bool IsReliefEnabled()
+{
+  bool enabled = true;
+  settings::TryGet(kEnabledKey, enabled);
+  return enabled;
+}
+
+void SetReliefEnabled(ref_ptr<df::DrapeEngine> engine, bool enabled)
+{
+  settings::Set(kEnabledKey, enabled);
+  ReliefEnabled() = enabled;
+  // Re-reads the visible tiles, which also updates the relief layer's viewport (requests or drops its tiles).
+  if (engine)
+    engine->InvalidateRect(mercator::Bounds::FullRect());
 }
 }  // namespace grove
