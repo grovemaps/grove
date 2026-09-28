@@ -16,7 +16,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/height_block_base"
     android:background="?clickableBackground"
-    android:fontFamily="@string/robotoMedium"
+    android:fontFamily="@font/inter_medium"
     android:gravity="center_vertical"
     android:text="@string/editor_edit_place_name_hint"
     android:textAppearance="@style/MwmTextAppearance.Body3"

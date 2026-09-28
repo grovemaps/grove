@@ -80,7 +80,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/margin_base"
-          android:fontFamily="@string/robotoMedium"
+          android:fontFamily="@font/inter_medium"
           android:text="@string/address"
           android:textAppearance="@style/MwmTextAppearance.Body3"
           tools:ignore="UnusedAttribute"/>
@@ -139,7 +139,7 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/margin_base"
           android:paddingBottom="@dimen/margin_half"
-          android:fontFamily="@string/robotoMedium"
+          android:fontFamily="@font/inter_medium"
           android:text="@string/details"
           android:textAppearance="@style/MwmTextAppearance.Body3"
           tools:ignore="UnusedAttribute"/>
@@ -326,7 +326,7 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/margin_base"
           android:paddingBottom="@dimen/margin_half"
-          android:fontFamily="@string/robotoMedium"
+          android:fontFamily="@font/inter_medium"
           android:text="@string/social_media"
           android:textAppearance="@style/MwmTextAppearance.Body3"
           tools:ignore="UnusedAttribute"/>
@@ -363,7 +363,7 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/margin_base"
           android:paddingBottom="@dimen/margin_half"
-          android:fontFamily="@string/robotoMedium"
+          android:fontFamily="@font/inter_medium"
           android:text="@string/building"
           android:textAppearance="@style/MwmTextAppearance.Body3"
           tools:ignore="UnusedAttribute"/>
@@ -386,7 +386,7 @@
         <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:fontFamily="@string/robotoMedium"
+          android:fontFamily="@font/inter_medium"
           android:text="@string/editor_other_info"
           android:textAppearance="@style/MwmTextAppearance.Body3"/>
         <com.google.android.material.textfield.TextInputLayout

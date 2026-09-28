@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
 import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.IdRes;
@@ -35,6 +34,7 @@ import app.organicmaps.sdk.routing.TransitRouteInfo;
 import app.organicmaps.sdk.routing.TransitStepInfo;
 import app.organicmaps.sdk.util.Distance;
 import app.organicmaps.sdk.util.StringUtils;
+import app.organicmaps.util.GroveFonts;
 import app.organicmaps.util.ThemeUtils;
 import app.organicmaps.util.UiUtils;
 import app.organicmaps.util.Utils;
@@ -472,8 +472,7 @@ final class RoutingBottomMenuController
   {
     builder.append(time);
 
-    builder.setSpan(new TypefaceSpan(context.getResources().getString(R.string.robotoMedium)), 0, builder.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    builder.setSpan(GroveFonts.mediumSpan(context), 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     builder.setSpan(
         new AbsoluteSizeSpan(context.getResources().getDimensionPixelSize(R.dimen.text_size_routing_number)), 0,
         builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -486,8 +485,8 @@ final class RoutingBottomMenuController
                                              @NonNull SpannableStringBuilder builder)
   {
     builder.append(dot);
-    builder.setSpan(new TypefaceSpan(context.getResources().getString(R.string.robotoMedium)),
-                    builder.length() - dot.length(), builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    builder.setSpan(GroveFonts.mediumSpan(context), builder.length() - dot.length(), builder.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     builder.setSpan(
         new AbsoluteSizeSpan(context.getResources().getDimensionPixelSize(R.dimen.text_size_routing_number)),
         builder.length() - dot.length(), builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -499,8 +498,8 @@ final class RoutingBottomMenuController
                                                   @NonNull SpannableStringBuilder builder)
   {
     builder.append(arrivalTime);
-    builder.setSpan(new TypefaceSpan(context.getResources().getString(R.string.robotoMedium)),
-                    builder.length() - arrivalTime.length(), builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    builder.setSpan(GroveFonts.mediumSpan(context), builder.length() - arrivalTime.length(), builder.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     builder.setSpan(
         new AbsoluteSizeSpan(context.getResources().getDimensionPixelSize(R.dimen.text_size_routing_number)),
         builder.length() - arrivalTime.length(), builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -33,7 +33,7 @@
       android:layout_height="wrap_content"
       android:maxWidth="212dp"
       android:textAppearance="?android:attr/textAppearanceLarge"
-      android:fontFamily="@string/robotoMedium"
+      android:fontFamily="@font/inter_medium"
       android:textStyle="normal"
       android:gravity="center_horizontal"
       tools:text="Some name very loooooooooong name"

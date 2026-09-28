@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="?attr/selectableItemBackground"
-        android:fontFamily="@string/robotoMedium"
+        android:fontFamily="@font/inter_medium"
         android:gravity="center"
         android:letterSpacing="0.01"
         android:textAllCaps="true"
