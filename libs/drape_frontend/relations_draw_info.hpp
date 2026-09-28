@@ -17,6 +17,7 @@ struct RelationsDrawSettings
   bool hiking : 1 = false;
   bool cycling : 1 = false;
   bool PT : 1 = false;
+  int zoom = 0;  // Grove: the tile's zoom, for cycle route levels.
 
   void Load();
 

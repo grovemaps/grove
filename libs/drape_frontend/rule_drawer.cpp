@@ -174,6 +174,7 @@ RuleDrawer::RuleDrawer(TCheckCancelledCallback const & checkCancelled, TIsCountr
     /// @todo Make naive implementation for now. Fetch draw settings from EngineContext.
     /// Should refactor and generalize these settings (3D, isolines, hiking, cycling, ...)
     m_relsSettings.Load();
+    m_relsSettings.zoom = m_zoomLevel;  // Grove
   }
 
   m_applyParams.m_insertShape = [this](drape_ptr<MapShape> && shape)

@@ -92,6 +92,9 @@ Current upstream hooks:
 | `libs/drape_frontend/tile_info.cpp` | after a tile's features, draws its logo layer (`grove::DrawBrandLayer`, `libs/drape_frontend/grove_brand_layer.hpp`, Grove) |
 | `libs/drape_frontend/poi_symbol_shape.cpp`, `libs/drape/overlay_tree.cpp` | logos get `grove::kBrandPriority`, above every map label and icon, and never hide each other |
 | `libs/drape_frontend/apply_feature_functors.cpp` (again) | chains get no category icon (the logo layer draws theirs), and from zoom 16 their name under the logo (`libs/drape_frontend/grove_brands.hpp`, Grove) |
+| `libs/drape_frontend/relations_draw_info.{hpp,cpp}`, `rule_drawer.cpp`, `apply_feature_functors.cpp` (again) | the cycling layer draws one solid line per road, coloured by the road's highest cycle network, instead of a stripe per route (`libs/drape_frontend/grove_cycle_routes.hpp`, Grove) |
+| `libs/routing/geometry.cpp` | bicycle routing raises the weight of roads in signed cycle routes (`libs/routing/grove_cycle_routes.hpp`, Grove) |
+| `android/app/src/main/res/xml/prefs_main.xml` (again) | "Prefer cycle routes" switch under Navigation (`GroveSettings.java`, JNI `GroveCycleRoutes.cpp`) |
 | `android/app/build.gradle` | stores `grove_brands.bin` and `grove_landcover_world.bin` uncompressed, so they are read in place |
 | `android/app/src/main/res/**`, `RoutingBottomMenuController.java` | Roboto references point to the app font (Geist, Inter for Greek), and the app themes hang under `values/grove_fonts.xml`; written by `tools/grove/android_fonts.py`, see "Fonts" |
 | `android/app/src/main/res/layout/place_page_details.xml`, `PlacePageView.java` | a container for the Mangrove reviews section and the one line that shows it (`GroveReviewsFragment`) |
@@ -210,6 +213,11 @@ Zoomed out (zoom 11 down to the whole world), where Organic Maps' map files have
 - **Drawing:** Grove's land cover layer (`libs/drape_frontend/grove_raster_layers.hpp`), drawn over the background and under the map's areas.
 - **Zoom 6 and out:** a tile there spans dozens of squares, so these zooms come from a bundled pack instead, offline: `tools/grove/landcover_world.py` reads every square's 600 m overview, mosaics them at 0.025° and cuts web mercator tiles for zooms 1–6 as 8-bit PNGs of WorldCover classes, which the app colours for the light and dark styles (`data/grove_landcover_world.bin` and `.txt`, about 4.4 MB, stored uncompressed in the APK). Small lakes take the class of the land around them, since zoomed out the map doesn't draw them and they would show as background-coloured dots.
 - **Switch:** Android Settings → "General settings" → "Land cover" (`GroveLandcover` settings key), on by default. Like relief, from zoom 7 it downloads while browsing, which tells Amazon's servers which areas are viewed.
+
+## Cycle routes
+
+- **Layer:** upstream's cycling layer draws a 3 dp stripe per route in the route's own colour (purple if it has none), side by side and dashed like the road under it. With the Dutch and Belgian node networks that covers whole towns in rainbow bands. Grove draws one solid line per road, in the colour of the highest cycle network the road belongs to, as Mapy.com does: deep magenta for national and international routes (`icn`, `ncn`), magenta for regional ones and node networks (`rcn`, translucent at zoom 12), light pink for local routes (`lcn`) and brown for mountain bike trails, both from zoom 14. Roads whose routes aren't drawn at a zoom keep the map style's visibility. Hiking and transit lines are unchanged.
+- **Routing:** bicycle routes prefer roads of signed cycle routes, which are usually quieter and nicer: their weight speed is raised by 20% (national, regional) or 10% (local), capped at the model's maximum so A* stays exact; ETAs are unchanged. Stronger factors sent a ride across Amsterdam 48% further round the regional routes, so the preference only buys short detours (`routing_integration_tests/grove_cycle_routes_test.cpp`, with the Utrecht and Amsterdam maps). Upstream's alternative route (the other strategy) still offers the direct way. Switch: Settings → Navigation → "Prefer cycle routes" (`GroveCycleRoutes` settings key), on by default, from the next route.
 
 ## Brand logos
 

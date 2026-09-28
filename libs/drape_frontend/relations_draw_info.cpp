@@ -1,5 +1,7 @@
 #include "relations_draw_info.hpp"
 
+#include "drape_frontend/grove_cycle_routes.hpp"
+
 #include "indexer/feature.hpp"
 #include "indexer/map_style_reader.hpp"
 
@@ -25,21 +27,38 @@ dp::Color constexpr kDefaultRouteColor = dp::Color::Purple();
 bool RelationsDrawInfo::HasHikingOrCycling(FeatureType & ft) const
 {
   for (uint32_t relID : ft.GetRelations())
-    if (m_sett.MatchHikingOrCycling(ft.ReadRelation(relID).GetType()))
+  {
+    auto rel = ft.ReadRelation(relID);
+    if (!m_sett.MatchHikingOrCycling(rel.GetType()))
+      continue;
+    // Grove: roads of cycle routes not drawn at this zoom keep the map style's visibility.
+    using RR = feature::RouteRelationBase;
+    if ((rel.GetType() != RR::Type::Bicycle && rel.GetType() != RR::Type::MTB) ||
+        grove::CycleRouteColor(grove::CycleRouteLevel(rel.GetRel()), m_sett.zoom))
       return true;
+  }
   return false;
 }
 
 void RelationsDrawInfo::Init(FeatureType & ft)
 {
+  using RR = feature::RouteRelationBase;
+
   if (m_sett.IsEmpty())
     return;
 
   buffer_vector<std::pair<std::string, int>, 4> refs;
+  int groveCycleLevel = -1;  // Grove: one line for all cycle routes, see grove_cycle_routes.hpp.
   for (uint32_t relID : ft.GetRelations())
   {
     auto rel = ft.ReadRelation(relID);
-    if (m_sett.MatchHikingOrCycling(rel.GetType()) || (m_sett.PT && rel.IsPTRoute()))
+    if (m_sett.cycling && (rel.GetType() == RR::Type::Bicycle || rel.GetType() == RR::Type::MTB))
+    {
+      int const level = grove::CycleRouteLevel(rel.GetRel());
+      if (groveCycleLevel < 0 || level < groveCycleLevel)
+        groveCycleLevel = level;
+    }
+    else if (m_sett.MatchHikingOrCycling(rel.GetType()) || (m_sett.PT && rel.IsPTRoute()))
     {
       auto clr = rel.GetColor();
       if (clr == kEmptyColor)
@@ -73,6 +92,10 @@ void RelationsDrawInfo::Init(FeatureType & ft)
       }
     }
   }
+
+  if (groveCycleLevel >= 0)
+    if (auto const color = grove::CycleRouteColor(groveCycleLevel, m_sett.zoom))
+      m_colors.push_back({*color, 1000});
 
   if (m_colors.empty())
     return;
