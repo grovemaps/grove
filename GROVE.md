@@ -29,6 +29,7 @@ Apple Maps sets the color palette.
   - The APK is signed with `android/app/debug.keystore`, like local debug builds, so it installs over them as an update.
 - Upstream's own workflows are disabled in the fork, so only Grove's build uses Actions.
 - After syncing with a newer Organic Maps (below), `git push origin grove` publishes the merge and triggers a new build.
+- Finished, tested work is merged into `grove` right away (the owner's standing choice), so every feature reaches the APK.
 
 ## Working on Grove on a new machine
 
