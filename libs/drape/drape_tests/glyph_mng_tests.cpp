@@ -621,8 +621,15 @@ UNIT_TEST(ShapeText_LangParameterPlumbing)
   }
 
   // Turkish `locl` in Roboto blocks the fi ligature. English/default keeps it.
-  auto const fiEn = mng.ShapeText("fi", "en");
-  auto const fiTr = mng.ShapeText("fi", tr);
+  // Grove: Inter, which has no fi ligature, serves Latin in the full font list, so load Roboto alone.
+  dp::GlyphManager::Params robotoOnly;
+  robotoOnly.m_uniBlocks = base::JoinPath("fonts", "unicode_blocks.txt");
+  robotoOnly.m_whitelist = base::JoinPath("fonts", "whitelist.txt");
+  robotoOnly.m_blacklist = base::JoinPath("fonts", "blacklist.txt");
+  robotoOnly.m_fonts = {"fonts/07_roboto_medium.ttf"};
+  dp::GlyphManager roboto(robotoOnly);
+  auto const fiEn = roboto.ShapeText("fi", "en");
+  auto const fiTr = roboto.ShapeText("fi", tr);
   TEST_EQUAL(fiEn.m_glyphs.size(), 1, ("English keeps the fi ligature"));
   TEST_EQUAL(fiTr.m_glyphs.size(), 2, ("Turkish must suppress the fi ligature"));
 }
