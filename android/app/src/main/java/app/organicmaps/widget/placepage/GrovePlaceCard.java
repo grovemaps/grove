@@ -3,7 +3,9 @@ package app.organicmaps.widget.placepage;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -13,36 +15,73 @@ import androidx.fragment.app.Fragment;
 import app.organicmaps.R;
 import app.organicmaps.sdk.GrovePlace;
 import app.organicmaps.util.ThemeUtils;
+import java.lang.ref.WeakReference;
 
 // Grove: the place card takes the colour of the place, its chain's logo colour or its category colour: a light tint
-// for the card, the full colour for the title (darkened or lightened until it reads on the card).
+// over the whole card, every section included, and the full colour for the title (darkened or lightened until it
+// reads).
 final class GrovePlaceCard
 {
   private static final float CARD_TINT = 0.14f;
+
+  // The place's colour (0: none) and the card it was applied to; sections that appear later (loaded fragments,
+  // details shown when the card is pulled up) are tinted when the card lays them out.
+  @ColorInt
+  private static int sColor;
+  private static WeakReference<View> sCard = new WeakReference<>(null);
 
   private GrovePlaceCard() {}
 
   static void apply(@NonNull Fragment fragment, @NonNull TextView title)
   {
-    final View card = fragment.requireActivity().findViewById(R.id.placepage);
     final Context context = fragment.requireContext();
     final int rgb = GrovePlace.nativeGetSelectedColor();
-    if (rgb == 0)
-    {
-      if (card != null)
-        card.setBackgroundTintList(null);
-      title.setTextColor(ThemeUtils.getColor(context, android.R.attr.textColorPrimary));
-      return;
-    }
+    sColor = rgb == 0 ? 0 : Color.BLACK | rgb;
 
-    final int color = Color.BLACK | rgb;
-    final boolean dark = ThemeUtils.isDarkTheme(context);
-    if (card != null)
+    if (sColor == 0)
+      title.setTextColor(ThemeUtils.getColor(context, android.R.attr.textColorPrimary));
+    else
+      title.setTextColor(readable(sColor, ThemeUtils.isDarkTheme(context)));
+
+    final View card = fragment.requireActivity().findViewById(R.id.placepage);
+    if (card == null)
+      return;
+    if (sCard.get() != card)
     {
-      final int base = ContextCompat.getColor(context, R.color.bg_cards);
-      card.setBackgroundTintList(ColorStateList.valueOf(ColorUtils.blendARGB(base, color, CARD_TINT)));
+      sCard = new WeakReference<>(card);
+      card.getViewTreeObserver().addOnGlobalLayoutListener(() -> tint(card));
     }
-    title.setTextColor(readable(color, dark));
+    tint(card);
+  }
+
+  // Tints every view painted in the card or section-gap colour.
+  private static void tint(@NonNull View card)
+  {
+    final Context context = card.getContext();
+    final int cards = ContextCompat.getColor(context, R.color.bg_cards);
+    final int panel = ContextCompat.getColor(context, R.color.bg_panel);
+    tint(card, cards, panel);
+  }
+
+  private static void tint(@NonNull View view, @ColorInt int cards, @ColorInt int panel)
+  {
+    if (view.getBackground() instanceof ColorDrawable background)
+    {
+      final int base = background.getColor();
+      if (base == cards || base == panel)
+      {
+        // Only on changes: this runs on every layout of the card.
+        final int wanted = sColor == 0 ? 0 : ColorUtils.blendARGB(base, sColor, CARD_TINT);
+        final ColorStateList current = view.getBackgroundTintList();
+        if ((current == null ? 0 : current.getDefaultColor()) != wanted)
+          view.setBackgroundTintList(wanted == 0 ? null : ColorStateList.valueOf(wanted));
+      }
+    }
+    if (view instanceof ViewGroup group)
+    {
+      for (int i = 0; i < group.getChildCount(); ++i)
+        tint(group.getChildAt(i), cards, panel);
+    }
   }
 
   @ColorInt
