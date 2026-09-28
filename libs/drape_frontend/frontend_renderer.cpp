@@ -1026,8 +1026,9 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
                                                make_ref(data));
     }
 
-    m_tileBackgroundRenderer->AssignTileBackgroundImage(m_context, msg->GetUid(), msg->GetTexturePool(),
-                                                        msg->GetTextureId(), msg->GetMode());
+    m_groveRelief.Route(make_ref(m_tileBackgroundRenderer), msg->GetMode())
+        ->AssignTileBackgroundImage(m_context, msg->GetUid(), msg->GetTexturePool(), msg->GetTextureId(),
+                                    msg->GetMode());
     msg->MarkProcessed();
     break;
   }
@@ -1035,7 +1036,8 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
   case Message::Type::SetTileBackgroundData:
   {
     ref_ptr<SetTileBackgroundDataMessage> msg = message;
-    m_tileBackgroundRenderer->SetTileBackgroundData(m_context, msg->GetTileKey(), msg->GetImageUid(), msg->GetRect());
+    m_groveRelief.Route(make_ref(m_tileBackgroundRenderer), msg->GetImageUid())
+        ->SetTileBackgroundData(m_context, msg->GetTileKey(), msg->GetImageUid(), msg->GetRect());
     break;
   }
 
@@ -1127,6 +1129,7 @@ void FrontendRenderer::UpdateContextDependentResources()
 
   m_trafficRenderer->ClearContextDependentResources();
   m_tileBackgroundRenderer->ClearContextDependentResources(m_context);
+  m_groveRelief.ClearContextDependentResources(m_context);
 
   if (IsValidCurrentZoom())
   {
@@ -1477,6 +1480,8 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView, bool activeFram
     RenderTileBackgroundLayer(modelView);
 
     Render2dLayer(modelView);
+    // Grove: shaded relief over areas and roads, under 3D buildings, routes and labels.
+    m_groveRelief.Render(m_context, make_ref(m_gpuProgramManager), modelView, GetCurrentZoom(), m_frameValues);
     RenderUserMarksLayer(modelView, DepthLayer::UserLineLayer);
 
     bool const hasTransitRouteData = HasTransitRouteData();
@@ -2390,6 +2395,7 @@ TTilesCollection FrontendRenderer::ResolveTileKeys(ScreenBase const & screen)
 
   m_trafficRenderer->OnUpdateViewport(result, GetCurrentZoom(), tilesToDelete);
   m_tileBackgroundRenderer->OnUpdateViewport(m_context, result, GetCurrentZoom());
+  m_groveRelief.OnUpdateViewport(m_context, result, GetCurrentZoom());
 
 #if defined(DRAPE_MEASURER_BENCHMARK) && defined(GENERATING_STATISTIC)
   DrapeMeasurer::Instance().StartScenePreparing();
@@ -2429,6 +2435,7 @@ void FrontendRenderer::OnContextDestroy()
   m_gpsTrackRenderer->ClearRenderData();
   m_trafficRenderer->ClearContextDependentResources();
   m_tileBackgroundRenderer->ClearContextDependentResources(m_context);
+  m_groveRelief.ClearContextDependentResources(m_context);
   m_drapeApiRenderer->Clear();
   m_postprocessRenderer->ClearContextDependentResources();
   m_transitSchemeRenderer->ClearContextDependentResources(nullptr /* overlayTree */);
@@ -2586,6 +2593,7 @@ void FrontendRenderer::ReleaseResources()
   m_buildingsFramebuffer.reset();
   m_screenQuadRenderer.reset();
   m_tileBackgroundRenderer.reset();
+  m_groveRelief.Reset();
   m_trafficRenderer.reset();
   m_transitSchemeRenderer.reset();
   m_postprocessRenderer.reset();

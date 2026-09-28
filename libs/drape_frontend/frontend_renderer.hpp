@@ -4,6 +4,7 @@
 #include "drape_frontend/drape_api_renderer.hpp"
 #include "drape_frontend/frame_values.hpp"
 #include "drape_frontend/gps_track_renderer.hpp"
+#include "drape_frontend/grove_relief.hpp"
 #include "drape_frontend/gui/layer_render.hpp"
 #include "drape_frontend/map_data_provider.hpp"
 #include "drape_frontend/my_position_controller.hpp"
@@ -331,6 +332,7 @@ private:
 
   drape_ptr<RouteRenderer> m_routeRenderer;
   drape_ptr<TileBackgroundRenderer> m_tileBackgroundRenderer;
+  grove::ReliefLayer m_groveRelief;  // Grove: shaded relief, see grove_relief.hpp.
   drape_ptr<TrafficRenderer> m_trafficRenderer;
   drape_ptr<TransitSchemeRenderer> m_transitSchemeRenderer;
   drape_ptr<dp::Framebuffer> m_buildingsFramebuffer;

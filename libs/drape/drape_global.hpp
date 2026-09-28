@@ -66,6 +66,7 @@ enum BackgroundMode
 {
   Default = 0,
   Satellite,
+  Relief,  // Grove: shaded relief over the map, see drape_frontend/grove_relief.hpp.
 
   Count
 };
