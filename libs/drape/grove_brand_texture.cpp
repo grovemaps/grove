@@ -19,8 +19,8 @@ namespace
 {
 std::string_view constexpr kIndexFile = "grove_brands.txt";
 std::string_view constexpr kPackFile = "grove_brands.bin";
-// 338 badges at 3x density (8 MB); further brands in a session keep their category icons.
-m2::PointU constexpr kTextureSize(2048, 1024);
+// 441 logos at 3x density (16 MB); further brands in a session keep their category icons.
+m2::PointU constexpr kTextureSize(2048, 2048);
 
 std::string Normalize(std::string_view name)
 {

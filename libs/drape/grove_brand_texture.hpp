@@ -27,7 +27,7 @@ namespace grove
 std::string_view constexpr kBrandSymbolPrefix = "brand:";
 
 // Badge size on screen: a little larger than the category icons, so logos stay recognisable.
-double constexpr kBrandBadgeDp = 26.0;
+double constexpr kBrandBadgeDp = 32.0;
 
 class BrandPack
 {
