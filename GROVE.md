@@ -75,7 +75,9 @@ Current upstream hooks:
 | `libs/map/framework.cpp` | tile feature reading goes through `libs/map/grove_landcover_reading.hpp` (Grove), which adds the zoom 12 landcover at zoom 11 |
 | `libs/drape_frontend/apply_feature_functors.cpp` | after each place icon, `grove::InsertPoiDot` (`libs/drape_frontend/grove_poi_dot.hpp`, Grove) adds its dot; `grove::StyleCaption` and `grove::StylePathText` (`libs/drape_frontend/grove_typography.hpp`, Grove) pick each label's typography |
 | `libs/shaders/GL/area3d.vsh.glsl`, `texturing3d.fsh.glsl`, `libs/shaders/Metal/map.metal` (`vsArea3d`, `fsArea3d`) | 3D building lighting, see "Depth" below; `data/vulkan_shaders/*` are regenerated from the GL files |
-| `libs/drape_frontend/frontend_renderer.cpp` | 3D buildings at 90% opacity instead of 70% |
+| `libs/drape_frontend/frontend_renderer.cpp` | 3D buildings at 90% opacity instead of 70%; the relief layer (`libs/drape_frontend/grove_relief.hpp`, Grove) gets its tiles routed to it and is drawn after the 2D layer |
+| `libs/drape/drape_global.hpp` | adds `BackgroundMode::Relief`, which gives relief tiles their own texture pool |
+| `libs/map/framework.cpp`, `framework.hpp` | creates the relief tile provider (`libs/map/grove_relief.cpp`, Grove) before the drape engine |
 | `data/fonts/whitelist.txt` | Inter for Latin, Greek and Cyrillic blocks; drops the system Roboto entries for those blocks (a whitelisted system font loads last and would win) |
 
 Grove style files in `data/styles/grove/`:
@@ -160,6 +162,15 @@ LD_LIBRARY_PATH=<dir with libc++.so> python3 libs/shaders/vulkan_shaders_preproc
 ```
 
 (`tools/unix/generate_vulkan_shaders.sh` does the same when it finds the NDK.)
+
+## Relief
+
+Hills and mountains are shaded, as in Guru and Apple Maps: slopes facing away from a northwest sun get a cool grey-blue shadow, slopes facing it a warm light, flat ground nothing. Water and flat countries like the Netherlands look unchanged.
+
+- **Data:** [Terrarium elevation tiles](https://github.com/tilezen/joerd/blob/master/docs/formats.md#terrarium) (Tilezen/Mapzen on AWS Open Data: worldwide, free, no key, zoom 0–15; [attribution](https://github.com/tilezen/joerd/blob/master/docs/attribution.md)). Upstream's `RasterTileProvider` downloads them and caches up to 200 MB in `grove_relief/` in the app's data folder.
+- **Shading:** `grove::ShadeRelief` (`libs/map/grove_relief.cpp`) turns each elevation tile into a transparent overlay tile with Horn's slope method. Zoomed out, terrain is exaggerated (up to 4×) so it doesn't look flat. The cache keeps the raw elevation, so shading changes need no new downloads.
+- **Drawing:** a second instance of upstream's raster tile renderer (`libs/drape_frontend/grove_relief.hpp`) draws the overlay with normal alpha blending after areas and roads, under 3D buildings, routes, icons and labels. It works on OpenGL, Vulkan and Metal without shader changes.
+- **Online, not offline yet:** relief tiles download while browsing, which tells Amazon's servers which areas are viewed. Set `GroveRelief=false` in the settings to switch it off. An offline version would build the same tiles per map region from the elevation data behind Organic Maps' contour lines (`topography_generator_tool`).
 
 ## Checking the look without a phone
 
