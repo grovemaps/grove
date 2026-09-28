@@ -17,6 +17,7 @@ set(SRC
   gl_mock_functions.hpp
   glyph_mng_tests.cpp
   glyph_packer_test.cpp
+  grove_brand_tests.cpp
   grove_text_style_tests.cpp
   harfbuzz_shaping_test.cpp
   img.cpp

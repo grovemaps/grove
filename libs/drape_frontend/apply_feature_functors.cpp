@@ -4,6 +4,7 @@
 #include "drape_frontend/area_shape.hpp"
 #include "drape_frontend/color_constants.hpp"
 #include "drape_frontend/colored_symbol_shape.hpp"
+#include "drape_frontend/grove_brands.hpp"
 #include "drape_frontend/grove_poi_dot.hpp"
 #include "drape_frontend/grove_typography.hpp"
 #include "drape_frontend/line_shape.hpp"
@@ -426,6 +427,10 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
     if (obsoleteInEditor)
       params.m_maskColor = kPoiDeletedMaskColor;
 
+    // Grove: a chain's logo badge instead of its category icon, see grove_brands.hpp.
+    std::string const categoryIcon = params.m_symbolName;
+    grove::UseBrandBadge(m_f, m_params.m_tileKey.m_zoomLevel, texMng, params.m_symbolName);
+
     dp::TextureManager::SymbolRegion region;
     texMng->GetSymbolRegion(params.m_symbolName, region);
     symbolSize = region.GetPixelSize();
@@ -433,7 +438,7 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
     if (region.IsValid())
     {
       m_params.m_insertShape(make_unique_dp<PoiSymbolShape>(centerPoint, params, m_params.m_tileKey, 0));
-      grove::InsertPoiDot(m_params.m_insertShape, texMng, centerPoint, params);
+      grove::InsertPoiDot(m_params.m_insertShape, texMng, centerPoint, params, categoryIcon);
     }
     else
     {

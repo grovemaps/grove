@@ -195,7 +195,7 @@ android {
   // as the drawing rules, are still compressed.
   androidResources {
     ignoreAssetsPattern = '!.svn:!.git:!.DS_Store:!*.scc:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~'
-    noCompress = ['png', 'mwm', 'ttf', 'packed_polygons.bin']
+    noCompress = ['png', 'mwm', 'ttf', 'packed_polygons.bin', 'grove_brands.bin']  // Grove: brand logo pack
   }
 
   compileOptions {

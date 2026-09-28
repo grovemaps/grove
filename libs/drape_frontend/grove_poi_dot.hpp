@@ -71,14 +71,16 @@ private:
   std::string const m_dotName;
 };
 
-// Adds the dot for a place icon, if the icon has one.
+// Adds the dot for a place icon, if the icon has one. A brand badge keeps the dot of its category icon.
 template <typename InsertShapeFn>
 void InsertPoiDot(InsertShapeFn const & insertShape, ref_ptr<dp::TextureManager> textures,
-                  m2::PointD const & mercatorPt, df::PoiSymbolViewParams const & iconParams)
+                  m2::PointD const & mercatorPt, df::PoiSymbolViewParams const & iconParams,
+                  std::string const & categoryIcon)
 {
-  std::string dotName = iconParams.m_symbolName + "-dot";
+  std::string dotName = categoryIcon + "-dot";
   dp::TextureManager::SymbolRegion region;
   if (textures->GetSymbolRegionSafe(dotName, region))
-    insertShape(make_unique_dp<PoiDotShape>(mercatorPt, iconParams.m_tileCenter, iconParams.m_posZ, std::move(dotName)));
+    insertShape(
+        make_unique_dp<PoiDotShape>(mercatorPt, iconParams.m_tileCenter, iconParams.m_posZ, std::move(dotName)));
 }
 }  // namespace grove
