@@ -223,6 +223,10 @@
     <string name="pref_map_landcover_title">Земний покрив</string>
     <!-- Grove: Settings «General» category: «Land cover» summary -->
     <string name="pref_map_landcover_summary">Розфарбовує ліси, поля та міста на дрібних масштабах. Завантажує дані про земний покрив (ESA WorldCover), поки ви переглядаєте мапу.</string>
+    <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» switch title (bicycle routing takes signed cycle routes) -->
+    <string name="pref_prefer_cycle_routes_title">Надавати перевагу веломаршрутам</string>
+    <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» summary -->
+    <string name="pref_prefer_cycle_routes_summary">Велосипедні маршрути проходять розміченими веломаршрутами та вузловими мережами, якщо об’їзд невеликий.</string>
     <!-- Grove: map button that shows and hides the logos of chain stores and restaurants (accessibility description) -->
     <string name="grove_brand_logos">Логотипи брендів</string>
     <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->

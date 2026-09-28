@@ -223,6 +223,10 @@
     <string name="pref_map_landcover_title">Bodembedekking</string>
     <!-- Grove: Settings «General» category: «Land cover» summary -->
     <string name="pref_map_landcover_summary">Kleurt bossen, velden en steden als je uitzoomt. Downloadt bodembedekkingsgegevens (ESA WorldCover) terwijl je de kaart bekijkt.</string>
+    <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» switch title (bicycle routing takes signed cycle routes) -->
+    <string name="pref_prefer_cycle_routes_title">Fietsroutes verkiezen</string>
+    <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» summary -->
+    <string name="pref_prefer_cycle_routes_summary">Fietsroutes gebruiken bewegwijzerde fietsroutes en knooppuntnetwerken als de omweg kort is.</string>
     <!-- Grove: map button that shows and hides the logos of chain stores and restaurants (accessibility description) -->
     <string name="grove_brand_logos">Merklogo’s</string>
     <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->

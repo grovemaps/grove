@@ -223,6 +223,10 @@
     <string name="pref_map_landcover_title">Земной покров</string>
     <!-- Grove: Settings «General» category: «Land cover» summary -->
     <string name="pref_map_landcover_summary">Раскрашивает леса, поля и города на мелких масштабах. Загружает данные о земном покрове (ESA WorldCover), пока вы просматриваете карту.</string>
+    <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» switch title (bicycle routing takes signed cycle routes) -->
+    <string name="pref_prefer_cycle_routes_title">Предпочитать веломаршруты</string>
+    <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» summary -->
+    <string name="pref_prefer_cycle_routes_summary">Велосипедные маршруты проходят по размеченным веломаршрутам и узловым сетям, если объезд небольшой.</string>
     <!-- Grove: map button that shows and hides the logos of chain stores and restaurants (accessibility description) -->
     <string name="grove_brand_logos">Логотипы брендов</string>
     <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->

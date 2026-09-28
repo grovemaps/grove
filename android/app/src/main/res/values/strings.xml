@@ -223,6 +223,10 @@
     <string name="pref_map_landcover_title">Land cover</string>
     <!-- Grove: Settings «General» category: «Land cover» summary -->
     <string name="pref_map_landcover_summary">Colours forests, fields and towns when zoomed out. Downloads land cover data (ESA WorldCover) while you browse the map.</string>
+    <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» switch title (bicycle routing takes signed cycle routes) -->
+    <string name="pref_prefer_cycle_routes_title">Prefer cycle routes</string>
+    <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» summary -->
+    <string name="pref_prefer_cycle_routes_summary">Bicycle routes take signed cycle routes and node networks when the detour is short.</string>
     <!-- Grove: map button that shows and hides the logos of chain stores and restaurants (accessibility description) -->
     <string name="grove_brand_logos">Brand logos</string>
     <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->

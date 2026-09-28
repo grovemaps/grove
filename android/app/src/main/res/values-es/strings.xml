@@ -223,6 +223,10 @@
     <string name="pref_map_landcover_title">Cobertura del suelo</string>
     <!-- Grove: Settings «General» category: «Land cover» summary -->
     <string name="pref_map_landcover_summary">Colorea bosques, campos y ciudades al alejar el mapa. Descarga datos de cobertura del suelo (ESA WorldCover) mientras exploras el mapa.</string>
+    <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» switch title (bicycle routing takes signed cycle routes) -->
+    <string name="pref_prefer_cycle_routes_title">Preferir rutas ciclistas</string>
+    <!-- Grove: Settings «Navigation» category: «Prefer cycle routes» summary -->
+    <string name="pref_prefer_cycle_routes_summary">Las rutas en bicicleta usan rutas ciclistas señalizadas y redes de nodos cuando el desvío es corto.</string>
     <!-- Grove: map button that shows and hides the logos of chain stores and restaurants (accessibility description) -->
     <string name="grove_brand_logos">Logotipos de marcas</string>
     <!-- Grove: place card section title and settings switch: reviews of the place from Mangrove (mangrove.reviews). Ported from CoMaps. -->
