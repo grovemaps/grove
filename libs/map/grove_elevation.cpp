@@ -74,10 +74,14 @@ double TerrariumMeters(uint8_t r, uint8_t g, uint8_t b)
 std::optional<double> GetElevation(ms::LatLon const & point)
 {
   std::string const dir = base::JoinPath(GetPlatform().WritableDir(), std::string(kElevationCacheSubdir));
+  // Tiles saved for the downloaded maps (grove_offline_layers.hpp) and browsed ones, most detailed first.
+  std::string const offlineDir = base::JoinPath(GetPlatform().WritableDir(), std::string(kReliefOfflineSubdir));
   for (int z = kElevationDownloadZoom + 1; z >= kElevationMinCachedZoom; --z)
   {
     auto const t = ToTilePixel(point, z);
-    std::string const path = base::JoinPath(dir, ElevationTileName(z, t) + ".tile");
+    std::string path = base::JoinPath(dir, ElevationTileName(z, t) + ".tile");
+    if (!Platform::IsFileExistsByFullPath(path))
+      path = base::JoinPath(offlineDir, ElevationTileName(z, t) + ".tile");
     if (!Platform::IsFileExistsByFullPath(path))
       continue;
     try

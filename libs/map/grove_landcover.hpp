@@ -6,6 +6,8 @@
 #include "drape/drape_global.hpp"
 #include "drape/pointers.hpp"
 
+#include "geometry/rect2d.hpp"
+
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -64,6 +66,10 @@ std::optional<std::vector<Level>> ParseLevels(std::string const & head,
 
 // Registers the land cover layer's tile reader; call before the drape engine is created.
 void CreateProvider(std::function<ref_ptr<df::DrapeEngine>()> getEngine, std::function<bool()> isDarkStyle);
+
+// Saves the WorldCover tiles the region's map tiles need from zoom 7 to 11 into the disk cache, so the layer works
+// offline there (map/grove_offline_layers.hpp). Blocks; false on network errors.
+bool Prefetch(m2::RectD const & mercatorRect);
 
 // The settings switch (key "GroveLandcover", on by default). Takes effect at once.
 bool IsEnabled();

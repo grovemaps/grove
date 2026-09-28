@@ -6,6 +6,7 @@
 #include "map/grove_landcover.hpp"
 #include "map/grove_landcover_reading.hpp"
 #include "map/grove_measure.hpp"
+#include "map/grove_offline_layers.hpp"
 #include "map/grove_relief.hpp"
 #include "map/place_page_info.hpp"
 #include "map/raster_tile_provider.hpp"
@@ -479,7 +480,12 @@ void Framework::OnCountryFileDownloaded(storage::CountryId const &, storage::Loc
     auto const res = RegisterMap(*localFile);
     MwmSet::MwmId const & id = res.first;
     if (id.IsAlive())
+    {
       rect = id.GetInfo()->m_bordersRect;
+      // Grove: save the region's relief and land cover, see map/grove_offline_layers.hpp.
+      if (m_groveOfflineLayers)
+        m_groveOfflineLayers->Add(localFile->GetCountryName(), localFile->GetVersion(), rect);
+    }
   }
 
   m_trafficManager.Invalidate();
@@ -1786,7 +1792,19 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
   grove::landcover::CreateProvider([this] { return make_ref(m_drapeEngine); },
                                    [this] { return MapStyleIsDark(GetMapStyle()); });
 
-  // Grove: chains' logos from zoom 12, see map/grove_brand_places.hpp.
+  // Grove: relief and land cover saved for the downloaded maps, see map/grove_offline_layers.hpp.
+  if (!m_groveOfflineLayers)
+  {
+    m_groveOfflineLayers =
+        std::make_unique<grove::OfflineLayers>(base::JoinPath(GetPlatform().WritableDir(), "grove_offline"));
+    std::vector<std::shared_ptr<MwmInfo>> infos;
+    m_featuresFetcher.GetDataSource().GetMwmsInfo(infos);
+    for (auto const & info : infos)
+      if (info->GetType() == MwmInfo::COUNTRY)
+        m_groveOfflineLayers->Add(info->GetCountryName(), info->GetVersion(), info->m_bordersRect);
+  }
+
+  // Grove: chains' logos from zoom 15, see map/grove_brand_places.hpp.
   if (!m_groveBrandPlaces)
   {
     grove::BrandsShown() = grove::AreBrandsShown();

@@ -323,6 +323,15 @@ bool RasterTileProvider::RequestTile(df::TileKey const & tileKey, dp::Background
       return;
     }
 
+    // Grove: tiles saved for downloaded maps.
+    if (!m_params.m_offlineSubdir.empty() &&
+        DecodeFileToRGBA(GetPlatform().WritableDir() + m_params.m_offlineSubdir + "/" + fileName, rgba, width, height))
+    {
+      if (DropActive(tileKey))
+        m_onReady(tileKey, mode, uid, width, height, rect, std::move(rgba));
+      return;
+    }
+
     // Cache miss (file absent or unreadable): start the async download.
 #ifdef ENABLE_STATUS_PLACEHOLDERS
     DeliverPlaceholder(tileKey, mode, Status::Downloading);

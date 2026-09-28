@@ -53,6 +53,9 @@ public:
     double m_maxLon = 180.0;
     // Upper bound on the on-disk tile cache. Once exceeded, least-recently-used tiles are evicted.
     uint64_t m_maxCacheBytes = 100ull * 1024 * 1024;  // 100 MB
+    // Grove: a sub-directory under Platform::WritableDir() of tiles saved for downloaded maps, read before
+    // downloading and never evicted (map/grove_offline_layers.hpp). Empty for none.
+    std::string m_offlineSubdir;
   };
 
   // Delivers decoded RGBA8 pixels for an OM tile. Invoked on a background (Network) thread.

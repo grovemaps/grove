@@ -193,6 +193,7 @@ std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<d
   RasterTileProvider::Params params;
   params.m_urlTemplate = kTerrariumUrl;
   params.m_cacheSubdir = "grove_relief";
+  params.m_offlineSubdir = std::string(kReliefOfflineSubdir);
   params.m_minZoom = 3;
   params.m_maxZoom = kMaxDemZoom;
   params.m_maxCacheBytes = 200ull * 1024 * 1024;

@@ -29,3 +29,29 @@ UNIT_TEST(GroveElevation_TilePixel)
   TEST_EQUAL(se.m_y, 7, ());
 }
 }  // namespace grove_elevation_tests
+
+#include "map/grove_offline_layers.hpp"
+
+#include "geometry/mercator.hpp"
+
+namespace grove_offline_layers_tests
+{
+UNIT_TEST(GroveOfflineLayers_TileRange)
+{
+  // Around Amsterdam's Dam square: its zoom 10 tile is 525/336, as for the elevation.
+  auto const p = mercator::FromLatLon(52.3731, 4.8926);
+  auto const range = grove::OfflineLayers::ToTileRange({p, p}, 10);
+  TEST_EQUAL(range.m_x0, 525, ());
+  TEST_EQUAL(range.m_x1, 525, ());
+  TEST_EQUAL(range.m_y0, 336, ());
+  TEST_EQUAL(range.m_y1, 336, ());
+
+  // The Netherlands at zoom 7 spans a few tiles, north row first.
+  auto const nl =
+      grove::OfflineLayers::ToTileRange({mercator::FromLatLon(50.75, 3.35), mercator::FromLatLon(53.55, 7.25)}, 7);
+  TEST_EQUAL(nl.m_x0, 65, ());
+  TEST_EQUAL(nl.m_x1, 66, ());
+  TEST_EQUAL(nl.m_y0, 41, ());
+  TEST_EQUAL(nl.m_y1, 42, ());
+}
+}  // namespace grove_offline_layers_tests

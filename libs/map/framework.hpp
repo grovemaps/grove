@@ -99,6 +99,7 @@ struct FrameworkParams
 namespace grove
 {
 class BrandPlaces;
+class OfflineLayers;
 }  // namespace grove
 
 class Framework
@@ -178,6 +179,8 @@ protected:
   std::unique_ptr<RasterTileProvider> m_groveRelief;
   // Grove: chains' places for the logo layer, see map/grove_brand_places.hpp.
   std::unique_ptr<grove::BrandPlaces> m_groveBrandPlaces;
+  // Grove: relief and land cover saved for the downloaded maps, see map/grove_offline_layers.hpp.
+  std::unique_ptr<grove::OfflineLayers> m_groveOfflineLayers;
 
   StorageDownloadingPolicy m_storageDownloadingPolicy;
   storage::Storage m_storage;

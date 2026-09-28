@@ -48,7 +48,9 @@ int constexpr kMaxWorldZoom = 5;  // Web mercator.
 int constexpr kSquareDegrees = 3;
 // Pixels per degree of the full resolution level; each overview halves it.
 double constexpr kFullPixelsPerDegree = 12000;
-uint32_t constexpr kTileSize = 256;
+uint32_t constexpr kTileSize = 256;  // World pack tiles.
+// Map tiles: twice the usual 256 px, since phones show a tile 2-3 times larger than its pixels.
+uint32_t constexpr kOutSize = 512;
 // The headers of WorldCover's files, all levels' tile arrays included, fit in the first 28 KB.
 uint32_t constexpr kHeadSize = 32 * 1024;
 // Decoded overview tiles kept in memory: 1 MB each.
@@ -101,6 +103,52 @@ void WriteCacheFile(std::string const & path, std::string const & data)
   }
 }
 
+// The coarsest level of a file that still has a pixel for each of a map tile's at the zoom. OM zoom Z is
+// web-mercator zoom Z - 1.
+size_t LevelFor(int zoom)
+{
+  double const needed = kOutSize * double(1 << (zoom - 1)) / 360;
+  size_t levelIndex = 0;
+  while (levelIndex < 6 && kFullPixelsPerDegree / (2 << levelIndex) >= needed)
+    ++levelIndex;
+  return levelIndex;
+}
+
+// Blurs a map tile's classes into soft blends (a box blur of the given radius, weighted by alpha, run across and
+// down), so neighbouring classes shade into each other instead of showing as pixels.
+void Soften(std::vector<uint8_t> & rgba, int radius)
+{
+  int constexpr n = kOutSize;
+  std::vector<uint32_t> line(size_t{n} * 4);
+  for (int pass = 0; pass < 2; ++pass)
+  {
+    for (int i = 0; i < n; ++i)
+    {
+      // Pass 0 blurs row i, pass 1 column i.
+      auto const at = [&](int j) -> uint8_t *
+      { return &rgba[(pass == 0 ? size_t(i) * n + j : size_t(j) * n + i) * 4]; };
+      for (int j = 0; j < n; ++j)
+      {
+        uint32_t sum[4] = {0, 0, 0, 0};
+        for (int k = j - radius; k <= j + radius; ++k)
+        {
+          uint8_t const * p = at(std::clamp(k, 0, n - 1));
+          for (int c = 0; c < 3; ++c)
+            sum[c] += p[c] * p[3];
+          sum[3] += p[3];
+        }
+        uint32_t * out = &line[size_t(j) * 4];
+        for (int c = 0; c < 3; ++c)
+          out[c] = sum[3] ? sum[c] / sum[3] : 0;
+        out[3] = sum[3] / (2 * radius + 1);
+      }
+      for (int j = 0; j < n; ++j)
+        for (int c = 0; c < 4; ++c)
+          at(j)[c] = static_cast<uint8_t>(line[size_t(j) * 4 + c]);
+    }
+  }
+}
+
 // WorldCover's files, their overview tiles and the map tiles being made from them.
 class Provider
 {
@@ -110,6 +158,44 @@ public:
     , m_isDarkStyle(std::move(isDarkStyle))
   {
     UNUSED_VALUE(Platform::MkDirChecked(CacheDir()));
+  }
+
+  // Reads the files' tiles a region's map tiles need at the online zooms into the disk cache. Blocks; false on
+  // network errors.
+  bool Prefetch(m2::RectD const & mercatorRect)
+  {
+    auto const ll = mercator::ToLatLon(mercatorRect);
+    for (int zoom = kMinOnlineZoom; zoom <= kLandcoverMaxZoom; ++zoom)
+    {
+      size_t const levelIndex = LevelFor(zoom);
+      double const pixelsPerDegree = kFullPixelsPerDegree / (1 << levelIndex);
+      for (int lat = static_cast<int>(std::floor(ll.minY() / kSquareDegrees)) * kSquareDegrees; lat < ll.maxY();
+           lat += kSquareDegrees)
+      {
+        for (int lon = static_cast<int>(std::floor(ll.minX() / kSquareDegrees)) * kSquareDegrees; lon < ll.maxX();
+             lon += kSquareDegrees)
+        {
+          std::string const square = SquareName(lat, lon);
+          auto const levels = GetLevels(square);
+          if (!levels)
+            return false;
+          if (levelIndex >= levels->size())
+            continue;
+          auto const & level = (*levels)[levelIndex];
+          auto const pixel = [&](double degrees)
+          { return static_cast<uint32_t>(std::max(0.0, degrees) * pixelsPerDegree); };
+          uint32_t const x0 = pixel(ll.minX() - lon), x1 = std::min(pixel(ll.maxX() - lon), level.m_width - 1);
+          uint32_t const y0 = pixel(lat + kSquareDegrees - ll.maxY());
+          uint32_t const y1 = std::min(pixel(lat + kSquareDegrees - ll.minY()), level.m_height - 1);
+          uint32_t const tilesAcross = (level.m_width + level.m_tileWidth - 1) / level.m_tileWidth;
+          for (uint32_t ty = y0 / level.m_tileHeight; ty <= y1 / level.m_tileHeight; ++ty)
+            for (uint32_t tx = x0 / level.m_tileWidth; tx <= x1 / level.m_tileWidth; ++tx)
+              if (!GetTile(square, levelIndex, ty * tilesAcross + tx))
+                return false;
+        }
+      }
+    }
+    return true;
   }
 
   bool RequestTile(df::TileKey const & tileKey, dp::BackgroundMode mode)
@@ -309,15 +395,11 @@ private:
       return;
     }
 
-    // The coarsest level that still has a pixel for each of the tile's: OM zoom Z is web-mercator zoom Z - 1.
-    double const needed = kTileSize * double(1 << (tileKey.m_zoomLevel - 1)) / 360;
-    size_t levelIndex = 0;
-    while (levelIndex < 6 && kFullPixelsPerDegree / (2 << levelIndex) >= needed)
-      ++levelIndex;
+    size_t const levelIndex = LevelFor(tileKey.m_zoomLevel);
     double const pixelsPerDegree = kFullPixelsPerDegree / (1 << levelIndex);
 
     m2::RectD const rect = tileKey.GetGlobalRect();
-    std::vector<uint8_t> rgba(size_t{kTileSize} * kTileSize * 4, 0);
+    std::vector<uint8_t> rgba(size_t{kOutSize} * kOutSize * 4, 0);
     bool empty = true;
     // Each pixel averages 2x2 samples, which smooths the classes' edges.
     int constexpr kSamples = 2;
@@ -328,9 +410,9 @@ private:
     std::optional<std::vector<Level>> levels;
     uint32_t cachedTile = std::numeric_limits<uint32_t>::max();
     Pixels tile;
-    for (uint32_t row = 0; row < kTileSize; ++row)
+    for (uint32_t row = 0; row < kOutSize; ++row)
     {
-      for (uint32_t col = 0; col < kTileSize; ++col)
+      for (uint32_t col = 0; col < kOutSize; ++col)
       {
         uint32_t sum[4] = {0, 0, 0, 0};
         for (int sy = 0; sy < kSamples; ++sy)
@@ -338,8 +420,8 @@ private:
           for (int sx = 0; sx < kSamples; ++sx)
           {
             // Texture rows run south to north, as the relief's.
-            double const x = rect.minX() + rect.SizeX() * (col + (sx + 0.5) / kSamples) / kTileSize;
-            double const y = rect.minY() + rect.SizeY() * (row + (sy + 0.5) / kSamples) / kTileSize;
+            double const x = rect.minX() + rect.SizeX() * (col + (sx + 0.5) / kSamples) / kOutSize;
+            double const y = rect.minY() + rect.SizeY() * (row + (sy + 0.5) / kSamples) / kOutSize;
             double const lon = mercator::XToLon(x);
             double const lat = mercator::YToLat(y);
             int const squareLat = static_cast<int>(std::floor(lat / kSquareDegrees)) * kSquareDegrees;
@@ -383,7 +465,7 @@ private:
         if (sum[3] == 0)
           continue;
         empty = false;
-        uint8_t * out = &rgba[(size_t{row} * kTileSize + col) * 4];
+        uint8_t * out = &rgba[(size_t{row} * kOutSize + col) * 4];
         for (int c = 0; c < 3; ++c)
           out[c] = static_cast<uint8_t>(sum[c] / sum[3]);
         out[3] = static_cast<uint8_t>(sum[3] / (kSamples * kSamples));
@@ -393,29 +475,32 @@ private:
     }
 
     if (!empty)
+    {
+      Soften(rgba, 1);
       Deliver(tileKey, mode, dark, std::move(rgba));
+    }
   }
 
   // Zoomed out: the bundled world pack, with 2x2 samples a pixel as online.
   void MakeWorldTile(df::TileKey const & tileKey, dp::BackgroundMode mode, bool dark)
   {
-    // OM zoom Z is web mercator zoom Z - 1.
-    int const z = std::min(tileKey.m_zoomLevel - 1, kMaxWorldZoom);
+    // OM zoom Z is web mercator zoom Z - 1; a 512 px tile needs the pack's next zoom.
+    int const z = std::min(int(tileKey.m_zoomLevel), kMaxWorldZoom);
     m2::RectD const rect = tileKey.GetGlobalRect();
-    std::vector<uint8_t> rgba(size_t{kTileSize} * kTileSize * 4, 0);
+    std::vector<uint8_t> rgba(size_t{kOutSize} * kOutSize * 4, 0);
     bool empty = true;
     int constexpr kSamples = 2;
-    for (uint32_t row = 0; row < kTileSize; ++row)
+    for (uint32_t row = 0; row < kOutSize; ++row)
     {
-      for (uint32_t col = 0; col < kTileSize; ++col)
+      for (uint32_t col = 0; col < kOutSize; ++col)
       {
         uint32_t sum[4] = {0, 0, 0, 0};
         for (int sy = 0; sy < kSamples; ++sy)
         {
           for (int sx = 0; sx < kSamples; ++sx)
           {
-            double const x = rect.minX() + rect.SizeX() * (col + (sx + 0.5) / kSamples) / kTileSize;
-            double const y = rect.minY() + rect.SizeY() * (row + (sy + 0.5) / kSamples) / kTileSize;
+            double const x = rect.minX() + rect.SizeX() * (col + (sx + 0.5) / kSamples) / kOutSize;
+            double const y = rect.minY() + rect.SizeY() * (row + (sy + 0.5) / kSamples) / kOutSize;
             if (x < mercator::Bounds::kMinX || x > mercator::Bounds::kMaxX)
               continue;
             auto const color = ClassColor(WorldClass(mercator::YToLat(y), mercator::XToLon(x), z), dark);
@@ -427,14 +512,18 @@ private:
         if (sum[3] == 0)
           continue;
         empty = false;
-        uint8_t * out = &rgba[(size_t{row} * kTileSize + col) * 4];
+        uint8_t * out = &rgba[(size_t{row} * kOutSize + col) * 4];
         for (int c = 0; c < 3; ++c)
           out[c] = static_cast<uint8_t>(sum[c] / sum[3]);
         out[3] = static_cast<uint8_t>(sum[3] / (kSamples * kSamples));
       }
     }
     if (!empty)
+    {
+      // The pack's 2.8 km pixels: blend classes into gradients rather than speckles.
+      Soften(rgba, 3);
       Deliver(tileKey, mode, dark, std::move(rgba));
+    }
   }
 
   void Deliver(df::TileKey const & tileKey, dp::BackgroundMode mode, bool dark, std::vector<uint8_t> && rgba)
@@ -446,7 +535,7 @@ private:
     std::string const uid = std::string(ImagePrefix(dp::BackgroundMode::Landcover)) + (dark ? "dark/" : "light/") +
                             strings::to_string(int(tileKey.m_zoomLevel)) + "/" + strings::to_string(tileKey.m_x) + "/" +
                             strings::to_string(tileKey.m_y);
-    engine->AddTileBackgroundImage(uid, kTileSize, kTileSize, dp::TextureFormat::RGBA8, mode, std::move(rgba));
+    engine->AddTileBackgroundImage(uid, kOutSize, kOutSize, dp::TextureFormat::RGBA8, mode, std::move(rgba));
     engine->SetTileBackgroundData(tileKey, uid, m2::RectF(0, 0, 1, 1));
   }
 
@@ -597,14 +686,25 @@ std::optional<std::vector<Level>> ParseLevels(std::string const & head,
   return levels;
 }
 
+namespace
+{
+Provider * g_provider = nullptr;
+}  // namespace
+
 void CreateProvider(std::function<ref_ptr<df::DrapeEngine>()> getEngine, std::function<bool()> isDarkStyle)
 {
   RasterLayerEnabled(dp::BackgroundMode::Landcover) = IsEnabled();
   // Never destroyed: its tasks may still run on the network threads when the app closes.
-  static auto * provider = new Provider(std::move(getEngine), std::move(isDarkStyle));
+  if (!g_provider)
+    g_provider = new Provider(std::move(getEngine), std::move(isDarkStyle));
   GetRasterLayerSource(dp::BackgroundMode::Landcover) = {[](df::TileKey const & key, dp::BackgroundMode mode)
-  { return provider->RequestTile(key, mode); }, [](df::TileKey const & key, dp::BackgroundMode mode)
-  { provider->CancelTile(key, mode); }};
+  { return g_provider->RequestTile(key, mode); }, [](df::TileKey const & key, dp::BackgroundMode mode)
+  { g_provider->CancelTile(key, mode); }};
+}
+
+bool Prefetch(m2::RectD const & mercatorRect)
+{
+  return !g_provider || g_provider->Prefetch(mercatorRect);
 }
 
 bool IsEnabled()
