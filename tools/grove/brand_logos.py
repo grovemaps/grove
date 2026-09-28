@@ -31,15 +31,18 @@ NSI_URL = "https://cdn.jsdelivr.net/npm/name-suggestion-index@latest/dist/nsi.mi
 TAGINFO_URL = "https://taginfo.openstreetmap.org/api/4/key/values?key=brand:wikidata&sortname=count&sortorder=desc"
 SPARQL_URL = "https://query.wikidata.org/sparql"
 COMMONS_API = "https://commons.wikimedia.org/w/api.php"
-# A standard Wikimedia thumbnail width: usually already rendered, so Commons doesn't throttle it.
-THUMB_WIDTH = 250
+# A standard Wikimedia thumbnail width (https://w.wiki/GHai): usually already rendered, so Commons doesn't throttle
+# it. Twice the badge, so downscaling keeps edges clean.
+THUMB_WIDTH = 500
+# Thumbnails of each width get their own folder and URL list.
+PNG_DIR = f"png{THUMB_WIDTH}"
 
-# Symbol source size; the renderer scales it down to 26 dp at the screen density.
-BADGE = 96
+# Symbol source size: 32 dp at 6x screens; the renderer scales it down to 32 dp at the screen density.
+BADGE = 192
 # The logo fills most of it; the rest is room for the halo.
-LOGO_BOX = 86
-WIDE_LOGO_WIDTH = 88
-HALO_RADIUS = 3
+LOGO_BOX = 172
+WIDE_LOGO_WIDTH = 176
+HALO_RADIUS = 6
 # Wider logos are wordmarks, unreadable at icon size: those brands keep their category icons.
 MAX_ASPECT = 1.8
 # Wikidata properties in order of preference: small logo or icon, icon, logo image.
@@ -133,9 +136,9 @@ def logo_files(qids):
 
 def thumbnail_urls(logos):
     """Returns {qid: thumbnail URL}: Commons renders any format (SVG included) to PNG thumbnails."""
-    path = os.path.join(CACHE, "thumbs.json")
+    path = os.path.join(CACHE, f"thumbs{THUMB_WIDTH}.json")
     thumbs = json.load(open(path)) if os.path.exists(path) else {}
-    todo = [q for q in logos if q not in thumbs and not os.path.exists(os.path.join(CACHE, "png", q + ".png"))]
+    todo = [q for q in logos if q not in thumbs and not os.path.exists(os.path.join(CACHE, PNG_DIR, q + ".png"))]
     for i in range(0, len(todo), 50):
         batch = todo[i : i + 50]
         titles = {q: "File:" + urllib.parse.unquote(logos[q].rsplit("/", 1)[1]) for q in batch}
@@ -154,7 +157,7 @@ def thumbnail_urls(logos):
 
 
 def logo_image(qid, thumb_url):
-    path = os.path.join(CACHE, "png", qid + ".png")
+    path = os.path.join(CACHE, PNG_DIR, qid + ".png")
     if not os.path.exists(path):
         if not thumb_url:
             raise ValueError("no thumbnail")
@@ -209,7 +212,7 @@ def make_badge(logo, source_url):
     badge = Image.new("RGBA", (BADGE, BADGE), (0, 0, 0, 0))
     badge.alpha_composite(logo, ((BADGE - logo.width) // 2, (BADGE - logo.height) // 2))
     halo_alpha = badge.getchannel("A").filter(ImageFilter.MaxFilter(2 * HALO_RADIUS + 1))
-    halo_alpha = halo_alpha.filter(ImageFilter.GaussianBlur(1.2)).point(lambda a: a * 230 // 255)
+    halo_alpha = halo_alpha.filter(ImageFilter.GaussianBlur(2.4)).point(lambda a: a * 230 // 255)
     halo = Image.new("RGBA", badge.size, halo_color + (0,))
     halo.putalpha(halo_alpha)
     halo.alpha_composite(badge)
@@ -236,7 +239,7 @@ def main():
     parser.add_argument("--limit", type=int, default=0, help="at most this many brands (0: no limit)")
     parser.add_argument("--cached-only", action="store_true", help="only use logos already downloaded")
     args = parser.parse_args()
-    os.makedirs(os.path.join(CACHE, "png"), exist_ok=True)
+    os.makedirs(os.path.join(CACHE, PNG_DIR), exist_ok=True)
 
     counts = brand_counts()
     brands = nsi_brands()
@@ -249,7 +252,7 @@ def main():
     print(f"with a logo on Commons: {len(logos)}", file=sys.stderr)
 
     if args.cached_only:
-        logos = {q: f for q, f in logos.items() if os.path.exists(os.path.join(CACHE, "png", q + ".png"))}
+        logos = {q: f for q, f in logos.items() if os.path.exists(os.path.join(CACHE, PNG_DIR, q + ".png"))}
     thumbs = {} if args.cached_only else thumbnail_urls(logos)
 
     def build(qid):
