@@ -1,4 +1,5 @@
-/* Grove: Apple Maps light palette.
+/* Grove: Apple Maps light palette, with Organic Maps' contrast: amber and yellow main roads, white streets,
+ * buildings with a defined border on a warm background.
  *
  * Overrides variables from default/light/colors.mapcss, which stays identical to upstream
  * Organic Maps. Imported right after it by default/light/style.mapcss and
@@ -8,7 +9,7 @@
  */
 
 /* 1.BASEMAP */
-@background: #F7F6F0;
+@background: #F3F1EB;
 
 /* 3.1 Main natural */
 @water: #8CDCF6;
@@ -32,17 +33,17 @@
 @flowers: #D3EDB0;
 
 /* 4.1 Main landuse */
-@pedestrian_area: #EFEEEA;
-@pedestrian_area_light: #F4F3EF;
+@pedestrian_area: #ECE7DD;
+@pedestrian_area_light: #F0ECE4;
 @platform: #E1E3E7;
 @leisure: #FFF3DA;
 @university: #F2E8DA;
 @hospital: #FBE5E1;
-@industrial: #ECECEA;
+@industrial: #EAE5EE;
 @sport0: #CDEBC0;
 @sport1: #C4E7B6;
 @sport2: #BCE3AD;
-@parking: #EDEDEC;
+@parking: #E8E6E1;
 @farmland: #E1EFC1;
 @farmyard: #EDEBD9;
 
@@ -58,22 +59,22 @@
 @hedge: #A6D48C;
 
 /* 4.4 Buildings */
-@building0: #E9E8E3;
-@building1: #E4E1DC;
-@building_border0: #D6D4CE;
-@building_border1: #D0CDC7;
+@building0: #E2DED5;
+@building1: #DCD7CD;
+@building_border0: #C8C2B6;
+@building_border1: #C0B9AC;
 
 /* 5.1 All roads */
-@trunk0: #969DB0;
-@trunk1: #979EAF;
-@primary0: #A2A8B5;
-@primary1: #A9AFB8;
-@primary2: #B3B8BF;
-@secondary0: #BCC0C5;
-@secondary1: #C3C7CB;
-@tertiary: #D7D9DB;
-@residential: #E2E3E3;
-@pedestrian: #FBFBFA;
+@trunk0: #F4B04A;
+@trunk1: #F5B658;
+@primary0: #F9D27A;
+@primary1: #FAD98C;
+@primary2: #FBDF9C;
+@secondary0: #FFFFFF;
+@secondary1: #FFFFFF;
+@tertiary: #FFFFFF;
+@residential: #FFFFFF;
+@pedestrian: #FFFFFF;
 @footway: #FDFDFD;
 @cycleway: #C99A9E;
 @construction: #D6D3CB;
@@ -83,25 +84,25 @@
 @bridleway: #7F7563;
 
 /* 5.2 Bridges */
-@bridge_background: #F7F6F0;
+@bridge_background: #F3F1EB;
 @bridge_casing: #9DA3AB;
 
 /* 5.3 Tunnels */
-@trunk_tunnel: #B7BCC7;
+@trunk_tunnel: #F8CB85;
 @trunk_tunnel_casing: #9DA3AB;
-@primary_tunnel: #B7BCC7;
+@primary_tunnel: #FBE1A8;
 @primary_tunnel_casing: #9DA3AB;
-@secondary_tunnel: #CFD2D6;
+@secondary_tunnel: #F4F2EE;
 @secondary_tunnel_casing: #9DA3AB;
 @tertiary_tunnel_casing: #9DA3AB;
 @residential_tunnel_casing: #9DA3AB;
 
 /* 5.5 Transport */
-@railway_light: #C3C7CD;
-@railway: #A9AEB6;
+@railway_light: #B3B8BF;
+@railway: #8C929A;
 @railway_dash: #F7F7F7;
-@railway_tunnel: #9AA0A8;
-@tram: #9CA3A8;
+@railway_tunnel: #8C929A;
+@tram: #8C929A;
 @ferry: #5490C0;
 
 /* 6.1 Main labels */

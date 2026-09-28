@@ -94,7 +94,7 @@ Current upstream hooks:
 
 Grove style files in `data/styles/grove/`:
 
-- `palette-light.mapcss` holds the Apple Maps colors measured from the reference screenshots.
+- `palette-light.mapcss` holds the Apple Maps colors measured from the reference screenshots, with Organic Maps' contrast: amber motorways and trunks, yellow primaries, white streets, buildings with a defined border on a warm background (Apple's grey roads on grey read as grey on grey).
 - `palette-dark.mapcss` holds dark-mode values. For now it only has POI label colors, derived from the Apple light hues.
 - `poi-label-colors.mapcss` colors POI labels by category. It's ported from CoMaps' `Icons_Label_Colors.mapcss` (see its header for the source commit and the one line dropped). Grove's changes are at the end.
 - `apple-look.mapcss` holds rule overrides for the Apple look in the default style: no nature-reserve hatching, house numbers only from zoom 19, fewer road signs when zoomed out, smaller district names. The outdoors style doesn't import it, so hikers still see reserves.
