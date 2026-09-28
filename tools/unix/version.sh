@@ -52,7 +52,8 @@ function android_code {
   # 21_00_00_00_00 is the the greatest value Google Play allows for versionCode.
   # See https://developer.android.com/studio/publish/versioning for details.
   local cutYear=${DATE:2}
-  echo "${cutYear//./}$(printf %02d "$COUNT")"
+  # Grove: at most 99 commits a day count, so the code keeps two digits for them (wear appends one more digit).
+  echo "${cutYear//./}$(printf %02d "$((COUNT > 99 ? 99 : COUNT))")"
 }
 
 function qt_int_version {
