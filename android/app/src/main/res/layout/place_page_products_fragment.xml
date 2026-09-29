@@ -65,7 +65,7 @@
         android:layout_marginStart="@dimen/margin_base"
         android:layout_marginTop="@dimen/margin_base"
         android:layout_marginEnd="@dimen/margin_base"
-        android:fontFamily="@font/ui"
+        android:fontFamily="@string/robotoRegular"
         android:lineSpacingExtra="@dimen/line_spacing_extra_2"
         android:textAppearance="?android:attr/textAppearance"
         android:textColor="?android:attr/textColorPrimary"

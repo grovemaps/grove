@@ -80,5 +80,4 @@ std::optional<PlaceReviews> Fetch(Subject const & place);
 
 // The switch, Feature::Reviews (on by default).
 bool IsEnabled();
-void SetEnabled(bool enabled);
 }  // namespace grove::reviews

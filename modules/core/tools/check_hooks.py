@@ -4,7 +4,8 @@
 Grove's own code lives in modules/<module>/. An upstream file only gets small hooks, each naming its module:
     // Grove[logos]: chains' logos never hide each other.
 (or /* */, <!-- -->, # comments), or naming it by what it does: a path into the module (#include
-"modules/logos/...", "see modules/logos/..."), checking its switch (grove::Feature::Logos, the registry says which module) or
+"modules/logos/...", "see modules/logos/..."), checking its switch (grove::Feature::Logos, the registry says which module;
+GroveFeatures.isOn("logos") on Android) or
 Stock (grove::IsStock(), the core module). A changed block passes when it names a module or a line at most
 MARKER_REACH lines above or below it does. Generated files (drawing rules, icon atlases, strings...) are left out.
 
@@ -22,6 +23,8 @@ BASE_FILE = os.path.join(ROOT, "modules", "look", "tools", "classic_base.txt")
 MARKER = re.compile(r"Grove\[([a-z0-9_]+)\]")
 PATH = re.compile(r"\bmodules/([a-z0-9_]+)/")
 FEATURE = re.compile(r"Feature::(\w+)")
+# The Android side names its switches by module: GroveFeatures.isOn("logos").
+JAVA_FEATURE = re.compile(r'GroveFeatures\.isOn\("([a-z0-9_]+)"\)')
 STOCK = re.compile(r"\bIsStock\(\)")
 MARKER_REACH = 5
 
@@ -45,7 +48,7 @@ def feature_modules():
 
 
 def named_modules(line, features):
-    names = MARKER.findall(line) + PATH.findall(line)
+    names = MARKER.findall(line) + PATH.findall(line) + JAVA_FEATURE.findall(line)
     names += [features[f] for f in FEATURE.findall(line) if f in features]
     if STOCK.search(line):
         names.append("core")

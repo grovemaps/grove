@@ -651,9 +651,4 @@ bool IsEnabled()
 {
   return IsOn(Feature::Reviews);
 }
-
-void SetEnabled(bool enabled)
-{
-  SetSwitch(Feature::Reviews, enabled);
-}
 }  // namespace grove::reviews

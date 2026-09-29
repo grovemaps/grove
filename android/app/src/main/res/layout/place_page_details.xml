@@ -29,20 +29,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout="@layout/place_page_wikipedia_fragment" />
-
-      <!-- Grove: Tripadvisor rating with the user's API key, see GroveTripadvisorFragment. -->
-      <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/grove_tripadvisor_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout="@layout/grove_tripadvisor_fragment" />
-
-      <!-- Grove: Mangrove reviews, see GroveReviewsFragment. -->
-      <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/grove_reviews_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout="@layout/grove_reviews_fragment" />
     </LinearLayout>
 
     <include layout="@layout/place_page_placename"/>

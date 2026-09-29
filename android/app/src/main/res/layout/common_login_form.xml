@@ -97,7 +97,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/ui"
+        android:fontFamily="@string/robotoRegular"
         android:text="@string/no_osm_account"
         android:textAppearance="@style/MwmTextAppearance.Body2"
         android:textColor="?android:textColorPrimary" />
@@ -109,7 +109,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_base"
         android:background="@drawable/button_editor_light"
-        android:fontFamily="@font/ui_medium"
+        android:fontFamily="@string/robotoMedium"
         android:padding="@dimen/margin_quarter"
         android:text="@string/register_at_openstreetmap"
         android:textAppearance="@style/MwmTextAppearance.Body2"

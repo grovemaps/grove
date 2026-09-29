@@ -1,0 +1,27 @@
+# Grove: every change to an upstream file names its module, and the modules' index (modules/README.md, each module's
+# README, data/grove_modules.txt) matches the registry and the hooks. See modules/README.md.
+name: Grove modules
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - grove
+      - grove-*
+
+jobs:
+  check:
+    name: Check hooks and index
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+        with:
+          # The hooks are diffed against the upstream base, modules/look/tools/classic_base.txt.
+          fetch-depth: 0
+          filter: blob:none
+
+      - name: Every hook names its module
+        run: python3 modules/core/tools/check_hooks.py
+
+      - name: The modules' index is up to date
+        run: python3 modules/core/tools/generate_index.py --check

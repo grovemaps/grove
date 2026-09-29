@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceGroup;
+import androidx.preference.PreferenceCategory;
 import androidx.preference.TwoStatePreference;
 import app.organicmaps.MwmApplication;
 import app.organicmaps.R;
@@ -43,7 +43,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment implements La
   @Override
   protected int getXmlResources()
   {
-    return R.xml.prefs_main;
+    return GroveSections.xml(R.xml.prefs_main); // Grove[settings_sections]
   }
 
   @Override
@@ -59,7 +59,6 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment implements La
     initLargeFontSizePrefsCallbacks();
     initTransliterationPrefsCallbacks();
     init3dModePrefsCallbacks();
-    GroveSettings.init(this);
     initPerspectivePrefsCallbacks();
     initAutoZoomPrefsCallbacks();
     initLoggingEnabledPrefsCallbacks();
@@ -73,7 +72,8 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment implements La
     initScreenSleepEnabledPrefsCallbacks();
     initShowOnLockScreenPrefsCallbacks();
     initNightNavigationPrefsCallbacks();
-    GroveSettings.showSection(this);
+    GroveSettings.init(this); // Grove[core]: the entry to Grove's page.
+    GroveSections.show(this); // Grove[settings_sections]
   }
 
   private void updateVoiceInstructionsPrefsSummary()
@@ -575,16 +575,9 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment implements La
 
   private void removePreference(@NonNull String categoryKey, @NonNull Preference preference)
   {
-    // Grove: settings are grouped in sections (GroveSettings.showSection), so remove from the actual parent.
-    final PreferenceGroup parent = preference.getParent();
-    if (parent != null)
-      parent.removePreference(preference);
-  }
+    final PreferenceCategory category = getPreference(categoryKey);
 
-  // Grove: a settings section's page, see GroveSettings.showSection.
-  void openSection(@NonNull String title, @NonNull Bundle args)
-  {
-    getSettingsActivity().stackFragment(SettingsPrefsFragment.class, title, args);
+    category.removePreference(preference);
   }
 
   @Override

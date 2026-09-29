@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.IdRes;
@@ -34,7 +35,7 @@ import app.organicmaps.sdk.routing.TransitRouteInfo;
 import app.organicmaps.sdk.routing.TransitStepInfo;
 import app.organicmaps.sdk.util.Distance;
 import app.organicmaps.sdk.util.StringUtils;
-import app.organicmaps.util.GroveFonts;
+import app.organicmaps.util.GroveFonts; // Grove[ui_font]
 import app.organicmaps.util.ThemeUtils;
 import app.organicmaps.util.UiUtils;
 import app.organicmaps.util.Utils;
@@ -464,7 +465,7 @@ final class RoutingBottomMenuController
 
     initDistanceBuilderSequence(context, routingInfo.distToTarget.toString(context), builder);
 
-    return builder;
+    return GroveFonts.apply(context, builder); // Grove[ui_font]: the app font's medium weight.
   }
 
   private static void initTimeBuilderSequence(@NonNull Context context, @NonNull CharSequence time,
@@ -472,7 +473,8 @@ final class RoutingBottomMenuController
   {
     builder.append(time);
 
-    builder.setSpan(GroveFonts.mediumSpan(context), 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    builder.setSpan(new TypefaceSpan(context.getResources().getString(R.string.robotoMedium)), 0, builder.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     builder.setSpan(
         new AbsoluteSizeSpan(context.getResources().getDimensionPixelSize(R.dimen.text_size_routing_number)), 0,
         builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -485,8 +487,8 @@ final class RoutingBottomMenuController
                                              @NonNull SpannableStringBuilder builder)
   {
     builder.append(dot);
-    builder.setSpan(GroveFonts.mediumSpan(context), builder.length() - dot.length(), builder.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    builder.setSpan(new TypefaceSpan(context.getResources().getString(R.string.robotoMedium)),
+                    builder.length() - dot.length(), builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     builder.setSpan(
         new AbsoluteSizeSpan(context.getResources().getDimensionPixelSize(R.dimen.text_size_routing_number)),
         builder.length() - dot.length(), builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -498,8 +500,8 @@ final class RoutingBottomMenuController
                                                   @NonNull SpannableStringBuilder builder)
   {
     builder.append(arrivalTime);
-    builder.setSpan(GroveFonts.mediumSpan(context), builder.length() - arrivalTime.length(), builder.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    builder.setSpan(new TypefaceSpan(context.getResources().getString(R.string.robotoMedium)),
+                    builder.length() - arrivalTime.length(), builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     builder.setSpan(
         new AbsoluteSizeSpan(context.getResources().getDimensionPixelSize(R.dimen.text_size_routing_number)),
         builder.length() - arrivalTime.length(), builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Grove: the section's place on the place card, see GroveTripadvisorFragment.addContainer(). -->
+  <item name="grove_tripadvisor_fragment" type="id" />
+</resources>

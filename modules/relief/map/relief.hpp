@@ -26,7 +26,6 @@ std::string_view constexpr kTerrariumTiles = "https://s3.amazonaws.com/elevation
 
 // The switch, Feature::Relief (on by default). Takes effect at once.
 bool IsReliefEnabled();
-void SetReliefEnabled(ref_ptr<df::DrapeEngine> engine, bool enabled);
 
 // The elevation tint of ground at this height: RGB and alpha (0..1), clear in the lowlands.
 std::array<double, 4> ElevationTint(double meters);

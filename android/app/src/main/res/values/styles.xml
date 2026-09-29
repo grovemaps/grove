@@ -50,7 +50,7 @@
     <item name="android:layout_height">wrap_content</item>
     <item name="android:background">?buttonBackground</item>
     <item name="android:stateListAnimator">@null</item>
-    <item name="android:fontFamily">@font/ui_medium</item>
+    <item name="android:fontFamily">@string/robotoMedium</item>
     <item name="android:textAllCaps">true</item>
     <item name="android:letterSpacing">0.04</item>
   </style>
@@ -69,7 +69,7 @@
     <item name="android:textSize">@dimen/text_size_button</item>
     <item name="android:textColor">?buttonDialogTextColor</item>
     <item name="android:textAllCaps">true</item>
-    <item name="android:fontFamily">@font/ui_medium</item>
+    <item name="android:fontFamily">@string/robotoMedium</item>
     <item name="android:lines">2</item>
     <item name="android:gravity">center_vertical|end</item>
   </style>
@@ -80,7 +80,7 @@
     <item name="android:layout_marginBottom">@dimen/margin_dialog_title</item>
     <item name="android:textAppearance">@style/MwmTextAppearance.Body1</item>
     <item name="android:textColor">?titleDialogTheme</item>
-    <item name="android:fontFamily">@font/ui_medium</item>
+    <item name="android:fontFamily">@string/robotoMedium</item>
   </style>
 
   <style name="MwmWidget.StackedButtonsDialogMessage">

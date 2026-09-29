@@ -729,7 +729,6 @@ Provider * g_provider = nullptr;
 
 void CreateProvider(std::function<ref_ptr<df::DrapeEngine>()> getEngine, std::function<bool()> isDarkStyle)
 {
-  RasterLayerEnabled(dp::BackgroundMode::Landcover) = IsEnabled();
   // Never destroyed: its tasks may still run on the network threads when the app closes.
   if (!g_provider)
     g_provider = new Provider(std::move(getEngine), std::move(isDarkStyle));
@@ -746,14 +745,5 @@ bool Prefetch(m2::RectD const & mercatorRect)
 bool IsEnabled()
 {
   return IsOn(Feature::Landcover);
-}
-
-void SetEnabled(ref_ptr<df::DrapeEngine> engine, bool enabled)
-{
-  SetSwitch(Feature::Landcover, enabled);
-  RasterLayerEnabled(dp::BackgroundMode::Landcover) = enabled;
-  // Re-reads the visible tiles, which also updates the layer's viewport (requests or drops its tiles).
-  if (engine)
-    engine->InvalidateRect(mercator::Bounds::FullRect());
 }
 }  // namespace grove::landcover

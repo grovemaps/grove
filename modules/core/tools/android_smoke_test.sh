@@ -1,7 +1,7 @@
 #!/bin/bash
 # Install a Grove APK in a running Android emulator, download the world map, open the map and check that the app
 # keeps running, then again with the Organic Maps look (settings key "GroveLook"), which loads other drawing rules and
-# icons. The map shows the Alps at zoom 7, so it draws the world map's features, land cover and relief.
+# icons, and with Stock on ("GroveStock"), where only Organic Maps' own code runs. The map shows the Alps at zoom 7, so it draws the world map's features, land cover and relief.
 # Used by .github/workflows/grove-android.yaml; debug builds stop on any logged error, so this catches
 # style and engine errors that release builds only log. Writes logcat and screenshots to ./smoke.
 #
@@ -84,3 +84,7 @@ adb shell am force-stop "$PKG"
 # settings.ini lives in the app's private files folder; debug builds let run-as write there.
 adb shell run-as "$PKG" sh -c "'echo GroveLook=organicmaps >> files/settings.ini'"
 run organicmaps-look
+adb shell am force-stop "$PKG"
+# Stock: only Organic Maps' own code runs (modules/core/platform/features.hpp).
+adb shell run-as "$PKG" sh -c "'echo GroveStock=true >> files/settings.ini'"
+run stock

@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_half"
-            android:fontFamily="@font/ui_medium"
+            android:fontFamily="@string/robotoMedium"
             android:text="@string/login_to_make_edits_visible"
             android:textAppearance="@style/MwmTextAppearance.Body2"
             android:textColor="?android:textColorPrimary" />
@@ -62,7 +62,7 @@
               android:layout_height="wrap_content"
               android:layout_marginStart="@dimen/margin_base"
               android:autoLink="web"
-              android:fontFamily="@font/ui"
+              android:fontFamily="@string/robotoRegular"
               android:text="@string/login_osm_presentation"
               android:textAppearance="@style/MwmTextAppearance.Body3"
               android:textColor="?android:textColorPrimary"

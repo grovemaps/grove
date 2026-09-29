@@ -67,6 +67,7 @@ struct FeatureInfo
   Feature m_feature;
   FeatureGroup m_group;
   std::string_view m_module;  // Its folder, modules/<module>/, and its name in the app's strings.
+  std::string_view m_icon;    // An emoji, its symbol in the settings and the index.
   std::string_view m_key;     // Settings key.
   bool m_default;             // The switch for new users.
   bool m_restart;             // Read once at start: a change takes effect after a restart.
@@ -76,6 +77,8 @@ struct FeatureInfo
 
 std::span<FeatureInfo const> Features();
 FeatureInfo const & Info(Feature feature);
+std::string_view GroupName(FeatureGroup group);
+std::string_view GroupIcon(FeatureGroup group);
 
 // Whether the feature runs: Grove isn't stock, and the feature's switch is on (as at start, for one that needs a
 // restart).

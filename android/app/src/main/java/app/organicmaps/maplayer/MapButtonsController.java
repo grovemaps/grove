@@ -148,12 +148,9 @@ public class MapButtonsController extends Fragment
         }
       });
     }
-    // Grove: the brands button, see GroveBrandsButton.
     if (helpButton != null)
-      helpButton.setOnClickListener((v) -> {
-        GroveBrandsButton.toggle();
-        updateHelpButtonIcon();
-      });
+      helpButton.setOnClickListener((v) -> mMapButtonClickListener.onMapButtonClick(MapButtons.help));
+    GroveBrandsButton.attach(helpButton, this::updateHelpButtonIcon); // Grove[logos]: shows and hides chains' logos.
 
     mSearchWheel =
         new SearchWheel(mFrame,
@@ -301,8 +298,7 @@ public class MapButtonsController extends Fragment
     final View view = mButtonsMap.get(MapButtons.help);
     if (!(view instanceof FloatingActionButton helpButton))
       return;
-    // Grove: the brands button, see GroveBrandsButton.
-    if (GroveBrandsButton.update(helpButton))
+    if (GroveBrandsButton.update(helpButton)) // Grove[logos]
       return;
 
     if (Framework.nativeCanShowCrowdfundingPromo() && !TextUtils.isEmpty(Utils.getDonateUrl(requireContext())))
@@ -459,9 +455,7 @@ public class MapButtonsController extends Fragment
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
   {
     super.onViewCreated(view, savedInstanceState);
-    // Grove: two-finger tap distance, see GroveMeasureOverlay.
-    if (view instanceof ViewGroup group)
-      GroveMeasureOverlay.attach(group);
+    GroveMeasureOverlay.attach(view); // Grove[measure_tap]: two-finger tap distance.
     // FragmentStateManager requests insets for the frame before onViewCreated(), but the dispatch
     // itself only happens on the next layout pass — so a listener attached here still receives it.
     // Attaching in onResume() is too late: the dispatch has already run and nothing re-requests
@@ -569,6 +563,6 @@ public class MapButtonsController extends Fragment
   public void onDestroyView()
   {
     super.onDestroyView();
-    GroveMeasureOverlay.detach(); // Grove: see GroveMeasureOverlay.
+    GroveMeasureOverlay.detach(); // Grove[measure_tap]
   }
 }

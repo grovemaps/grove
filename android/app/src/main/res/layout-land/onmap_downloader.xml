@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:fontFamily="@font/ui_medium"
+        android:fontFamily="@string/robotoMedium"
         android:textStyle="normal"
         android:gravity="center_horizontal"
         tools:text="Some name very loooooooooong name"

@@ -9,36 +9,42 @@ existing module in its own `ideas/`.
 
 | | Module | What it does | Switch | Hooks |
 | --- | --- | --- | --- | --- |
-| ⚙ | [core](core/) | The registry, Stock, the build hook and the tools. | | 43 |
-| 🗺 | [look](look/) | Grove's map style and icons: Apple-like colours, Guru Maps' terrain, CoMaps' cartography. Off: Organic Maps' own. | on, restart | 12 |
-| 🗺 | [typography](typography/) | Inter for map labels: semibold places, italic water, spaced capitals for streets and areas, Geist numbers. | on, restart | 16 |
-| 🗺 | [halos](halos/) | Wider, softer label halos, like Mapy.com's white outlines. | on, restart | 1 |
-| 🗺 | [buildings_3d](buildings_3d/) | 3D buildings lit from the upper left, walls darkening toward the ground, more solid. | on | 15 |
-| 🗺 | [see_through_buildings](see_through_buildings/) | 3D buildings with a shop or café inside are see-through, as in Apple Maps. | on, restart | 16 |
-| 🗺 | [poi_dots](poi_dots/) | A small dot where each place is, under its icon. | on, restart | 5 |
-| 🗺 | [cycle_route_lines](cycle_route_lines/) | The cycling layer draws one solid line per road, coloured by its highest network, not a stripe per route. | on, restart | 10 |
-| 🏔 | [relief](relief/) | Shaded relief and elevation tints, as in Guru Maps. | on | 3 |
-| 🏔 | [landcover](landcover/) | Forests, fields and ice from ESA WorldCover when zoomed out, where the maps have none. | on | 2 |
-| 🏔 | [landuse_11](landuse_11/) | The maps' own forests and fields from zoom 11, not 12. | on, restart | 2 |
-| 🏔 | [offline_layers](offline_layers/) | Relief and land cover saved with each downloaded map, over Wi-Fi. | on, restart | 7 |
-| 🏔 | [contours](contours/) | Contour lines on until switched off, as in Guru Maps. | on, restart | 1 |
-| 📍 | [logos](logos/) | Chains' logos on the map from zoom 14, and a map button to hide them (upstream's help and donate button). | on, restart | 23 |
-| 📍 | [elevation](elevation/) | The height of a tapped point on its card. | on | 0 |
-| 📍 | [reviews](reviews/) | Mangrove's open reviews on place cards, with a trend when a place got better or worse. | on | 0 |
-| 📍 | [tripadvisor](tripadvisor/) | Tripadvisor ratings and reviews on place cards, with your own API key. | on | 0 |
-| 📍 | [search_colors](search_colors/) | Search categories in the colours of their map icons. | on | 0 |
-| 📍 | [place_title_color](place_title_color/) | A place card's title in the place's colour: its chain's logo colour or its category's. | on | 0 |
-| ✋ | [tilt_gesture](tilt_gesture/) | Two fingers sliding up or down tilt the map into 3D, at any zoom. | on | 7 |
-| ✋ | [measure_tap](measure_tap/) | A two-finger tap shows the distance between the fingers, instead of zooming out. | on | 5 |
-| 🧭 | [merge_jogs](merge_jogs/) | No "turn left, turn right" where you go straight: jogs of bike paths, crossings and squares merged. | on, restart | 3 |
-| 🧭 | [way_kinds](way_kinds/) | The voice names bike paths, paths, stairs and tracks a turn leads onto. | on | 11 |
-| 🧭 | [quiet_recalculating](quiet_recalculating/) | "Recalculating" once a minute at most. | on | 3 |
-| 🧭 | [bike_heading](bike_heading/) | A rebuilt bike route starts the way the rider goes. | on, restart | 1 |
-| 🧭 | [prefer_cycle_routes](prefer_cycle_routes/) | Bike routes prefer signed cycle routes, for a small detour at most. | on | 2 |
-| 🧭 | [navigation_colors](navigation_colors/) | Grove's colours while driving, instead of Organic Maps' muted ones. | off, restart | 1 |
-| 🧭 | [saved_trips](saved_trips/) | A saved route keeps its stops, and can be navigated again from its track. | on | 5 |
-| 📱 | [ui_font](ui_font/) | Geist as the app's font, instead of Roboto. | on, restart | 0 |
-| 📱 | [settings_sections](settings_sections/) | Settings in illustrated sections, instead of one long list. | on | 0 |
-| 📱 | [performance_boost](performance_boost/) | More threads read map tiles (all cores but two, 3 to 6) and make land cover (4, not 2). | off, restart | 3 |
+| ⚙ | [core](core/) | The registry, Stock, the build hook and the tools. | | 46 |
+| 🗺️ | **Map** | | | |
+| 🎨 | [look](look/) | Grove's map style and icons: Apple-like colours, Guru Maps' terrain, CoMaps' cartography. Off: Organic Maps' own. | on, restart | 12 |
+| 🔤 | [typography](typography/) | Inter for map labels: semibold places, italic water, spaced capitals for streets and areas, Geist numbers. | on, restart | 16 |
+| 🅰️ | [halos](halos/) | Wider, softer label halos, like Mapy.com's white outlines. | on, restart | 1 |
+| 🏙️ | [buildings_3d](buildings_3d/) | 3D buildings lit from the upper left, walls darkening toward the ground, more solid. | on | 15 |
+| 🪟 | [see_through_buildings](see_through_buildings/) | 3D buildings with a shop or café inside are see-through, as in Apple Maps. | on, restart | 16 |
+| 🔵 | [poi_dots](poi_dots/) | A small dot where each place is, under its icon. | on, restart | 5 |
+| 🚲 | [cycle_route_lines](cycle_route_lines/) | The cycling layer draws one solid line per road, coloured by its highest network, not a stripe per route. | on, restart | 10 |
+| 🏔️ | **Layers** | | | |
+| ⛰️ | [relief](relief/) | Shaded relief and elevation tints, as in Guru Maps. | on | 3 |
+| 🌳 | [landcover](landcover/) | Forests, fields and ice from ESA WorldCover when zoomed out, where the maps have none. | on | 2 |
+| 🌾 | [landuse_11](landuse_11/) | The maps' own forests and fields from zoom 11, not 12. | on, restart | 2 |
+| 💾 | [offline_layers](offline_layers/) | Relief and land cover saved with each downloaded map, over Wi-Fi. | on, restart | 7 |
+| 〰️ | [contours](contours/) | Contour lines on until switched off, as in Guru Maps. | on, restart | 1 |
+| 📍 | **Places** | | | |
+| 🏷️ | [logos](logos/) | Chains' logos on the map from zoom 14, and a map button to hide them (upstream's help and donate button). | on, restart | 25 |
+| 🔺 | [elevation](elevation/) | The height of a tapped point on its card. | on | 1 |
+| 💬 | [reviews](reviews/) | Mangrove's open reviews on place cards, with a trend when a place got better or worse. | on | 3 |
+| 🦉 | [tripadvisor](tripadvisor/) | Tripadvisor ratings and reviews on place cards, with your own API key. | on | 3 |
+| 🔍 | [search_colors](search_colors/) | Search categories in the colours of their map icons. | on | 1 |
+| 🖍️ | [place_title_color](place_title_color/) | A place card's title in the place's colour: its chain's logo colour or its category's. | on | 1 |
+| ✋ | **Gestures** | | | |
+| 📐 | [tilt_gesture](tilt_gesture/) | Two fingers sliding up or down tilt the map into 3D, at any zoom. | on | 7 |
+| 📏 | [measure_tap](measure_tap/) | A two-finger tap shows the distance between the fingers, instead of zooming out. | on | 7 |
+| 🧭 | **Navigation** | | | |
+| ⬆️ | [merge_jogs](merge_jogs/) | No "turn left, turn right" where you go straight: jogs of bike paths, crossings and squares merged. | on, restart | 3 |
+| 🛤️ | [way_kinds](way_kinds/) | The voice names bike paths, paths, stairs and tracks a turn leads onto. | on | 11 |
+| 🔇 | [quiet_recalculating](quiet_recalculating/) | "Recalculating" once a minute at most. | on | 3 |
+| 🔄 | [bike_heading](bike_heading/) | A rebuilt bike route starts the way the rider goes. | on, restart | 1 |
+| 🚴 | [prefer_cycle_routes](prefer_cycle_routes/) | Bike routes prefer signed cycle routes, for a small detour at most. | on | 2 |
+| 🚗 | [navigation_colors](navigation_colors/) | Grove's colours while driving, instead of Organic Maps' muted ones. | off, restart | 1 |
+| 📌 | [saved_trips](saved_trips/) | A saved route keeps its stops, and can be navigated again from its track. | on | 6 |
+| 📱 | **App** | | | |
+| 🔠 | [ui_font](ui_font/) | Geist as the app's font, instead of Roboto. | on, restart | 4 |
+| 🗂️ | [settings_sections](settings_sections/) | Settings in illustrated sections, instead of one long list. | on | 2 |
+| ⚡ | [performance_boost](performance_boost/) | More threads read map tiles (all cores but two, 3 to 6) and make land cover (4, not 2). | off, restart | 3 |
 
 <!-- End of the generated part. -->

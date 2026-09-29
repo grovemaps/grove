@@ -1,0 +1,33 @@
+// Grove: adds the modules' Android code, resources and assets to this Gradle project, without listing them:
+// modules/<module>/android/<part>/java, res and assets, where <part> is ext.groveModulePart (app or sdk). See
+// modules/README.md.
+def groveModules = file("${rootProject.rootDir}/../modules").listFiles().findAll { it.isDirectory() }
+def groveDirs = groveModules.collect { new File(it, "android/${project.ext.groveModulePart}") }
+
+android {
+  sourceSets {
+    main {
+      java {
+        groveDirs.collect { new File(it, 'java') }.findAll { it.exists() }.each { srcDir(it) }
+      }
+      res {
+        groveDirs.collect { new File(it, 'res') }.findAll { it.exists() }.each { srcDir(it) }
+      }
+      assets {
+        groveDirs.collect { new File(it, 'assets') }.findAll { it.exists() }.each { srcDir(it) }
+      }
+    }
+  }
+}
+
+// The modules' data packs, grove_*.bin, are read in place like upstream's packed_polygons.bin, so the APK keeps them
+// uncompressed.
+if (project.ext.groveModulePart == 'app') {
+  def packs = groveModules.collect { new File(it, 'android/sdk/assets') }.findAll { it.exists() }
+      .collectMany { it.list().findAll { name -> name ==~ /grove_.*\.bin/ } as List }
+  androidComponents {
+    onVariants(selector().all()) { variant ->
+      variant.androidResources.noCompress.addAll(packs)
+    }
+  }
+}

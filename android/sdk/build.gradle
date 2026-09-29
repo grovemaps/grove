@@ -3,6 +3,9 @@ plugins {
 }
 
 apply from: "${rootProject.rootDir}/groovy/common-config.gradle"
+// Grove[core]: the modules' Android code and resources, modules/*/android/sdk.
+ext.groveModulePart = 'sdk'
+apply from: "${rootProject.rootDir}/../modules/core/android/modules.gradle"
 apply from: "${rootProject.rootDir}/groovy/publishing.gradle"
 
 android {

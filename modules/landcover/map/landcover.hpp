@@ -73,5 +73,4 @@ bool Prefetch(m2::RectD const & mercatorRect);
 
 // The switch, Feature::Landcover (on by default). Takes effect at once.
 bool IsEnabled();
-void SetEnabled(ref_ptr<df::DrapeEngine> engine, bool enabled);
 }  // namespace grove::landcover

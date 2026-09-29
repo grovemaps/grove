@@ -20,6 +20,7 @@ import app.organicmaps.MwmApplication;
 import app.organicmaps.R;
 import app.organicmaps.SplashActivity;
 import app.organicmaps.sdk.util.log.Logger;
+import app.organicmaps.util.GroveFonts; // Grove[ui_font]
 import java.util.Objects;
 
 public abstract class BaseMwmFragmentActivity extends AppCompatActivity
@@ -39,6 +40,7 @@ public abstract class BaseMwmFragmentActivity extends AppCompatActivity
   protected final void onCreate(@Nullable Bundle savedInstanceState)
   {
     EdgeToEdge.enable(this, getStatusBarStyle());
+    GroveFonts.install(this); // Grove[ui_font]: the app font, before anything is inflated.
     super.onCreate(savedInstanceState);
     if (!MwmApplication.from(this).getOrganicMaps().arePlatformAndCoreInitialized())
     {

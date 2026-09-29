@@ -16,11 +16,6 @@ bool PreferCycleRoutes()
   return IsOn(Feature::PreferCycleRoutes);
 }
 
-void SetPreferCycleRoutes(bool prefer)
-{
-  SetSwitch(Feature::PreferCycleRoutes, prefer);
-}
-
 double CycleRouteFactor(std::string_view network)
 {
   return network == "icn" || network == "ncn" || network == "rcn" ? 1.2 : 1.1;

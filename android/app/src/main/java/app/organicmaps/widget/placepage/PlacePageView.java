@@ -78,8 +78,8 @@ import app.organicmaps.utils.Graphics;
 import app.organicmaps.widget.ArrowPopup;
 import app.organicmaps.widget.ArrowView;
 import app.organicmaps.widget.colorpicker.ColorPickerFragment;
-import app.organicmaps.widget.placepage.sections.GroveReviewsFragment;
-import app.organicmaps.widget.placepage.sections.GroveTripadvisorFragment;
+import app.organicmaps.widget.placepage.sections.GroveReviewsFragment; // Grove[reviews]
+import app.organicmaps.widget.placepage.sections.GroveTripadvisorFragment; // Grove[tripadvisor]
 import app.organicmaps.widget.placepage.sections.PlacePageLinksFragment;
 import app.organicmaps.widget.placepage.sections.PlacePageNotesFragment;
 import app.organicmaps.widget.placepage.sections.PlacePageOpeningHoursFragment;
@@ -272,6 +272,8 @@ public class PlacePageView extends Fragment
     mFrame.setOnClickListener((v) -> mPlacePageViewListener.onPlacePageRequestToggleState());
 
     mPreview = mFrame.findViewById(R.id.pp__preview);
+    GroveTripadvisorFragment.addContainer(mFrame); // Grove[tripadvisor]
+    GroveReviewsFragment.addContainer(mFrame); // Grove[reviews]
 
     mFrame.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
       final int oldHeight = oldBottom - oldTop;
@@ -475,7 +477,7 @@ public class PlacePageView extends Fragment
   {
     updateViewFragment(PlacePageTrackFragment.class, TRACK_FRAGMENT_TAG, R.id.place_page_track_fragment,
                        mMapObject.isTrack());
-    GroveTripRow.update(mPreview.findViewById(R.id.grove_trip_navigate), mMapObject);
+    GroveTripRow.update(mPreview, mMapObject); // Grove[saved_trips]: navigate a saved trip again.
   }
 
   private void updateTrackRecordingView()
@@ -541,7 +543,7 @@ public class PlacePageView extends Fragment
     UiUtils.setTextAndHideIfEmpty(mTvAddress, mMapObject.getAddress());
 
     refreshCategoryPreview();
-    GrovePlaceCard.apply(mTvTitle);
+    GrovePlaceCard.apply(mTvTitle); // Grove[place_title_color]
 
     final String osmDescription = mMapObject.getOsmDescription();
     if (osmDescription.isEmpty())
@@ -809,11 +811,11 @@ public class PlacePageView extends Fragment
     updateOpeningHoursView();
     updateProductsView();
     updateWikipediaView();
-    // Grove: Tripadvisor rating and Mangrove reviews.
+    // Grove[tripadvisor], Grove[reviews]: the place's ratings and reviews.
     updateViewFragment(GroveTripadvisorFragment.class, GroveTripadvisorFragment.TAG, R.id.grove_tripadvisor_fragment,
-                       GroveTripadvisorFragment.isShown());
+                       GroveTripadvisorFragment.isShown(mFrame));
     updateViewFragment(GroveReviewsFragment.class, GroveReviewsFragment.TAG, R.id.grove_reviews_fragment,
-                       GroveReviewsFragment.isShown());
+                       GroveReviewsFragment.isShown(mFrame));
     updateNotesView();
     updatePhoneView();
     updateTrackView();
@@ -892,7 +894,7 @@ public class PlacePageView extends Fragment
         Framework.nativeGetCoordinateFormats(mMapObject.getLat(), mMapObject.getLon());
     mTvLatlon.setText(entries[effectiveIndex(entries)].getDisplay());
     UiUtils.hideIf(mMapObject.isTrackRecording() || mMapObject.isTrack(), mFrame.findViewById(R.id.ll__place_latlon));
-    GrovePlaceElevation.show(mFrame.findViewById(R.id.tv__place_elevation), mMapObject.getLat(), mMapObject.getLon());
+    GrovePlaceElevation.show(mFrame, mMapObject.getLat(), mMapObject.getLon()); // Grove[elevation]
   }
 
   private void addOrganisation()

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Grove: with the ui_font module on, GroveFonts.install() lays this over each activity's theme, so its text views
+     are inflated in the app font (GroveViewInflater). Upstream's themes and styles stay as they are. -->
+<resources>
+  <style name="Grove.UiFont">
+    <item name="viewInflaterClass">app.organicmaps.util.GroveViewInflater</item>
+  </style>
+</resources>

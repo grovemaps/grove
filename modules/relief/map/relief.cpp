@@ -186,8 +186,6 @@ void ShadeRelief(std::vector<uint8_t> & rgba, uint32_t width, uint32_t height, d
 
 std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<df::DrapeEngine>()> getEngine)
 {
-  RasterLayerEnabled(dp::BackgroundMode::Relief) = IsReliefEnabled();
-
   RasterTileProvider::Params params;
   params.m_urlTemplate = kTerrariumUrl;
   params.m_cacheSubdir = "grove_relief";
@@ -243,14 +241,5 @@ std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<d
 bool IsReliefEnabled()
 {
   return IsOn(Feature::Relief);
-}
-
-void SetReliefEnabled(ref_ptr<df::DrapeEngine> engine, bool enabled)
-{
-  SetSwitch(Feature::Relief, enabled);
-  RasterLayerEnabled(dp::BackgroundMode::Relief) = enabled;
-  // Re-reads the visible tiles, which also updates the relief layer's viewport (requests or drops its tiles).
-  if (engine)
-    engine->InvalidateRect(mercator::Bounds::FullRect());
 }
 }  // namespace grove

@@ -12,7 +12,6 @@ namespace grove
 // Stronger factors (1.3) sent a ride across Amsterdam 48% further round the city's regional routes. Mountain bike
 // trails get nothing. The switch is Feature::PreferCycleRoutes, on by default, and applies from the next route.
 bool PreferCycleRoutes();
-void SetPreferCycleRoutes(bool prefer);
 
 // Weight factor for a road in a cycle route of the network, 1 if none: icn/ncn/rcn 1.2, lcn and others 1.1.
 double CycleRouteFactor(std::string_view network);

@@ -1,12 +1,13 @@
 #pragma once
 
+#include "modules/core/platform/features.hpp"
+
 #include "drape_frontend/map_data_provider.hpp"
 #include "drape_frontend/tile_background_renderer.hpp"
 
 #include "drape/drape_global.hpp"
 #include "drape/pointers.hpp"
 
-#include <atomic>
 #include <string_view>
 #include <utility>
 
@@ -38,13 +39,6 @@ inline RasterLayerSource & GetRasterLayerSource(dp::BackgroundMode mode)
   return sources[LayerIndex(mode)];
 }
 
-// Settings switches. When off, a layer draws nothing and requests no tiles.
-inline std::atomic<bool> & RasterLayerEnabled(dp::BackgroundMode mode)
-{
-  static std::atomic<bool> enabled[2] = {true, true};
-  return enabled[LayerIndex(mode)];
-}
-
 // Image uids of a layer's tiles start with its prefix, so their tile bindings reach the layer's renderer.
 inline std::string_view ImagePrefix(dp::BackgroundMode mode)
 {
@@ -61,8 +55,10 @@ int constexpr kReliefZoomOffset = 1;
 class RasterLayer
 {
 public:
-  RasterLayer(dp::BackgroundMode mode, int maxZoom, int zoomOffset = 0)
+  // Switched off (Feature::Relief, Feature::Landcover), a layer draws nothing and requests no tiles.
+  RasterLayer(dp::BackgroundMode mode, Feature feature, int maxZoom, int zoomOffset = 0)
     : m_mode(mode)
+    , m_feature(feature)
     , m_maxZoom(maxZoom)
     , m_zoomOffset(zoomOffset)
   {
@@ -80,7 +76,7 @@ public:
   {
     if (!m_renderer)
       return;
-    if (!RasterLayerEnabled(m_mode))
+    if (!IsOn(m_feature))
     {
       // Switched off: cancel requests and free the textures.
       if (context != nullptr)
@@ -101,7 +97,7 @@ public:
   void Render(ref_ptr<dp::GraphicsContext> context, ref_ptr<gpu::ProgramManager> mng, ScreenBase const & screen,
               int zoomLevel, df::FrameValues const & frameValues)
   {
-    if (m_renderer && RasterLayerEnabled(m_mode) && zoomLevel <= m_maxZoom)
+    if (m_renderer && IsOn(m_feature) && zoomLevel <= m_maxZoom)
       m_renderer->Render(context, mng, screen, zoomLevel, frameValues);
   }
 
@@ -115,6 +111,7 @@ public:
 
 private:
   dp::BackgroundMode const m_mode;
+  Feature const m_feature;
   int const m_maxZoom;
   int const m_zoomOffset;
   drape_ptr<df::TileBackgroundRenderer> m_renderer;
@@ -166,7 +163,7 @@ public:
   }
 
 private:
-  RasterLayer m_landcover{dp::BackgroundMode::Landcover, kLandcoverMaxZoom};
-  RasterLayer m_relief{dp::BackgroundMode::Relief, 20, kReliefZoomOffset};
+  RasterLayer m_landcover{dp::BackgroundMode::Landcover, Feature::Landcover, kLandcoverMaxZoom};
+  RasterLayer m_relief{dp::BackgroundMode::Relief, Feature::Relief, 20, kReliefZoomOffset};
 };
 }  // namespace grove

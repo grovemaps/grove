@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Grove: the point's height on the place card, see GrovePlaceElevation. -->
+  <item name="tv__place_elevation" type="id" />
+</resources>

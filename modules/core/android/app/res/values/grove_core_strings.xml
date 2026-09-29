@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Grove[core]: Grove's page. Few words: symbols say the rest. -->
+<resources>
+  <string name="grove_settings_grove_summary">Every change Grove makes, each with its switch</string>
+  <string name="grove_stock_summary">Stock: only Organic Maps\' own code runs</string>
+  <string name="grove_module_about">About this module</string>
+</resources>

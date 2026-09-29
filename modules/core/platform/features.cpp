@@ -15,69 +15,81 @@ using enum Feature;
 using G = FeatureGroup;
 
 FeatureInfo constexpr kFeatures[] = {
-    {Look, G::Map, "look", "GroveLook", true, true,
+    {Look, G::Map, "look", "🎨", "GroveLook", true, true,
      "Grove's map style and icons: Apple-like colours, Guru Maps' terrain, CoMaps' cartography. Off: Organic Maps' "
      "own."},
-    {Typography, G::Map, "typography", "GroveTypography", true, true,
+    {Typography, G::Map, "typography", "🔤", "GroveTypography", true, true,
      "Inter for map labels: semibold places, italic water, spaced capitals for streets and areas, Geist numbers."},
-    {Halos, G::Map, "halos", "GroveHalos", true, true, "Wider, softer label halos, like Mapy.com's white outlines."},
-    {Buildings3d, G::Map, "buildings_3d", "GroveBuildings3d", true, false,
+    {Halos, G::Map, "halos", "🅰️", "GroveHalos", true, true,
+     "Wider, softer label halos, like Mapy.com's white outlines."},
+    {Buildings3d, G::Map, "buildings_3d", "🏙️", "GroveBuildings3d", true, false,
      "3D buildings lit from the upper left, walls darkening toward the ground, more solid."},
-    {SeeThroughBuildings, G::Map, "see_through_buildings", "GroveSeeThrough", true, true,
+    {SeeThroughBuildings, G::Map, "see_through_buildings", "🪟", "GroveSeeThrough", true, true,
      "3D buildings with a shop or café inside are see-through, as in Apple Maps."},
-    {PoiDots, G::Map, "poi_dots", "GrovePoiDots", true, true, "A small dot where each place is, under its icon."},
-    {CycleRouteLines, G::Map, "cycle_route_lines", "GroveCycleLines", true, true,
+    {PoiDots, G::Map, "poi_dots", "🔵", "GrovePoiDots", true, true, "A small dot where each place is, under its icon."},
+    {CycleRouteLines, G::Map, "cycle_route_lines", "🚲", "GroveCycleLines", true, true,
      "The cycling layer draws one solid line per road, coloured by its highest network, not a stripe per route."},
 
-    {Relief, G::Layers, "relief", "GroveRelief", true, false, "Shaded relief and elevation tints, as in Guru Maps."},
-    {Landcover, G::Layers, "landcover", "GroveLandcover", true, false,
+    {Relief, G::Layers, "relief", "⛰️", "GroveRelief", true, false,
+     "Shaded relief and elevation tints, as in Guru Maps."},
+    {Landcover, G::Layers, "landcover", "🌳", "GroveLandcover", true, false,
      "Forests, fields and ice from ESA WorldCover when zoomed out, where the maps have none."},
-    {Landuse11, G::Layers, "landuse_11", "GroveLanduse11", true, true,
+    {Landuse11, G::Layers, "landuse_11", "🌾", "GroveLanduse11", true, true,
      "The maps' own forests and fields from zoom 11, not 12."},
-    {OfflineLayers, G::Layers, "offline_layers", "GroveOfflineLayers", true, true,
+    {OfflineLayers, G::Layers, "offline_layers", "💾", "GroveOfflineLayers", true, true,
      "Relief and land cover saved with each downloaded map, over Wi-Fi."},
-    {Contours, G::Layers, "contours", "GroveContours", true, true,
+    {Contours, G::Layers, "contours", "〰️", "GroveContours", true, true,
      "Contour lines on until switched off, as in Guru Maps."},
 
-    {Logos, G::Places, "logos", "GroveLogos", true, true,
+    {Logos, G::Places, "logos", "🏷️", "GroveLogos", true, true,
      "Chains' logos on the map from zoom 14, and a map button to hide them (upstream's help and donate button)."},
-    {Elevation, G::Places, "elevation", "GroveElevation", true, false, "The height of a tapped point on its card."},
-    {Reviews, G::Places, "reviews", "GroveReviews", true, false,
+    {Elevation, G::Places, "elevation", "🔺", "GroveElevation", true, false,
+     "The height of a tapped point on its card."},
+    {Reviews, G::Places, "reviews", "💬", "GroveReviews", true, false,
      "Mangrove's open reviews on place cards, with a trend when a place got better or worse."},
-    {Tripadvisor, G::Places, "tripadvisor", "GroveTripadvisor", true, false,
+    {Tripadvisor, G::Places, "tripadvisor", "🦉", "GroveTripadvisor", true, false,
      "Tripadvisor ratings and reviews on place cards, with your own API key."},
-    {SearchColors, G::Places, "search_colors", "GroveSearchColors", true, false,
+    {SearchColors, G::Places, "search_colors", "🔍", "GroveSearchColors", true, false,
      "Search categories in the colours of their map icons."},
-    {PlaceTitleColor, G::Places, "place_title_color", "GrovePlaceTitleColor", true, false,
+    {PlaceTitleColor, G::Places, "place_title_color", "🖍️", "GrovePlaceTitleColor", true, false,
      "A place card's title in the place's colour: its chain's logo colour or its category's."},
 
-    {TiltGesture, G::Gestures, "tilt_gesture", "GroveTilt", true, false,
+    {TiltGesture, G::Gestures, "tilt_gesture", "📐", "GroveTilt", true, false,
      "Two fingers sliding up or down tilt the map into 3D, at any zoom."},
-    {MeasureTap, G::Gestures, "measure_tap", "GroveMeasure", true, false,
+    {MeasureTap, G::Gestures, "measure_tap", "📏", "GroveMeasure", true, false,
      "A two-finger tap shows the distance between the fingers, instead of zooming out."},
 
-    {MergeJogs, G::Navigation, "merge_jogs", "GroveMergeJogs", true, true,
+    {MergeJogs, G::Navigation, "merge_jogs", "⬆️", "GroveMergeJogs", true, true,
      "No \"turn left, turn right\" where you go straight: jogs of bike paths, crossings and squares merged."},
-    {WayKinds, G::Navigation, "way_kinds", "GroveWayKinds", true, false,
+    {WayKinds, G::Navigation, "way_kinds", "🛤️", "GroveWayKinds", true, false,
      "The voice names bike paths, paths, stairs and tracks a turn leads onto."},
-    {QuietRecalculating, G::Navigation, "quiet_recalculating", "GroveQuietRecalc", true, false,
+    {QuietRecalculating, G::Navigation, "quiet_recalculating", "🔇", "GroveQuietRecalc", true, false,
      "\"Recalculating\" once a minute at most."},
-    {BikeHeading, G::Navigation, "bike_heading", "GroveBikeHeading", true, true,
+    {BikeHeading, G::Navigation, "bike_heading", "🔄", "GroveBikeHeading", true, true,
      "A rebuilt bike route starts the way the rider goes."},
-    {PreferCycleRoutes, G::Navigation, "prefer_cycle_routes", "GroveCycleRoutes", true, false,
+    {PreferCycleRoutes, G::Navigation, "prefer_cycle_routes", "🚴", "GroveCycleRoutes", true, false,
      "Bike routes prefer signed cycle routes, for a small detour at most."},
-    {NavigationColors, G::Navigation, "navigation_colors", "GroveNavigationColors", false, true,
+    {NavigationColors, G::Navigation, "navigation_colors", "🚗", "GroveNavigationColors", false, true,
      "Grove's colours while driving, instead of Organic Maps' muted ones."},
-    {SavedTrips, G::Navigation, "saved_trips", "GroveTrips", true, false,
+    {SavedTrips, G::Navigation, "saved_trips", "📌", "GroveTrips", true, false,
      "A saved route keeps its stops, and can be navigated again from its track."},
 
-    {UiFont, G::App, "ui_font", "GroveUiFont", true, true, "Geist as the app's font, instead of Roboto."},
-    {SettingsSections, G::App, "settings_sections", "GroveSettingsSections", true, false,
+    {UiFont, G::App, "ui_font", "🔠", "GroveUiFont", true, true, "Geist as the app's font, instead of Roboto."},
+    {SettingsSections, G::App, "settings_sections", "🗂️", "GroveSettingsSections", true, false,
      "Settings in illustrated sections, instead of one long list."},
-    {PerformanceBoost, G::App, "performance_boost", "GrovePerformance", false, true,
+    {PerformanceBoost, G::App, "performance_boost", "⚡", "GrovePerformance", false, true,
      "More threads read map tiles (all cores but two, 3 to 6) and make land cover (4, not 2)."},
 };
 static_assert(std::size(kFeatures) == static_cast<size_t>(Feature::Count));
+
+struct GroupInfo
+{
+  std::string_view m_name;
+  std::string_view m_icon;
+};
+GroupInfo constexpr kGroups[] = {
+    {"Map", "🗺️"}, {"Layers", "🏔️"}, {"Places", "📍"}, {"Gestures", "✋"}, {"Navigation", "🧭"}, {"App", "📱"},
+};
 
 std::string_view constexpr kStockKey = "GroveStock";
 // The look is a choice of names: "organicmaps" is Organic Maps' own.
@@ -143,6 +155,16 @@ FeatureInfo const & Info(Feature feature)
   auto const & info = kFeatures[static_cast<size_t>(feature)];
   ASSERT_EQUAL(info.m_feature, feature, ());
   return info;
+}
+
+std::string_view GroupName(FeatureGroup group)
+{
+  return kGroups[static_cast<size_t>(group)].m_name;
+}
+
+std::string_view GroupIcon(FeatureGroup group)
+{
+  return kGroups[static_cast<size_t>(group)].m_icon;
 }
 
 bool IsOn(Feature feature)

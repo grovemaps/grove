@@ -51,7 +51,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:ellipsize="end"
-          android:fontFamily="@font/ui_medium"
+          android:fontFamily="@string/robotoMedium"
           android:breakStrategy="high_quality"
           android:hyphenationFrequency="fullFast"
           android:maxLines="@integer/pp_title_lines"
@@ -83,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_quarter"
         android:ellipsize="end"
-        android:fontFamily="@font/ui_medium"
+        android:fontFamily="@string/robotoMedium"
         android:maxLines="@integer/pp_title_lines"
         android:textAppearance="@style/MwmTextAppearance.Body1"
         tools:background="#C0800000"
@@ -328,20 +328,4 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:layout="@layout/placepage_track_fragment" />
-
-  <!-- Grove: plan a saved route again with its stops, see GroveTripRow. -->
-  <LinearLayout
-    android:id="@+id/grove_trip_navigate"
-    style="@style/PlacePageItemFrame"
-    android:visibility="gone"
-    tools:visibility="visible">
-    <ImageView
-      style="@style/PlacePageMetadataIcon"
-      app:srcCompat="@drawable/ic_manage_route"
-      app:tint="?colorAccent" />
-    <TextView
-      style="@style/PlacePageMetadataText"
-      android:text="@string/navigate_trip"
-      android:textAppearance="@style/MwmTextAppearance.PlacePage.Accent" />
-  </LinearLayout>
 </LinearLayout>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Grove: animated illustration of a settings section, see GroveSectionPreference. A tree swaying. -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt">
+  <aapt:attr name="android:drawable">
+    <vector android:width="48dp" android:height="48dp" android:viewportWidth="24" android:viewportHeight="24">
+      <group android:name="tree" android:pivotX="12" android:pivotY="22">
+        <path android:fillColor="#FFFFFFFF" android:pathData="M17,12h2L12,2 5.05,12H7l-3.9,6h6.92v4h3.95v-4H21z" />
+      </group>
+    </vector>
+  </aapt:attr>
+  <target android:name="tree">
+    <aapt:attr name="android:animation">
+      <objectAnimator android:propertyName="rotation" android:valueFrom="-4" android:valueTo="4" android:duration="1400"
+        android:repeatCount="infinite" android:repeatMode="reverse"
+        android:interpolator="@android:interpolator/accelerate_decelerate" />
+    </aapt:attr>
+  </target>
+</animated-vector>

@@ -29,7 +29,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentEnd="true"
     android:textAppearance="@style/MwmTextAppearance.Body3"
-    android:fontFamily="@font/ui_medium"
+    android:fontFamily="@string/robotoMedium"
     android:textColor="?colorAccent"
     android:visibility="gone"
     tools:text="43 m"

@@ -5,6 +5,9 @@
 ⚙ What every module stands on: the registry of switches and Stock (platform/features.hpp), the raster layers relief and land cover draw with, the build hook that compiles modules into upstream's libraries (modules.cmake), and the tools: hook check, this index, renders, upstream sync, the emulator test.
 
 Hooks in upstream files:
+- `android/app/build.gradle`
+- `android/app/src/main/java/app/organicmaps/settings/SettingsPrefsFragment.java`
+- `android/sdk/build.gradle`
 - `cmake/OmimHelpers.cmake` (2)
 - `cmake/OmimTesting.cmake`
 - `libs/drape/drape_global.hpp`
@@ -38,6 +41,20 @@ Hooks in upstream files:
 
 Files:
 - `modules.cmake`
+- `android/modules.gradle`
+- `android/app/java/app/organicmaps/settings/EmojiDrawable.java`
+- `android/app/java/app/organicmaps/settings/GroveModulePreference.java`
+- `android/app/java/app/organicmaps/settings/GroveModuleSheet.java`
+- `android/app/java/app/organicmaps/settings/GroveModulesFragment.java`
+- `android/app/java/app/organicmaps/settings/GroveSettings.java`
+- `android/app/res/drawable/ic_grove.xml`
+- `android/app/res/drawable/ic_grove_info.xml`
+- `android/app/res/layout/grove_module_widget.xml`
+- `android/app/res/values/grove_core_strings.xml`
+- `android/app/res/xml/grove_modules.xml`
+- `android/jni/GroveFeatures.cpp`
+- `android/sdk/assets/grove_modules.txt`
+- `android/sdk/java/app/organicmaps/sdk/GroveFeatures.java`
 - `drape_frontend/raster_layers.hpp`
 - `map/files.hpp`
 - `platform/features.cpp`

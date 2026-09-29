@@ -25,6 +25,9 @@ if (googleFirebaseServicesEnabled) {
 }
 
 apply from: "${rootProject.rootDir}/groovy/common-config.gradle"
+// Grove[core]: the modules' Android code and resources, modules/*/android/app.
+ext.groveModulePart = 'app'
+apply from: "${rootProject.rootDir}/../modules/core/android/modules.gradle"
 apply from: "${rootProject.rootDir}/groovy/application-signing.gradle"
 apply from: "${rootProject.rootDir}/groovy/permission-checker.gradle"
 
@@ -195,7 +198,7 @@ android {
   // as the drawing rules, are still compressed.
   androidResources {
     ignoreAssetsPattern = '!.svn:!.git:!.DS_Store:!*.scc:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~'
-    noCompress = ['png', 'mwm', 'ttf', 'packed_polygons.bin', 'grove_brands.bin', 'grove_landcover_world.bin', 'grove_reviews.bin']  // Grove: logo, land cover and review packs
+    noCompress = ['png', 'mwm', 'ttf', 'packed_polygons.bin']
   }
 
   compileOptions {
