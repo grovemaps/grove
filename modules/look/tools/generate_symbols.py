@@ -212,7 +212,8 @@ def main():
 
     skin_generator = args.skin_generator
     if not args.dry_run and not skin_generator:
-        build_dir = os.path.join(ROOT, 'build-grove')
+        # Its own build, as configuring without tests would drop them from the main build.
+        build_dir = os.path.join(ROOT, 'build-grove-tools')
         subprocess.run(['cmake', '-S', ROOT, '-B', build_dir, '-G', 'Ninja', '-DCMAKE_BUILD_TYPE=Release',
                         '-DBUILD_TESTING=OFF'], check=True, stdout=subprocess.DEVNULL)
         subprocess.run(['cmake', '--build', build_dir, '--target', 'skin_generator_tool'], check=True,
