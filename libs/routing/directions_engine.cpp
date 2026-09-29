@@ -2,6 +2,7 @@
 
 #include "routing/data_source.hpp"
 #include "routing/fake_feature_ids.hpp"
+#include "routing/grove_way_kind.hpp"
 #include "routing/lanes/lanes_parser.hpp"
 #include "routing/routing_helpers.hpp"
 #include "routing/turns.hpp"
@@ -87,6 +88,8 @@ void DirectionsEngine::LoadPathAttributes(FeatureID const & featureId, LoadedPat
   /// @todo Should make some better parsing here (@see further use in GetFullRoadName).
   pathSegment.m_roadNameInfo.m_ref = ft->GetRef();
   pathSegment.m_roadNameInfo.m_name = ft->GetDefaultName();
+  // Grove: for "turn right onto the bike path", see routing/grove_way_kind.hpp.
+  pathSegment.m_roadNameInfo.m_groveWayKind = grove::GetWayKind(types);
 }
 
 void DirectionsEngine::GetSegmentRangeAndAdjacentEdges(IRoadGraph::EdgeListT const & outgoingEdges, Edge const & inEdge,

@@ -9,6 +9,7 @@ set(SRC
   astar_router_test.cpp
   async_router_test.cpp
   grove_turns_tests.cpp
+  grove_way_kind_tests.cpp
   bfs_tests.cpp
   checkpoint_predictor_test.cpp
   coding_test.cpp

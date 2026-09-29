@@ -8,6 +8,7 @@
 #include "routing/turns.hpp"
 
 #include "routing/base/followed_polyline.hpp"
+#include "routing/grove_way_kind.hpp"
 
 #include "routing_common/maxspeed_conversion.hpp"
 
@@ -100,6 +101,8 @@ public:
     std::string m_destination;   // E.g. "Cupertino".
     std::string m_ref;           // Number of street/road e.g. "CA 85".
     bool m_isLink = false;
+    // Grove: what the way is, for voice guidance, see routing/grove_way_kind.hpp.
+    grove::WayKind m_groveWayKind = grove::WayKind::None;
 
     RoadNameInfo() = default;
     RoadNameInfo(std::string name) : m_name(std::move(name)) {}
@@ -133,7 +136,8 @@ public:
     bool operator==(RoadNameInfo const & rni) const
     {
       return m_name == rni.m_name && m_ref == rni.m_ref && m_junction_ref == rni.m_junction_ref &&
-             m_destination_ref == rni.m_destination_ref && m_destination == rni.m_destination;
+             m_destination_ref == rni.m_destination_ref && m_destination == rni.m_destination &&
+             m_groveWayKind == rni.m_groveWayKind;
     }
 
     friend std::string DebugPrint(RoadNameInfo const & rni);

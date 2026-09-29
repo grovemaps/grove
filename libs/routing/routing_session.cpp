@@ -525,10 +525,15 @@ void RoutingSession::GenerateNotifications(std::vector<std::string> & notificati
   if (m_route->GetNextTurns(turns))
   {
     RouteSegment::RoadNameInfo nextStreetInfo;
-
-    // only populate nextStreetInfo if TtsStreetNames is enabled
-    if (announceStreets)
-      m_route->GetNextTurnStreetName(nextStreetInfo);
+    m_route->GetNextTurnStreetName(nextStreetInfo);
+    // Names only if TtsStreetNames is enabled. Grove: the kind of way ("the bike path") always, as it comes from the
+    // voice's own phrases, which the voice pronounces well.
+    if (!announceStreets)
+    {
+      auto const kind = nextStreetInfo.m_groveWayKind;
+      nextStreetInfo = {};
+      nextStreetInfo.m_groveWayKind = kind;
+    }
 
     m_turnNotificationsMgr.GenerateTurnNotifications(turns, notifications, nextStreetInfo);
   }

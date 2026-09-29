@@ -16,6 +16,7 @@ set(SRC
   generated_map_test.cpp
   generated_map_test.hpp
   grove_cycle_routes_test.cpp
+  grove_voice_test.cpp
   get_altitude_test.cpp
   guides_tests.cpp
   pedestrian_route_test.cpp

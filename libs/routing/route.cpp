@@ -492,6 +492,12 @@ void Route::GetClosestStreetNameAfterIdx(size_t segIdx, RouteSegment::RoadNameIn
         roadNameInfo = r;
       break;
     }
+    else if (r.m_groveWayKind != grove::WayKind::None && !roadNameInfo.HasExitInfo())
+    {
+      // Grove: a bike path or path without a name is where the turn leads, not the street it joins further on.
+      roadNameInfo = r;
+      break;
+    }
     else if (r.HasExitTextInfo() || i == segIdx)
     {
       ASSERT(!roadNameInfo.HasBasicTextInfo(), ());
@@ -509,6 +515,11 @@ void Route::GetClosestStreetNameAfterIdx(size_t segIdx, RouteSegment::RoadNameIn
     if (m_poly.GetDistanceM(startIter, furtherIter) > kSteetNameLinkMeters)
       break;
   }
+
+  // Grove: the kind of way only where it changes, "onto the bike path" off a road, not at every turn along bike paths.
+  if (segIdx > 0 && segIdx <= m_routeSegments.size() &&
+      grove::IsSameWayKind(m_routeSegments[segIdx - 1].GetRoadNameInfo().m_groveWayKind, roadNameInfo.m_groveWayKind))
+    roadNameInfo.m_groveWayKind = grove::WayKind::None;
 
   if (roadNameInfo.HasExitInfo())
   {

@@ -1,5 +1,6 @@
 #include "routing/turns_tts_text.hpp"
 
+#include "routing/grove_way_kind.hpp"
 #include "routing/turns_sound_settings.hpp"
 #include "routing/turns_tts_text_i18n.hpp"
 
@@ -145,7 +146,7 @@ std::string GetTtsText::GetTurnNotification(Notification const & notification) c
   std::string dirStr = GetTextByIdTrimmed(dirKey);
 
   if (notification.m_distanceUnits == 0 && !notification.m_useThenInsteadOfDistance &&
-      notification.m_nextStreetInfo.empty())
+      notification.m_nextStreetInfo.empty() && notification.m_nextStreetInfo.m_groveWayKind == grove::WayKind::None)
     return dirStr;
 
   if (notification.IsPedestrianNotification())
@@ -178,6 +179,15 @@ std::string GetTtsText::GetTurnNotification(Notification const & notification) c
   std::string streetOut;
   RouteSegment::RoadNameInfo nsi = notification.m_nextStreetInfo;  // extract non-const
   FormatFullRoadName(nsi, streetOut);
+
+  // Grove: without a name, the kind of way, "the bike path", where the language has the phrase.
+  if (streetOut.empty())
+  {
+    auto const kindId = grove::WayKindTextId(nsi.m_groveWayKind, notification.IsPedestrianNotification());
+    if (!kindId.empty())
+      if (auto kind = GetTextByIdTrimmed(kindId); kind != "NULL")
+        streetOut = std::move(kind);
+  }
 
   if (!streetOut.empty())
   {
