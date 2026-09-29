@@ -35,6 +35,8 @@ class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolde
   private int[] mCategoryResIds;
   @DrawableRes
   private int[] mIconResIds;
+  // Grove: the categories' keys, for their colors.
+  private String[] mKeys = new String[0];
 
   private final LayoutInflater mInflater;
   private final Resources mResources;
@@ -63,6 +65,7 @@ class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolde
 
     mCategoryResIds = new int[numKeys];
     mIconResIds = new int[numKeys];
+    mKeys = keys;
     for (int i = 0; i < numKeys; i++)
     {
       String key = keys[i];
@@ -121,7 +124,7 @@ class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolde
   @Override
   public void onBindViewHolder(ViewHolder holder, int position)
   {
-    holder.setTextAndIcon(mCategoryResIds[position], mIconResIds[position]);
+    holder.setTextAndIcon(mCategoryResIds[position], mIconResIds[position], mKeys[position]);
   }
 
   @Override
@@ -192,10 +195,12 @@ class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolde
         mListener.onSearchCategorySelected(getEnglishString(categoryId) + " " /*, "en"*/);
     }
 
-    void setTextAndIcon(@StringRes int textResId, @DrawableRes int iconResId)
+    void setTextAndIcon(@StringRes int textResId, @DrawableRes int iconResId, @NonNull String key)
     {
       mTitle.setText(textResId);
-      mTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(iconResId, 0, 0, 0);
+      // Grove: the map's category colors, see GroveCategoryIcons.
+      mTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
+          GroveCategoryIcons.get(mTitle.getContext(), key, iconResId), null, null, null);
     }
   }
 }

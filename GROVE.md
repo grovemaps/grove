@@ -104,6 +104,7 @@ Current upstream hooks:
 | `libs/routing/index_router.cpp`, `route.hpp` (`SetTurnDirection`) | bicycle routes use `grove::BicycleDirectionsEngine` (`libs/routing/grove_turns.hpp`): the car directions, then bike path jogs merged (below) |
 | `android/app/src/main/res/layout/place_page_details.xml` (again), `PlacePageView.java` | a container for the Tripadvisor section (`GroveTripadvisorFragment`) |
 | `libs/drape_frontend/read_manager.cpp` (`GetReadingThreadsCount`) | more tile reading threads with the performance boost (`libs/platform/grove_performance.hpp`, Grove) |
+| `android/app/.../search/CategoriesAdapter.java` | search categories' circles take the map icons' category colors (`GroveCategoryIcons.java`) |
 | `android/app/build.gradle` | stores `grove_brands.bin`, `grove_landcover_world.bin` and `grove_reviews.bin` uncompressed, so they are read in place |
 | `android/app/src/main/res/**`, `RoutingBottomMenuController.java` | Roboto references point to the app font (Geist, Inter for Greek), and the app themes hang under `values/grove_fonts.xml`; written by `tools/grove/android_fonts.py`, see "Fonts" |
 | `android/app/src/main/res/layout/place_page_details.xml`, `PlacePageView.java` | a container for the Mangrove reviews section and the one line that shows it (`GroveReviewsFragment`) |
