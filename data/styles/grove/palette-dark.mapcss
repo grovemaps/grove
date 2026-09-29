@@ -66,3 +66,7 @@
 @border_region: #6E6391;
 @border_glow: #26222F;
 @state_label: #9489B6;
+
+/* Paths (grove/paths.mapcss): steps' rungs and pedestrian areas' outline. */
+@steps: #7C705F;
+@pedestrian_area_outline: #3B3533;

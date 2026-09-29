@@ -33,8 +33,8 @@
 @flowers: #D3EDB0;
 
 /* 4.1 Main landuse */
-@pedestrian_area: #ECE7DD;
-@pedestrian_area_light: #F0ECE4;
+@pedestrian_area: #F0E6D0;
+@pedestrian_area_light: #F5EDDC;
 @platform: #E1E3E7;
 @leisure: #FFF3DA;
 @university: #F2E8DA;
@@ -181,3 +181,7 @@
 @border_region: #8878B8;
 @border_glow: #FBFAFE;
 @state_label: #7A6E9E;
+
+/* Paths (grove/paths.mapcss): steps' rungs and pedestrian areas' outline. */
+@steps: #B09C80;
+@pedestrian_area_outline: #DCCFB6;

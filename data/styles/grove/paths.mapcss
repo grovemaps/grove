@@ -6,10 +6,12 @@
  * - Paths and tracks: warm brown, longer dashes, a little wider, as on Mapy.com's outdoor map.
  * - Pedestrian streets: the same, wider.
  * - Cycleways: solid violet, stronger.
+ * - Steps: upstream's rungs (short dashes across a wide line) in warm grey-brown, which read as steps on the light
+ *   background where upstream's near-white ones vanish.
+ * - Pedestrian areas and squares: light sand with a thin warm outline, apart from the background and buildings.
  */
 
 line|z15-[highway=footway],
-line|z15-[highway=steps],
 {color: @footway; dashes: none; casing-color: @footway_casing;}
 line|z15[highway=footway],
 {casing-width: 0.4;}
@@ -85,3 +87,17 @@ line|z18-[highway=pedestrian],
 {casing-width: 0.8;}
 line|z14-[highway=pedestrian][area?],
 {casing-width: 0;}
+
+line|z15-[highway=steps],
+{color: @steps;}
+
+area|z14-[highway=pedestrian][area?],
+area|z14-[area:highway=pedestrian],
+area|z14-[highway=footway][area?],
+area|z14-[area:highway=footway],
+{fill-color: @pedestrian_area;}
+area|z16-[highway=pedestrian][area?],
+area|z16-[area:highway=pedestrian],
+area|z16-[highway=footway][area?],
+area|z16-[area:highway=footway],
+{fill-color: @pedestrian_area_light; casing-width: 0.6; casing-color: @pedestrian_area_outline;}
