@@ -26,12 +26,11 @@ namespace grove
 // BrandTexture, which loads each badge on first use into a slot of one dynamic texture.
 std::string_view constexpr kBrandSymbolPrefix = "brand:";
 
-// Overlay priority of logos, as dp::CalculateOverlayPriority packs it (0xFF, depth + 10000, rank, 0xFFFF): at style
-// priority 4250 with the top rank, above restaurants, shops and fuel (4200 and below in priorities_4_overlays), below
-// attractions, parks, museums, stations and place names, which hide logos in their way. Logos never hide each other
-// (OverlayTree).
-uint64_t constexpr kBrandPriority =
-    0xFF00000000000000ULL | (uint64_t{4250 + 10000} << 24) | (uint64_t{0xFF} << 16) | 0xFFFF;
+// Overlay priority of logos: above every map label and icon (dp::CalculateOverlayPriority: 0xFF, then a depth below
+// 2^15, rank and 0xFFFF), below the user marks shown at every zoom. Logos are pinned: nothing on the map hides them,
+// and they never hide each other (OverlayTree), so every chain place shows from the logo zoom on. Stations and sights
+// come first because logos only start at zoom 14 (drape_frontend/grove_brands.hpp).
+uint64_t constexpr kBrandPriority = 0xFF00FFFFFFFFFFFF;
 
 // Badge size on screen: a little larger than the category icons, so logos stay recognisable.
 double constexpr kBrandBadgeDp = 32.0;

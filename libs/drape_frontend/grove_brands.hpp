@@ -50,7 +50,7 @@ inline std::string_view FindBrand(FeatureType & f)
 }
 
 // Chains show their logo from zoom 14, all at once, drawn by the logo layer (grove_brand_layer.hpp) wherever they are,
-// whether or not the map's style draws their category yet. Stations, sights and parks win over logos in their way.
+// whether or not the map's style draws their category yet. They are pinned: every one shows (grove_brand_texture.hpp).
 // Their names show from zoom 17, under the logo.
 int constexpr kBrandLayerMinZoom = 14;
 int constexpr kChainNameZoom = 17;
