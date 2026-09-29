@@ -14,6 +14,8 @@ WAIT_SECONDS=60
 DOWNLOAD_SECONDS=300
 
 mkdir -p smoke
+# The emulator's own position (California) would pull the map away from the Alps once the app finds it.
+adb emu geo fix 11.4 47.3 || true
 adb install -r "$APK"
 # No permission prompts: one would stay on top of the app's task, and a relaunch would only bring it back.
 for permission in ACCESS_FINE_LOCATION ACCESS_COARSE_LOCATION POST_NOTIFICATIONS; do
