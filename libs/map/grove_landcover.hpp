@@ -22,7 +22,7 @@ namespace grove::landcover
 // under the map's areas by drape_frontend/grove_raster_layers.hpp. WorldCover is a set of Cloud-Optimized GeoTIFFs
 // on AWS Open Data, one per 3° square, each with overviews down to 600 m pixels: a map tile needs a square's header
 // and one tile of the overview that matches its zoom, which HTTP range requests fetch; both are cached on disk.
-// Zoom 6 and out come from a bundled pack of class tiles (data/grove_landcover_world.bin,
+// Zoom 5 and out come from a bundled pack of class tiles (data/grove_landcover_world.bin,
 // tools/grove/landcover_world.py).
 
 // WorldCover classes.
@@ -67,7 +67,7 @@ std::optional<std::vector<Level>> ParseLevels(std::string const & head,
 // Registers the land cover layer's tile reader; call before the drape engine is created.
 void CreateProvider(std::function<ref_ptr<df::DrapeEngine>()> getEngine, std::function<bool()> isDarkStyle);
 
-// Saves the WorldCover tiles the region's map tiles need from zoom 7 to 11 into the disk cache, so the layer works
+// Saves the WorldCover tiles the region's map tiles need from zoom 6 to 11 into the disk cache, so the layer works
 // offline there (map/grove_offline_layers.hpp). Blocks; false on network errors.
 bool Prefetch(m2::RectD const & mercatorRect);
 

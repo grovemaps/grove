@@ -11,7 +11,7 @@ namespace grove
 // enhancements size thread pools, so they take effect after a restart.
 // - Map tiles are read and turned into geometry by more threads: all cores but two, 3 to 6 (upstream: 2, or 3 from
 //   6 cores), which fills the screen faster after a jump or a zoom (drape_frontend/read_manager.cpp).
-// - Land cover tiles are made by 3 threads instead of 1 (map/grove_landcover.cpp).
+// - Land cover tiles are downloaded and made by 4 threads instead of 2 (map/grove_landcover.cpp).
 std::string_view constexpr kPerformanceKey = "GrovePerformance";
 
 inline bool PerformanceBoost()

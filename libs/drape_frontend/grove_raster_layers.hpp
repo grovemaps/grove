@@ -52,10 +52,17 @@ inline std::string_view ImagePrefix(dp::BackgroundMode mode)
 // Land cover shows up to zoom 11, fading out there as the map's own areas take over.
 int constexpr kLandcoverMaxZoom = 11;
 
+// Relief tiles are requested one zoom deeper than the map's: a 256 px elevation tile per quarter of a map tile, since
+// phones draw a map tile 2 to 3 times larger than 256 px. Land cover makes 512 px tiles instead.
+int constexpr kReliefZoomOffset = 1;
+
 class RasterLayer
 {
 public:
-  RasterLayer(dp::BackgroundMode mode, int maxZoom) : m_mode(mode), m_maxZoom(maxZoom)
+  RasterLayer(dp::BackgroundMode mode, int maxZoom, int zoomOffset = 0)
+    : m_mode(mode)
+    , m_maxZoom(maxZoom)
+    , m_zoomOffset(zoomOffset)
   {
     auto source = GetRasterLayerSource(mode);
     if (source.m_read)
@@ -80,7 +87,12 @@ public:
     else if (zoomLevel <= m_maxZoom)
     {
       // Zoomed in further, the layer keeps its tiles for zooming back out.
-      m_renderer->OnUpdateViewport(context, coverage, zoomLevel);
+      df::CoverageResult deeper = coverage;
+      deeper.m_minTileX <<= m_zoomOffset;
+      deeper.m_maxTileX <<= m_zoomOffset;
+      deeper.m_minTileY <<= m_zoomOffset;
+      deeper.m_maxTileY <<= m_zoomOffset;
+      m_renderer->OnUpdateViewport(context, deeper, zoomLevel + m_zoomOffset);
     }
   }
 
@@ -102,6 +114,7 @@ public:
 private:
   dp::BackgroundMode const m_mode;
   int const m_maxZoom;
+  int const m_zoomOffset;
   drape_ptr<df::TileBackgroundRenderer> m_renderer;
 };
 
@@ -152,6 +165,6 @@ public:
 
 private:
   RasterLayer m_landcover{dp::BackgroundMode::Landcover, kLandcoverMaxZoom};
-  RasterLayer m_relief{dp::BackgroundMode::Relief, 20};
+  RasterLayer m_relief{dp::BackgroundMode::Relief, 20, kReliefZoomOffset};
 };
 }  // namespace grove

@@ -12,7 +12,8 @@
 
 namespace grove
 {
-// Saves the relief (to zoom 13) and land cover (zoom 7 to 11) of each downloaded map region, so both layers work
+// Saves the relief (to zoom 12, drawn one zoom deeper than the map's) and land cover (zoom 6 to 11) of each downloaded
+// map region, so both layers work
 // offline there and show sharp at once instead of blurry parents: relief tiles go to grove_relief_offline/, which the
 // relief layer reads before downloading and never evicts (grove_relief.hpp); land cover to its own disk cache
 // (grove_landcover.hpp). Only on Wi-Fi and with the layer switched on; a region is done once per map version (marker

@@ -13,11 +13,16 @@ WAIT_SECONDS=60
 
 mkdir -p smoke
 adb install -r "$APK"
+# No permission prompts: one would stay on top of the app's task, and a relaunch would only bring it back.
+for permission in ACCESS_FINE_LOCATION ACCESS_COARSE_LOCATION POST_NOTIFICATIONS; do
+  adb shell pm grant "$PKG" "android.permission.$permission" || true
+done
 
 # Launches the app, waits and checks that it still runs. $1 names the run's screenshot and log.
 run() {
   adb logcat -c
-  adb shell monkey -p "$PKG" -c android.intent.category.LAUNCHER 1
+  # -S stops the app first, so each run starts it anew.
+  adb shell am start -S -W -n "$PKG/app.organicmaps.DownloadResourcesActivity"
   sleep "$WAIT_SECONDS"
   adb exec-out screencap -p > "smoke/$1.png" || true
   adb logcat -d > "smoke/$1-logcat.txt"

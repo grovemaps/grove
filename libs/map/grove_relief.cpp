@@ -213,11 +213,13 @@ std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<d
     auto shaded = cache.Find(uid);
     if (!shaded)
     {
-      // OM zoom Z is web-mercator zoom Z - 1; deeper tiles reuse part of the deepest DEM tile.
+      // OM zoom Z is web-mercator zoom Z - 1; deeper tiles reuse part of the deepest DEM tile. The layer asks for
+      // tiles kReliefZoomOffset deeper than the map shows: the exaggeration follows the map's zoom.
       int const demZoom = std::min(static_cast<int>(tileKey.m_zoomLevel) - 1, kMaxDemZoom);
       double const lat = mercator::YToLat(tileKey.GetGlobalRect().Center().y);
       double const metersPerPixel = kEarthCircumference * std::cos(math::DegToRad(lat)) / (width * (1 << demZoom));
-      ShadeRelief(rgba, width, height, metersPerPixel, Exaggeration(demZoom));
+      ShadeRelief(rgba, width, height, metersPerPixel,
+                  Exaggeration(static_cast<int>(tileKey.m_zoomLevel) - 1 - kReliefZoomOffset));
       shaded = std::make_shared<std::vector<uint8_t> const>(std::move(rgba));
       cache.Add(uid, shaded);
     }

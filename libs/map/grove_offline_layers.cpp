@@ -22,7 +22,8 @@ namespace grove
 {
 namespace
 {
-// Web mercator zooms of the saved relief: OM zooms 6 to 13. Closer in, a region would need thousands of tiles.
+// Web mercator zooms of the saved relief, which the relief layer shows at OM zooms 5 to 12 (one zoom deeper than the
+// map's, see drape_frontend/grove_raster_layers.hpp). Closer in, a region would need thousands of tiles.
 int constexpr kMinReliefZoom = 5;
 int constexpr kMaxReliefZoom = 12;
 
@@ -87,7 +88,7 @@ void OfflineLayers::Run()
     }
 
     std::string const base = base::JoinPath(m_dir, region.m_name + "_" + std::to_string(region.m_version));
-    std::string const reliefDone = base + ".relief", landcoverDone = base + ".landcover";
+    std::string const reliefDone = base + ".relief", landcoverDone = base + ".landcover6";  // From zoom 6 (before: 7).
     if (IsReliefEnabled() && !Platform::IsFileExistsByFullPath(reliefDone) && OnWifi())
     {
       if (SaveRelief(region.m_rect))

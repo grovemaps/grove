@@ -42,9 +42,12 @@ namespace
 std::string_view constexpr kEnabledKey = "GroveLandcover";
 std::string_view constexpr kUrl = "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/";
 
-// From this zoom tiles come from WorldCover's files online; further out a tile would need dozens of them, so it comes
-// from the bundled world pack (tools/grove/landcover_world.py).
-int constexpr kMinOnlineZoom = 7;
+// From this zoom tiles come from WorldCover's files online (about 16 files for a zoom 6 tile); further out a tile would
+// need dozens of them, so it comes from the bundled world pack (tools/grove/landcover_world.py).
+int constexpr kMinOnlineZoom = 6;
+// Up to this zoom, the world pack's tile shows while the online one loads, and offline where WorldCover's files aren't
+// saved; closer in its 2.8 km pixels are too coarse.
+int constexpr kMaxProvisionalZoom = 8;
 std::string_view constexpr kWorldPack = "grove_landcover_world.bin";
 std::string_view constexpr kWorldIndex = "grove_landcover_world.txt";
 int constexpr kMaxWorldZoom = 5;  // Web mercator.
@@ -220,7 +223,17 @@ public:
       m_active.insert(tileKey);
     }
     bool const dark = m_isDarkStyle();
-    m_workers.Push([this, tileKey, mode, dark] { MakeTile(tileKey, mode, dark); });
+    // The world pack's tiles take milliseconds: their own thread, so they never wait behind downloads.
+    if (tileKey.m_zoomLevel <= kMaxProvisionalZoom)
+    {
+      m_packWorker.Push([this, tileKey, mode, dark]
+      {
+        if (IsActive(tileKey))
+          MakeWorldTile(tileKey, mode, dark, tileKey.m_zoomLevel >= kMinOnlineZoom /* provisional */);
+      });
+    }
+    if (tileKey.m_zoomLevel >= kMinOnlineZoom)
+      m_workers.Push([this, tileKey, mode, dark] { MakeTile(tileKey, mode, dark); });
     return true;
   }
 
@@ -386,11 +399,6 @@ private:
   {
     if (!IsActive(tileKey))
       return;
-    if (tileKey.m_zoomLevel < kMinOnlineZoom)
-    {
-      MakeWorldTile(tileKey, mode, dark);
-      return;
-    }
 
     size_t const levelIndex = LevelFor(tileKey.m_zoomLevel);
     double const pixelsPerDegree = kFullPixelsPerDegree / (1 << levelIndex);
@@ -479,7 +487,7 @@ private:
   }
 
   // Zoomed out: the bundled world pack, with 2x2 samples a pixel as online.
-  void MakeWorldTile(df::TileKey const & tileKey, dp::BackgroundMode mode, bool dark)
+  void MakeWorldTile(df::TileKey const & tileKey, dp::BackgroundMode mode, bool dark, bool provisional = false)
   {
     // OM zoom Z is web mercator zoom Z - 1; a 512 px tile needs the pack's next zoom.
     int const z = std::min(int(tileKey.m_zoomLevel), kMaxWorldZoom);
@@ -541,19 +549,23 @@ private:
     {
       // The pack's 2.8 km pixels: blend classes into gradients rather than speckles.
       Soften(rgba, 3);
-      Deliver(tileKey, mode, dark, std::move(rgba));
+      Deliver(tileKey, mode, dark, std::move(rgba), provisional);
     }
   }
 
-  void Deliver(df::TileKey const & tileKey, dp::BackgroundMode mode, bool dark, std::vector<uint8_t> && rgba)
+  // A provisional tile (from the world pack, while the online one loads) keeps the request open; its image has its own
+  // uid, since the renderer ignores a second upload under the same one.
+  void Deliver(df::TileKey const & tileKey, dp::BackgroundMode mode, bool dark, std::vector<uint8_t> && rgba,
+               bool provisional = false)
   {
     auto engine = m_getEngine();
     if (!engine || !IsActive(tileKey))
       return;
-    CancelTile(tileKey, mode);
+    if (!provisional)
+      CancelTile(tileKey, mode);
     std::string const uid = std::string(ImagePrefix(dp::BackgroundMode::Landcover)) + (dark ? "dark/" : "light/") +
                             strings::to_string(int(tileKey.m_zoomLevel)) + "/" + strings::to_string(tileKey.m_x) + "/" +
-                            strings::to_string(tileKey.m_y);
+                            strings::to_string(tileKey.m_y) + (provisional ? "/pack" : "");
     engine->AddTileBackgroundImage(uid, kOutSize, kOutSize, dp::TextureFormat::RGBA8, mode, std::move(rgba));
     engine->SetTileBackgroundData(tileKey, uid, m2::RectF(0, 0, 1, 1));
   }
@@ -562,7 +574,9 @@ private:
   std::function<bool()> const m_isDarkStyle;
   // Its own threads, not the platform's one network thread: a tile waits for its downloads there. More with the
   // performance boost (platform/grove_performance.hpp). JVM-attached on Android, which HTTP requests need.
-  base::DelayedThreadPool m_workers{PerformanceBoost() ? 3u : 1u, base::DelayedThreadPool::Exit::SkipPending};
+  base::DelayedThreadPool m_workers{PerformanceBoost() ? 4u : 2u, base::DelayedThreadPool::Exit::SkipPending};
+  // The world pack's tiles: zoom 5 and out, and shown while the online ones load up to kMaxProvisionalZoom.
+  base::DelayedThreadPool m_packWorker{1, base::DelayedThreadPool::Exit::SkipPending};
 
   std::mutex m_mutex;
   std::set<df::TileKey> m_active;
