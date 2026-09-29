@@ -257,6 +257,10 @@
     <string name="grove_settings_about_title">About</string>
     <!-- Grove: Settings: what the «About» section holds -->
     <string name="grove_settings_about_summary">Help, feedback and more</string>
+    <!-- Grove: Settings «Navigation» section: switch to draw the map in Grove's colors while navigating by car -->
+    <string name="pref_navigation_colors_title">Grove colors while driving</string>
+    <!-- Grove: Settings «Navigation» section: explanation of the Grove colors while driving switch -->
+    <string name="pref_navigation_colors_summary">Off: the calmer, muted car navigation map of Organic Maps. Takes effect after a restart.</string>
     <!-- Grove: Settings «Map» section: which look the map has, Grove's or Organic Maps' own styles and icons -->
     <string name="pref_map_look_title">Map look</string>
     <!-- Grove: Settings: switch that lets the map engine use more processor cores -->
