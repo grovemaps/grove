@@ -149,11 +149,14 @@ std::unique_ptr<DirectionsEngine> CreateDirectionsEngine(VehicleType vehicleType
 {
   switch (vehicleType)
   {
-  case VehicleType::Pedestrian:
+  // Grove: turns without jogs (bike paths along roads, squares and crossings, road wiggles), see
+  // routing/grove_turns.hpp.
+  case VehicleType::Pedestrian: return std::make_unique<grove::PedestrianDirectionsEngine>(dataSource, numMwmIds);
   case VehicleType::Transit: return std::make_unique<PedestrianDirectionsEngine>(dataSource, numMwmIds);
-  // Grove: bicycle turns without the jogs of bike paths along roads, see routing/grove_turns.hpp.
-  case VehicleType::Bicycle: return std::make_unique<grove::BicycleDirectionsEngine>(dataSource, numMwmIds);
-  case VehicleType::Car: return std::make_unique<CarDirectionsEngine>(dataSource, numMwmIds);
+  case VehicleType::Bicycle:
+    return std::make_unique<grove::CarDirectionsEngine>(dataSource, numMwmIds, grove::JogMode::Bicycle);
+  case VehicleType::Car:
+    return std::make_unique<grove::CarDirectionsEngine>(dataSource, numMwmIds, grove::JogMode::Car);
   case VehicleType::Count: CHECK(false, ("Can't create DirectionsEngine for", vehicleType)); return nullptr;
   }
   UNREACHABLE();

@@ -155,8 +155,9 @@ public:
   }
 
   void SetTurnExits(uint32_t exitNum) { m_turn.m_exitNum = exitNum; }
-  // Grove: merged bicycle turns, see routing/grove_turns.hpp.
+  // Grove: merged turns, see routing/grove_turns.hpp.
   void SetTurnDirection(turns::CarDirection direction) { m_turn.m_turn = direction; }
+  void SetPedestrianTurn(turns::PedestrianDirection direction) { m_turn.m_pedestrianTurn = direction; }
 
   turns::lanes::LanesInfo & GetTurnLanes() { return m_turn.m_lanes; }
 
