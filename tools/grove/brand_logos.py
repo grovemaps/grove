@@ -156,12 +156,23 @@ def thumbnail_urls(logos):
     return thumbs
 
 
+def standard_thumbnail(url):
+    """Commons turns bots away from original files (HTTP 429) and asks for standard thumbnail widths instead, but the
+    imageinfo API gives logos narrower than THUMB_WIDTH as originals: ask for their THUMB_WIDTH thumbnail, which
+    Commons serves too."""
+    prefix = "https://upload.wikimedia.org/wikipedia/commons/"
+    if not url.startswith(prefix) or url.startswith(prefix + "thumb/"):
+        return url
+    path = url.split("?", 1)[0][len(prefix):]  # "b/bb/Name.png"
+    return f"{prefix}thumb/{path}/{THUMB_WIDTH}px-{path.rsplit('/', 1)[1]}"
+
+
 def logo_image(qid, thumb_url):
     path = os.path.join(CACHE, PNG_DIR, qid + ".png")
     if not os.path.exists(path):
         if not thumb_url:
             raise ValueError("no thumbnail")
-        data = fetch(thumb_url)
+        data = fetch(standard_thumbnail(thumb_url))
         time.sleep(1)  # One request a second: Wikimedia blocks faster clients for minutes.
         with open(path, "wb") as f:
             f.write(data)
