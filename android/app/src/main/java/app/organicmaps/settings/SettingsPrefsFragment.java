@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceGroup;
 import androidx.preference.TwoStatePreference;
 import app.organicmaps.MwmApplication;
 import app.organicmaps.R;
@@ -73,6 +73,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment implements La
     initScreenSleepEnabledPrefsCallbacks();
     initShowOnLockScreenPrefsCallbacks();
     initNightNavigationPrefsCallbacks();
+    GroveSettings.showSection(this);
   }
 
   private void updateVoiceInstructionsPrefsSummary()
@@ -574,9 +575,16 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment implements La
 
   private void removePreference(@NonNull String categoryKey, @NonNull Preference preference)
   {
-    final PreferenceCategory category = getPreference(categoryKey);
+    // Grove: settings are grouped in sections (GroveSettings.showSection), so remove from the actual parent.
+    final PreferenceGroup parent = preference.getParent();
+    if (parent != null)
+      parent.removePreference(preference);
+  }
 
-    category.removePreference(preference);
+  // Grove: a settings section's page, see GroveSettings.showSection.
+  void openSection(@NonNull String title, @NonNull Bundle args)
+  {
+    getSettingsActivity().stackFragment(SettingsPrefsFragment.class, title, args);
   }
 
   @Override

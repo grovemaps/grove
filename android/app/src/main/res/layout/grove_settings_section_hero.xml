@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Grove: the illustration heading a settings section's page, see GroveSectionPreference. -->
+<FrameLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:paddingStart="@dimen/margin_base"
+  android:paddingTop="@dimen/margin_base"
+  android:paddingEnd="@dimen/margin_base"
+  android:paddingBottom="@dimen/margin_half">
+  <LinearLayout
+    android:id="@+id/grove_section_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="28dp"
+    android:paddingBottom="@dimen/margin_base">
+    <ImageView
+      android:id="@+id/grove_section_icon"
+      android:layout_width="96dp"
+      android:layout_height="96dp"
+      android:background="@drawable/grove_settings_icon_circle"
+      android:importantForAccessibility="no"
+      android:padding="14dp" />
+    <TextView
+      android:id="@android:id/summary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/margin_base"
+      android:layout_marginTop="@dimen/margin_base"
+      android:layout_marginEnd="@dimen/margin_base"
+      android:gravity="center"
+      android:textColor="#EEFFFFFF"
+      android:textSize="15sp"
+      tools:text="Style, 3D buildings, relief, land cover, labels" />
+  </LinearLayout>
+</FrameLayout>

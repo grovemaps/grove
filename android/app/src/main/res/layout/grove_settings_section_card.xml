@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Grove: a settings section's card on the start page, see GroveSectionPreference. -->
+<FrameLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:paddingStart="@dimen/margin_base"
+  android:paddingTop="@dimen/margin_half"
+  android:paddingEnd="@dimen/margin_base"
+  android:paddingBottom="@dimen/margin_half">
+  <LinearLayout
+    android:id="@+id/grove_section_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="88dp"
+    android:orientation="horizontal"
+    android:padding="@dimen/margin_base">
+    <ImageView
+      android:id="@+id/grove_section_icon"
+      android:layout_width="52dp"
+      android:layout_height="52dp"
+      android:background="@drawable/grove_settings_icon_circle"
+      android:importantForAccessibility="no"
+      android:padding="6dp" />
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/margin_base"
+      android:layout_weight="1"
+      android:orientation="vertical">
+      <TextView
+        android:id="@android:id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:text="Map &amp; layers" />
+      <TextView
+        android:id="@android:id/summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="#DDFFFFFF"
+        android:textSize="14sp"
+        tools:text="Style, 3D buildings, relief, land cover, labels" />
+    </LinearLayout>
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:importantForAccessibility="no"
+      android:text="›"
+      android:textColor="#CCFFFFFF"
+      android:textSize="28sp" />
+  </LinearLayout>
+</FrameLayout>

@@ -7062,6 +7062,162 @@ pt = Últimos 6 meses: %1$s
 ru = За последние 6 месяцев: %1$s
 uk = За останні 6 місяців: %1$s
 
+[grove_settings_map_title]
+comment = Grove: Settings: title of the «Map & layers» section card and page
+tags = android-app
+en = Map & layers
+de = Karte & Ebenen
+es = Mapa y capas
+fr = Carte et calques
+it = Mappa e livelli
+nl = Kaart & lagen
+pt = Mapa e camadas
+ru = Карта и слои
+uk = Мапа й шари
+
+[grove_settings_map_summary]
+comment = Grove: Settings: what the «Map & layers» section holds
+tags = android-app
+en = Style, 3D buildings, relief, land cover, labels
+de = Stil, 3D-Gebäude, Relief, Landbedeckung, Beschriftungen
+es = Estilo, edificios 3D, relieve, cobertura del suelo, etiquetas
+fr = Style, bâtiments 3D, relief, occupation du sol, libellés
+it = Stile, edifici 3D, rilievo, copertura del suolo, etichette
+nl = Stijl, 3D-gebouwen, reliëf, bodembedekking, labels
+pt = Estilo, edifícios 3D, relevo, cobertura do solo, etiquetas
+ru = Стиль, 3D-здания, рельеф, земной покров, подписи
+uk = Стиль, 3D-будівлі, рельєф, земний покрив, підписи
+
+[grove_settings_navigation_title]
+comment = Grove: Settings: title of the «Navigation» section card and page
+tags = android-app
+en = Navigation
+de = Navigation
+es = Navegación
+fr = Navigation
+it = Navigazione
+nl = Navigatie
+pt = Navegação
+ru = Навигация
+uk = Навігація
+
+[grove_settings_navigation_summary]
+comment = Grove: Settings: what the «Navigation» section holds
+tags = android-app
+en = Voice guidance, 3D view, cycle routes, what to avoid
+de = Sprachansagen, 3D-Ansicht, Radrouten, was vermieden wird
+es = Guía por voz, vista 3D, rutas ciclistas, qué evitar
+fr = Guidage vocal, vue 3D, itinéraires cyclables, à éviter
+it = Guida vocale, vista 3D, itinerari ciclabili, cosa evitare
+nl = Spraakbegeleiding, 3D-weergave, fietsroutes, wat te vermijden
+pt = Orientação por voz, vista 3D, rotas cicláveis, o que evitar
+ru = Голосовые подсказки, 3D-вид, веломаршруты, что объезжать
+uk = Голосові підказки, 3D-вигляд, веломаршрути, що оминати
+
+[grove_settings_places_title]
+comment = Grove: Settings: title of the «Places & reviews» section card and page
+tags = android-app
+en = Places & reviews
+de = Orte & Bewertungen
+es = Lugares y reseñas
+fr = Lieux et avis
+it = Luoghi e recensioni
+nl = Plaatsen & recensies
+pt = Locais e avaliações
+ru = Места и отзывы
+uk = Місця й відгуки
+
+[grove_settings_places_summary]
+comment = Grove: Settings: what the «Places & reviews» section holds
+tags = android-app
+en = Reviews from Mangrove, Tripadvisor ratings
+de = Rezensionen von Mangrove, Tripadvisor-Bewertungen
+es = Reseñas de Mangrove, valoraciones de Tripadvisor
+fr = Avis de Mangrove, notes Tripadvisor
+it = Recensioni da Mangrove, valutazioni di Tripadvisor
+nl = Recensies van Mangrove, Tripadvisor-beoordelingen
+pt = Avaliações do Mangrove, classificações do Tripadvisor
+ru = Отзывы Mangrove, оценки Tripadvisor
+uk = Відгуки Mangrove, оцінки Tripadvisor
+
+[grove_settings_privacy_title]
+comment = Grove: Settings: title of the «Privacy & data» section card and page
+tags = android-app
+en = Privacy & data
+de = Datenschutz & Daten
+es = Privacidad y datos
+fr = Confidentialité et données
+it = Privacy e dati
+nl = Privacy & gegevens
+pt = Privacidade e dados
+ru = Конфиденциальность и данные
+uk = Приватність і дані
+
+[grove_settings_privacy_summary]
+comment = Grove: Settings: what the «Privacy & data» section holds
+tags = android-app
+en = Downloads, mobile data, storage, search history
+de = Downloads, mobile Daten, Speicher, Suchverlauf
+es = Descargas, datos móviles, almacenamiento, historial de búsqueda
+fr = Téléchargements, données mobiles, stockage, historique de recherche
+it = Download, dati mobili, archiviazione, cronologia delle ricerche
+nl = Downloads, mobiele data, opslag, zoekgeschiedenis
+pt = Transferências, dados móveis, armazenamento, histórico de pesquisa
+ru = Загрузки, мобильные данные, хранилище, история поиска
+uk = Завантаження, мобільні дані, сховище, історія пошуку
+
+[grove_settings_app_title]
+comment = Grove: Settings: title of the «App» section card and page
+tags = android-app
+en = App
+de = App
+es = Aplicación
+fr = Application
+it = App
+nl = App
+pt = Aplicação
+ru = Приложение
+uk = Застосунок
+
+[grove_settings_app_summary]
+comment = Grove: Settings: what the «App» section holds
+tags = android-app
+en = Units, screen, power saving, performance
+de = Einheiten, Bildschirm, Energiesparen, Leistung
+es = Unidades, pantalla, ahorro de energía, rendimiento
+fr = Unités, écran, économie d’énergie, performances
+it = Unità, schermo, risparmio energetico, prestazioni
+nl = Eenheden, scherm, energiebesparing, prestaties
+pt = Unidades, ecrã, poupança de energia, desempenho
+ru = Единицы, экран, энергосбережение, производительность
+uk = Одиниці, екран, енергозбереження, продуктивність
+
+[grove_settings_about_title]
+comment = Grove: Settings: title of the «About» section card and page
+tags = android-app
+en = About
+de = Über
+es = Acerca de
+fr = À propos
+it = Informazioni
+nl = Over
+pt = Sobre
+ru = О приложении
+uk = Про застосунок
+
+[grove_settings_about_summary]
+comment = Grove: Settings: what the «About» section holds
+tags = android-app
+en = Help, feedback and more
+de = Hilfe, Feedback und mehr
+es = Ayuda, comentarios y más
+fr = Aide, commentaires et plus
+it = Aiuto, feedback e altro
+nl = Hulp, feedback en meer
+pt = Ajuda, comentários e mais
+ru = Помощь, отзывы и другое
+uk = Допомога, відгуки й інше
+
 [pref_performance_boost_title]
 comment = Grove: Settings: switch that lets the map engine use more processor cores
 tags = android-app
