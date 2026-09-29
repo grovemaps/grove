@@ -7062,6 +7062,58 @@ pt = Últimos 6 meses: %1$s
 ru = За последние 6 месяцев: %1$s
 uk = За останні 6 місяців: %1$s
 
+[pref_performance_boost_title]
+comment = Grove: Settings: switch that lets the map engine use more processor cores
+tags = android-app
+en = Performance boost
+de = Leistungsschub
+es = Impulso de rendimiento
+fr = Boost de performances
+it = Potenziamento prestazioni
+nl = Prestatieboost
+pt = Impulso de desempenho
+ru = Ускорение работы
+uk = Прискорення роботи
+
+[pref_performance_boost_summary]
+comment = Grove: Settings: explanation of the performance boost switch
+tags = android-app
+en = Uses more processor cores to draw the map faster after jumps and zooms. Takes effect after a restart.
+de = Nutzt mehr Prozessorkerne, um die Karte nach Sprüngen und beim Zoomen schneller zu zeichnen. Wirkt nach einem Neustart.
+es = Usa más núcleos del procesador para dibujar el mapa más rápido tras saltos y zooms. Se aplica tras reiniciar.
+fr = Utilise plus de cœurs du processeur pour dessiner la carte plus vite après un déplacement ou un zoom. Prend effet après un redémarrage.
+it = Usa più core del processore per disegnare la mappa più velocemente dopo spostamenti e zoom. Ha effetto dopo il riavvio.
+nl = Gebruikt meer processorkernen om de kaart sneller te tekenen na verspringen en zoomen. Werkt na een herstart.
+pt = Usa mais núcleos do processador para desenhar o mapa mais depressa após saltos e zooms. Aplica-se após reiniciar.
+ru = Использует больше ядер процессора, чтобы быстрее рисовать карту при перемещении и масштабировании. Вступает в силу после перезапуска.
+uk = Використовує більше ядер процесора, щоб швидше малювати мапу під час переміщення й масштабування. Набуває чинності після перезапуску.
+
+[pref_performance_boost_restart]
+comment = Grove: Settings: dialog after switching the performance boost
+tags = android-app
+en = Restart the app now to apply the change?
+de = App jetzt neu starten, um die Änderung zu übernehmen?
+es = ¿Reiniciar la aplicación ahora para aplicar el cambio?
+fr = Redémarrer l’application maintenant pour appliquer le changement ?
+it = Riavviare ora l’app per applicare la modifica?
+nl = De app nu herstarten om de wijziging toe te passen?
+pt = Reiniciar a aplicação agora para aplicar a alteração?
+ru = Перезапустить приложение сейчас, чтобы применить изменение?
+uk = Перезапустити застосунок зараз, щоб застосувати зміну?
+
+[restart]
+comment = Grove: button that restarts the app
+tags = android-app
+en = Restart
+de = Neu starten
+es = Reiniciar
+fr = Redémarrer
+it = Riavvia
+nl = Herstarten
+pt = Reiniciar
+ru = Перезапустить
+uk = Перезапустити
+
 [tripadvisor_api_key]
 comment = Grove: Settings: title of the field for the user's own Tripadvisor API key
 tags = android-app

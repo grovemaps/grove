@@ -1,5 +1,7 @@
 #include "map/grove_brand_places.hpp"
 
+#include "map/grove_files.hpp"
+
 #include "drape_frontend/grove_brands.hpp"
 
 #include "drape/grove_brand_texture.hpp"
@@ -166,10 +168,9 @@ std::vector<BrandPlaces::Entry> BrandPlaces::Load(MwmSet::MwmId const & mwm) con
   LOG(LINFO,
       ("Chains' places of", mwm.GetInfo()->GetCountryName(), ":", entries.size(), "in", timer.ElapsedSeconds(), "s"));
 
-  try
+  UNUSED_VALUE(Platform::MkDirChecked(m_cacheDir));
+  UNUSED_VALUE(WriteAtomically(path, [&](FileWriter & writer)
   {
-    UNUSED_VALUE(Platform::MkDirChecked(m_cacheDir));
-    FileWriter writer(path);
     WriteToSink(writer, kCacheFormat);
     WriteToSink(writer, version);
     WriteToSink(writer, signature);
@@ -181,11 +182,7 @@ std::vector<BrandPlaces::Entry> BrandPlaces::Load(MwmSet::MwmId const & mwm) con
       WriteToSink(writer, std::bit_cast<uint64_t>(e.m_point.y));
       rw::Write(writer, e.m_brand);
     }
-  }
-  catch (RootException const & e)
-  {
-    LOG(LWARNING, ("Can't write", path, e.Msg()));
-  }
+  }));
   return entries;
 }
 

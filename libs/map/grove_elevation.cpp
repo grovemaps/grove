@@ -1,5 +1,6 @@
 #include "map/grove_elevation.hpp"
 
+#include "map/grove_files.hpp"
 #include "map/grove_relief.hpp"
 
 #include "platform/http_client.hpp"
@@ -108,17 +109,7 @@ std::optional<double> GetElevation(ms::LatLon const & point)
     return {};
   auto const meters = DecodeElevation(png, t);
   if (meters && Platform::MkDirChecked(dir))
-  {
-    try
-    {
-      FileWriter(base::JoinPath(dir, ElevationTileName(kElevationDownloadZoom, t) + ".tile"))
-          .Write(png.data(), png.size());
-    }
-    catch (RootException const & e)
-    {
-      LOG(LWARNING, ("Can't cache elevation tile", e.Msg()));
-    }
-  }
+    UNUSED_VALUE(WriteAtomically(base::JoinPath(dir, ElevationTileName(kElevationDownloadZoom, t) + ".tile"), png));
   return meters;
 }
 }  // namespace grove

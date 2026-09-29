@@ -103,6 +103,7 @@ Current upstream hooks:
 | `libs/map/routing_manager.{hpp,cpp}`, `bookmark_manager.{hpp,cpp}` (`SaveRoute`) | a route saved as a track keeps its stops and router in the track's properties (`grove_route_points`, `grove_router`), and `GroveRestoreTrip` plans it again; Android shows "Navigate this trip" on such a track's card (`GroveTripRow.java`, `place_page_preview.xml`) |
 | `libs/routing/index_router.cpp`, `route.hpp` (`SetTurnDirection`) | bicycle routes use `grove::BicycleDirectionsEngine` (`libs/routing/grove_turns.hpp`): the car directions, then bike path jogs merged (below) |
 | `android/app/src/main/res/layout/place_page_details.xml` (again), `PlacePageView.java` | a container for the Tripadvisor section (`GroveTripadvisorFragment`) |
+| `libs/drape_frontend/read_manager.cpp` (`GetReadingThreadsCount`) | more tile reading threads with the performance boost (`libs/platform/grove_performance.hpp`, Grove) |
 | `android/app/build.gradle` | stores `grove_brands.bin`, `grove_landcover_world.bin` and `grove_reviews.bin` uncompressed, so they are read in place |
 | `android/app/src/main/res/**`, `RoutingBottomMenuController.java` | Roboto references point to the app font (Geist, Inter for Greek), and the app themes hang under `values/grove_fonts.xml`; written by `tools/grove/android_fonts.py`, see "Fonts" |
 | `android/app/src/main/res/layout/place_page_details.xml`, `PlacePageView.java` | a container for the Mangrove reviews section and the one line that shows it (`GroveReviewsFragment`) |
@@ -237,6 +238,13 @@ Zoomed out (zoom 11 down to the whole world), where Organic Maps' map files have
 Bike paths along roads end at every side street and resume across it, or jog onto the carriageway and back, so upstream's bicycle routes made two turns a few metres apart that together keep the rider going the same way: "turn left", "turn right" where the rider rides straight on, or a right turn with a U-turn 10 m later. `grove::MergeJogs` (`libs/routing/grove_turns.cpp`) merges two turns within 45 m when the piece between has no name (a bike path, a crossing), is shorter than 15 m, or comes back onto the road left: dropped if the rider comes out within 30° of the way they came in, else one turn in the combined direction. Two turns into two named streets stay. On four test rides in Amsterdam and Utrecht this took a third of the turns out (tests: `routing_tests/grove_turns_tests.cpp`, and `routing_integration_tests/grove_cycle_routes_test.cpp` with the Amsterdam map).
 
 Still to do: naming unnamed bike paths in instructions ("continue on the bike path along X"), and the same review for walking and driving.
+
+## Performance
+
+- **Performance boost** (Android Settings, `GrovePerformance` settings key, off by default; it sizes thread pools, so the switch offers a restart): map tiles are read and turned into geometry by all cores but two, 3 to 6 threads (upstream: 2, or 3 from 6 cores), and land cover tiles are made by 3 threads instead of 1. Not yet measured on a phone; on the 4-core desktop that renders the checks (2 → 3 threads, software OpenGL) it made no difference.
+- **Land cover:** each sample's latitude and longitude are worked out once per row and column instead of per sample, and the world pack's current tile is kept instead of looked up under a lock per sample: a zoomed-out tile takes about 10 ms instead of 700, a zoomed-in one 22 instead of 55 (desktop, Release). Land cover has its own thread instead of the platform's single network thread, where each tile waited for its downloads ahead of everything else.
+- **Cache files** (land cover, relief tiles, elevation, chains' places) are written to a temporary file and renamed (`libs/map/grove_files.hpp`), so a reader on another thread never sees half a file and a crash never leaves a truncated one behind, which land cover used to keep as a hole.
+- Measured and left as they are: relief shading (3.7 ms a tile), the cycle route preference in routing (711 against 693 ms across Amsterdam), the logo layer's place lookup (binary search on sorted places).
 
 ## Brand logos
 

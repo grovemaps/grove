@@ -33,6 +33,7 @@ set(SRC
   app/organicmaps/sdk/GroveElevation.cpp
   app/organicmaps/sdk/GroveLandcover.cpp
   app/organicmaps/sdk/GroveMeasure.cpp
+  app/organicmaps/sdk/GrovePerformance.cpp
   app/organicmaps/sdk/GrovePlace.cpp
   app/organicmaps/sdk/GroveRelief.cpp
   app/organicmaps/sdk/GroveReviews.cpp

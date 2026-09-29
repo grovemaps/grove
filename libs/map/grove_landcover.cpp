@@ -1,7 +1,10 @@
 #include "map/grove_landcover.hpp"
 
+#include "map/grove_files.hpp"
+
 #include "drape_frontend/grove_raster_layers.hpp"
 
+#include "platform/grove_performance.hpp"
 #include "platform/http_client.hpp"
 #include "platform/platform.hpp"
 #include "platform/settings.hpp"
@@ -16,6 +19,7 @@
 #include "base/file_name_utils.hpp"
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
+#include "base/thread_pool_delayed.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -92,15 +96,7 @@ std::optional<std::string> ReadCacheFile(std::string const & path)
 
 void WriteCacheFile(std::string const & path, std::string const & data)
 {
-  try
-  {
-    FileWriter writer(path);
-    writer.Write(data.data(), data.size());
-  }
-  catch (RootException const & e)
-  {
-    LOG(LWARNING, ("Can't write", path, e.Msg()));
-  }
+  UNUSED_VALUE(WriteAtomically(path, data));
 }
 
 // The coarsest level of a file that still has a pixel for each of a map tile's at the zoom. OM zoom Z is
@@ -112,6 +108,20 @@ size_t LevelFor(int zoom)
   while (levelIndex < 6 && kFullPixelsPerDegree / (2 << levelIndex) >= needed)
     ++levelIndex;
   return levelIndex;
+}
+
+// The longitude of each sample column and the latitude of each sample row of a map tile, samples x samples a pixel.
+// Rows run south to north.
+std::pair<std::vector<double>, std::vector<double>> SampleCoordinates(m2::RectD const & rect, int samples)
+{
+  std::vector<double> lons(size_t{kOutSize} * samples), lats(size_t{kOutSize} * samples);
+  for (size_t i = 0; i < lons.size(); ++i)
+  {
+    double const f = (i + 0.5) / lons.size();
+    lons[i] = mercator::XToLon(rect.minX() + rect.SizeX() * f);
+    lats[i] = mercator::YToLat(rect.minY() + rect.SizeY() * f);
+  }
+  return {std::move(lons), std::move(lats)};
 }
 
 // Blurs a map tile's classes into soft blends (a box blur of the given radius, weighted by alpha, run across and
@@ -207,7 +217,7 @@ public:
       m_active.insert(tileKey);
     }
     bool const dark = m_isDarkStyle();
-    GetPlatform().RunTask(Platform::Thread::Network, [this, tileKey, mode, dark] { MakeTile(tileKey, mode, dark); });
+    m_workers.Push([this, tileKey, mode, dark] { MakeTile(tileKey, mode, dark); });
     return true;
   }
 
@@ -369,22 +379,6 @@ private:
     return tile;
   }
 
-  // The WorldCover class at a point, from the world pack at a web mercator zoom.
-  uint8_t WorldClass(double lat, double lon, int z)
-  {
-    double const n = 1 << z;
-    double const fx = (lon + 180) / 360 * n;
-    double const fy = (1 - std::asinh(std::tan(lat * M_PI / 180)) / M_PI) / 2 * n;
-    int const tx = std::clamp(static_cast<int>(fx), 0, int(n) - 1);
-    int const ty = std::clamp(static_cast<int>(fy), 0, int(n) - 1);
-    auto const tile = GetWorldTile(z, tx, ty);
-    if (!tile)
-      return kNoData;
-    auto const px = std::clamp(static_cast<int>((fx - tx) * kTileSize), 0, int(kTileSize) - 1);
-    auto const py = std::clamp(static_cast<int>((fy - ty) * kTileSize), 0, int(kTileSize) - 1);
-    return (*tile)[py * kTileSize + px];
-  }
-
   void MakeTile(df::TileKey const & tileKey, dp::BackgroundMode mode, bool dark)
   {
     if (!IsActive(tileKey))
@@ -401,8 +395,10 @@ private:
     m2::RectD const rect = tileKey.GetGlobalRect();
     std::vector<uint8_t> rgba(size_t{kOutSize} * kOutSize * 4, 0);
     bool empty = true;
-    // Each pixel averages 2x2 samples, which smooths the classes' edges.
+    // Each pixel averages 2x2 samples, which smooths the classes' edges. A sample's longitude depends only on its
+    // column and its latitude only on its row: work them out once.
     int constexpr kSamples = 2;
+    auto const [lons, lats] = SampleCoordinates(rect, kSamples);
     // The square and tile of the last sample: neighbours mostly share them.
     int cachedLat = std::numeric_limits<int>::max();
     int cachedLon = std::numeric_limits<int>::max();
@@ -420,10 +416,8 @@ private:
           for (int sx = 0; sx < kSamples; ++sx)
           {
             // Texture rows run south to north, as the relief's.
-            double const x = rect.minX() + rect.SizeX() * (col + (sx + 0.5) / kSamples) / kOutSize;
-            double const y = rect.minY() + rect.SizeY() * (row + (sy + 0.5) / kSamples) / kOutSize;
-            double const lon = mercator::XToLon(x);
-            double const lat = mercator::YToLat(y);
+            double const lon = lons[col * kSamples + sx];
+            double const lat = lats[row * kSamples + sy];
             int const squareLat = static_cast<int>(std::floor(lat / kSquareDegrees)) * kSquareDegrees;
             int const squareLon = static_cast<int>(std::floor(lon / kSquareDegrees)) * kSquareDegrees;
             if (squareLat != cachedLat || squareLon != cachedLon)
@@ -486,10 +480,21 @@ private:
   {
     // OM zoom Z is web mercator zoom Z - 1; a 512 px tile needs the pack's next zoom.
     int const z = std::min(int(tileKey.m_zoomLevel), kMaxWorldZoom);
+    double const n = 1 << z;
     m2::RectD const rect = tileKey.GetGlobalRect();
     std::vector<uint8_t> rgba(size_t{kOutSize} * kOutSize * 4, 0);
     bool empty = true;
     int constexpr kSamples = 2;
+    // Each sample's position in the pack's tile grid, by column and by row.
+    auto const [lons, lats] = SampleCoordinates(rect, kSamples);
+    std::vector<double> fxs(lons.size()), fys(lats.size());
+    for (size_t i = 0; i < lons.size(); ++i)
+      fxs[i] = (lons[i] + 180) / 360 * n;
+    for (size_t i = 0; i < lats.size(); ++i)
+      fys[i] = (1 - std::asinh(std::tan(lats[i] * M_PI / 180)) / M_PI) / 2 * n;
+
+    int cachedX = -1, cachedY = -1;
+    std::shared_ptr<std::vector<uint8_t> const> tile;
     for (uint32_t row = 0; row < kOutSize; ++row)
     {
       for (uint32_t col = 0; col < kOutSize; ++col)
@@ -499,11 +504,22 @@ private:
         {
           for (int sx = 0; sx < kSamples; ++sx)
           {
-            double const x = rect.minX() + rect.SizeX() * (col + (sx + 0.5) / kSamples) / kOutSize;
-            double const y = rect.minY() + rect.SizeY() * (row + (sy + 0.5) / kSamples) / kOutSize;
-            if (x < mercator::Bounds::kMinX || x > mercator::Bounds::kMaxX)
+            double const fx = fxs[col * kSamples + sx], fy = fys[row * kSamples + sy];
+            if (fx < 0 || fx >= n)
               continue;
-            auto const color = ClassColor(WorldClass(mercator::YToLat(y), mercator::XToLon(x), z), dark);
+            int const tx = static_cast<int>(fx);
+            int const ty = std::clamp(static_cast<int>(fy), 0, int(n) - 1);
+            if (tx != cachedX || ty != cachedY)
+            {
+              tile = GetWorldTile(z, tx, ty);
+              cachedX = tx;
+              cachedY = ty;
+            }
+            if (!tile)
+              continue;
+            auto const px = std::clamp(static_cast<int>((fx - tx) * kTileSize), 0, int(kTileSize) - 1);
+            auto const py = std::clamp(static_cast<int>((fy - ty) * kTileSize), 0, int(kTileSize) - 1);
+            auto const color = ClassColor((*tile)[py * kTileSize + px], dark);
             for (int c = 0; c < 3; ++c)
               sum[c] += color[c] * color[3];
             sum[3] += color[3];
@@ -541,6 +557,9 @@ private:
 
   std::function<ref_ptr<df::DrapeEngine>()> const m_getEngine;
   std::function<bool()> const m_isDarkStyle;
+  // Its own threads, not the platform's one network thread: a tile waits for its downloads there. More with the
+  // performance boost (platform/grove_performance.hpp). JVM-attached on Android, which HTTP requests need.
+  base::DelayedThreadPool m_workers{PerformanceBoost() ? 3u : 1u, base::DelayedThreadPool::Exit::SkipPending};
 
   std::mutex m_mutex;
   std::set<df::TileKey> m_active;

@@ -55,6 +55,14 @@
       app:singleLineTitle="false"
       android:persistent="false"
       android:order="3" />
+    <!-- Grove: more threads for the map engine, after a restart; see GroveSettings.java -->
+    <SwitchPreferenceCompat
+      android:key="GrovePerformance"
+      android:title="@string/pref_performance_boost_title"
+      android:summary="@string/pref_performance_boost_summary"
+      app:singleLineTitle="false"
+      android:persistent="false"
+      android:order="3" />
     <!-- Grove: the user's Tripadvisor API key for ratings on place cards, see GroveSettings.java -->
     <EditTextPreference
       android:key="GroveTripadvisorKey"

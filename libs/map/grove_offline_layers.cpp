@@ -1,5 +1,6 @@
 #include "map/grove_offline_layers.hpp"
 
+#include "map/grove_files.hpp"
 #include "map/grove_landcover.hpp"
 #include "map/grove_relief.hpp"
 
@@ -32,16 +33,7 @@ bool OnWifi()
 
 bool WriteFile(std::string const & path, std::string const & bytes)
 {
-  try
-  {
-    FileWriter(path).Write(bytes.data(), bytes.size());
-    return true;
-  }
-  catch (RootException const & e)
-  {
-    LOG(LWARNING, ("Can't write", path, e.Msg()));
-    return false;
-  }
+  return WriteAtomically(path, bytes);
 }
 }  // namespace
 

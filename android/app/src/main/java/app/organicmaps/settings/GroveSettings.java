@@ -1,12 +1,16 @@
 package app.organicmaps.settings;
 
+import android.content.Context;
+import android.content.Intent;
 import android.text.InputType;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.preference.EditTextPreference;
 import androidx.preference.TwoStatePreference;
 import app.organicmaps.R;
 import app.organicmaps.sdk.GroveCycleRoutes;
 import app.organicmaps.sdk.GroveLandcover;
+import app.organicmaps.sdk.GrovePerformance;
 import app.organicmaps.sdk.GroveRelief;
 import app.organicmaps.sdk.GroveReviews;
 import app.organicmaps.sdk.GroveTripadvisor;
@@ -39,6 +43,18 @@ final class GroveSettings
       return true;
     });
 
+    final TwoStatePreference performance = fragment.getPreference("GrovePerformance");
+    performance.setChecked(GrovePerformance.nativeIsEnabled());
+    performance.setOnPreferenceChangeListener((preference, newValue) -> {
+      GrovePerformance.nativeSetEnabled((Boolean) newValue);
+      new AlertDialog.Builder(fragment.requireContext())
+          .setMessage(R.string.pref_performance_boost_restart)
+          .setPositiveButton(R.string.restart, (dialog, which) -> restart(fragment.requireContext()))
+          .setNegativeButton(R.string.later, null)
+          .show();
+      return true;
+    });
+
     final EditTextPreference tripadvisor = fragment.getPreference("GroveTripadvisorKey");
     tripadvisor.setText(GroveTripadvisor.nativeGetKey());
     tripadvisor.setOnBindEditTextListener(editText -> {
@@ -61,5 +77,15 @@ final class GroveSettings
       GroveReviews.nativeSetEnabled((Boolean) newValue);
       return true;
     });
+  }
+
+  // Starts the app anew: the performance boost sizes thread pools at start.
+  private static void restart(@NonNull Context context)
+  {
+    final Intent launch = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+    if (launch == null)
+      return;
+    context.startActivity(Intent.makeRestartActivityTask(launch.getComponent()));
+    Runtime.getRuntime().exit(0);
   }
 }
