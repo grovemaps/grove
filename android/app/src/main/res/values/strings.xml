@@ -257,6 +257,8 @@
     <string name="grove_settings_about_title">About</string>
     <!-- Grove: Settings: what the «About» section holds -->
     <string name="grove_settings_about_summary">Help, feedback and more</string>
+    <!-- Grove: Settings «Map» section: which look the map has, Grove's or Organic Maps' own styles and icons -->
+    <string name="pref_map_look_title">Map look</string>
     <!-- Grove: Settings: switch that lets the map engine use more processor cores -->
     <string name="pref_performance_boost_title">Performance boost</string>
     <!-- Grove: Settings: explanation of the performance boost switch -->
