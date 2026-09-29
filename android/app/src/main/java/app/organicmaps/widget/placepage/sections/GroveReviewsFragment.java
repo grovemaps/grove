@@ -28,7 +28,7 @@ import java.util.Locale;
 
 // Grove: reviews of the place from Mangrove (https://mangrove.reviews): those bundled with the app at once, then
 // Mangrove's newest when online, with how the last half year's differ, and a link to write one. See
-// libs/map/grove_reviews.hpp.
+// modules/reviews/map/reviews.hpp.
 public class GroveReviewsFragment extends Fragment implements Observer<MapObject>
 {
   public static final String TAG = "GROVE_REVIEWS_FRAGMENT_TAG";

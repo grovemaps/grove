@@ -48,25 +48,6 @@ set(SRC
   power_management/power_manager.hpp
   power_management/power_management_schemas.cpp
   power_management/power_management_schemas.hpp
-  grove_brand_places.cpp
-  grove_brand_places.hpp
-  grove_landcover.cpp
-  grove_landcover.hpp
-  grove_measure.cpp
-  grove_measure.hpp
-  grove_place_color.cpp
-  grove_place_color.hpp
-  grove_elevation.cpp
-  grove_elevation.hpp
-  grove_files.hpp
-  grove_offline_layers.cpp
-  grove_offline_layers.hpp
-  grove_relief.cpp
-  grove_relief.hpp
-  grove_reviews.cpp
-  grove_reviews.hpp
-  grove_tripadvisor.cpp
-  grove_tripadvisor.hpp
   raster_tile_provider.cpp
   raster_tile_provider.hpp
   routing_manager.cpp

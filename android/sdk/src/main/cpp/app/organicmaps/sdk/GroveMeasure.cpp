@@ -1,10 +1,10 @@
 #include "app/organicmaps/sdk/core/jni_helper.hpp"
 
-#include "map/grove_measure.hpp"
+#include "modules/measure_tap/map/measure.hpp"
 
 #include <memory>
 
-// Grove: the two-finger tap distance, see libs/map/grove_measure.hpp.
+// Grove: the two-finger tap distance, see modules/measure_tap/map/measure.hpp.
 extern "C"
 {
 JNIEXPORT void Java_app_organicmaps_sdk_GroveMeasure_nativeSetListener(JNIEnv * env, jclass, jobject listener)

@@ -13,7 +13,7 @@
 
 #include "geometry/mercator.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 #include "platform/platform.hpp"
 
 #include "base/macros.hpp"
@@ -1088,8 +1088,8 @@ void UserEventStream::BeginScale(Touch const & t1, Touch const & t2)
   m2::PointD touch1(t1.m_location);
   m2::PointD touch2(t2.m_location);
 
-  // Grove: the gesture is decided once the fingers have moved, see grove_gestures.hpp. Without the tilt gesture
-  // every two-finger move scales, as upstream.
+  // Grove: the gesture is decided once the fingers have moved, see modules/tilt_gesture/drape_frontend/gestures.hpp.
+  // Without the tilt gesture every two-finger move scales, as upstream.
   m_groveGesture = grove::TwoFingerGesture::Scale;
   if (grove::IsOn(grove::Feature::TiltGesture))
   {
@@ -1115,7 +1115,8 @@ void UserEventStream::Scale(Touch const & t1, Touch const & t2)
   m2::PointD touch1(t1.m_location);
   m2::PointD touch2(t2.m_location);
 
-  // Grove: fingers sliding up or down together tilt the map instead, see grove_gestures.hpp.
+  // Grove: fingers sliding up or down together tilt the map instead, see
+  // modules/tilt_gesture/drape_frontend/gestures.hpp.
   if (m_groveGesture == grove::TwoFingerGesture::Undecided)
   {
     m_groveGesture = grove::ClassifyTwoFingers(m_groveGestureStart[0], m_groveGestureStart[1], touch1, touch2,

@@ -1,4 +1,5 @@
 # Functions for using in subdirectories
+include("${OMIM_ROOT}/modules/core/modules.cmake")  # Grove: grove_module_sources
 function(omim_add_executable executable)
   add_executable(${executable} ${ARGN})
 
@@ -59,7 +60,8 @@ function(omim_add_executable executable)
 endfunction()
 
 function(omim_add_library library)
-  add_library(${library} ${ARGN})
+  grove_module_sources(${library} groveSources)  # Grove: modules/*/<library>/
+  add_library(${library} ${ARGN} ${groveSources})
 
   # Enable warnings for all our libraries.
   target_compile_options(${library} PRIVATE ${OMIM_WARNING_FLAGS})

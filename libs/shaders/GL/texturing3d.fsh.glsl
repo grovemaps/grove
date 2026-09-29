@@ -22,7 +22,7 @@ layout (binding = 1) uniform sampler2D u_colorTex;
 void main()
 {
   vec4 finalColor = vec4(texture(u_colorTex, v_colorTexCoords).rgb, u_opacity);
-  // Grove: the colour's alpha too, which buildings with places inside lower (drape_frontend/grove_buildings.hpp).
+  // Grove: the colour's alpha too, which buildings with places inside lower (modules/see_through_buildings/drape_frontend/buildings.hpp).
   if (u_groveAlpha > 0.5)
     finalColor.a *= texture(u_colorTex, v_colorTexCoords).a;
   v_FragColor = vec4((v_intensity * 0.2 + 0.8) * finalColor.rgb, finalColor.a);

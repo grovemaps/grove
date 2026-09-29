@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Grove: the app font (@font/ui: Geist, or Inter for languages Geist lacks) for the whole app. The app themes hang
-     under these (tools/grove/android_fonts.py), which set Material's text appearances to it: explicit text appearances
+     under these (modules/ui_font/tools/android_fonts.py), which set Material's text appearances to it: explicit text appearances
      win over the theme's default font. -->
 <resources>
   <style name="Grove.Theme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">

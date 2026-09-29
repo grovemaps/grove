@@ -1,12 +1,12 @@
 #include "routing/turns_tts_text.hpp"
 
-#include "routing/grove_way_kind.hpp"
+#include "modules/way_kinds/routing/way_kind.hpp"
 #include "routing/turns_sound_settings.hpp"
 #include "routing/turns_tts_text_i18n.hpp"
 
 #include "indexer/road_shields_parser.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 
 #include "base/assert.hpp"
 #include "base/string_utils.hpp"

@@ -4,7 +4,7 @@ import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-// Grove: a two-finger tap shows the distance between the fingers, see libs/map/grove_measure.hpp.
+// Grove: a two-finger tap shows the distance between the fingers, see modules/measure_tap/map/measure.hpp.
 public final class GroveMeasure
 {
   private GroveMeasure() {}

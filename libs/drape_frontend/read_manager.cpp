@@ -3,7 +3,7 @@
 #include "drape_frontend/message_subclasses.hpp"
 #include "drape_frontend/metaline_manager.hpp"
 #include "drape_frontend/visual_params.hpp"
-#include "platform/grove_performance.hpp"
+#include "modules/performance_boost/platform/performance.hpp"
 
 #include "platform/platform.hpp"
 
@@ -31,7 +31,7 @@ struct LessCoverageCell
 
 uint8_t GetReadingThreadsCount()
 {
-  // Grove: more with the performance boost, see platform/grove_performance.hpp.
+  // Grove: more with the performance boost, see modules/performance_boost/platform/performance.hpp.
   if (grove::PerformanceBoost())
     return static_cast<uint8_t>(grove::BoostedThreads(Platform::CpuCores()));
   return Platform::CpuCores() >= 6 ? 3 : 2;

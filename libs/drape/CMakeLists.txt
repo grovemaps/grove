@@ -50,10 +50,6 @@ set(DRAPE_TESTABLE_SRC
   graphics_context.hpp
   graphics_context_factory.cpp
   graphics_context_factory.hpp
-  grove_brand_texture.cpp
-  grove_brand_texture.hpp
-  grove_text_style.cpp
-  grove_text_style.hpp
   instancing.cpp
   instancing.hpp
   hatching_decl.hpp

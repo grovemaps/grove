@@ -2,10 +2,10 @@
 
 #include "drape/font_constants.hpp"
 #include "drape/glyph.hpp"
-#include "drape/grove_text_style.hpp"
 #include "drape/harfbuzz_shaping.hpp"
+#include "modules/typography/drape/text_style.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 #include "platform/platform.hpp"
 #include "platform/preferred_languages.hpp"
 
@@ -674,7 +674,7 @@ struct GlyphManager::Impl
   TUniBlocks m_blocks;
   TUniBlockIter m_lastUsedBlock;
   std::vector<std::unique_ptr<Font>> m_fonts;
-  // Grove: label typography (grove::Feature::Typography), see grove_text_style.hpp.
+  // Grove: label typography (grove::Feature::Typography), see modules/typography/drape/text_style.hpp.
   bool const m_groveTypography = grove::IsOn(grove::Feature::Typography);
   grove::FontVariants m_groveFonts;
 
@@ -732,7 +732,7 @@ GlyphManager::GlyphManager(Params const & params) : m_impl(std::make_unique<Impl
                                   : 0;
       m_impl->m_fonts.emplace_back(
           std::make_unique<Font>(GetPlatform().GetReader(fontName), m_impl->m_library, faceIndex));
-      // Grove: semibold and italic twins serve no unicode block, see grove_text_style.hpp.
+      // Grove: semibold and italic twins serve no unicode block, see modules/typography/drape/text_style.hpp.
       if (!m_impl->m_groveTypography ||
           !m_impl->m_groveFonts.OnFontLoaded(fontName, static_cast<int>(m_impl->m_fonts.size()) - 1))
         m_impl->m_fonts.back()->GetCharcodes(charCodes);
@@ -909,7 +909,7 @@ text::TextMetrics GlyphManager::ShapeText(std::string_view utf8, int8_t lang)
   if (auto const * cached = m_impl->m_textMetricsCache.Find(cacheKey))
     return *cached;
 
-  // Grove: typography marker in front of the text, see grove_text_style.hpp.
+  // Grove: typography marker in front of the text, see modules/typography/drape/text_style.hpp.
   uint8_t const groveStyle = m_impl->m_groveTypography ? grove::TakeTextStyle(utf8) : 0;
 
   auto const [text, segments] = harfbuzz_shaping::GetTextSegments(utf8);

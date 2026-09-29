@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import app.organicmaps.R;
 
-// Grove: the app font for text spans, like the rest of the app (tools/grove/android_fonts.py).
+// Grove: the app font for text spans, like the rest of the app (modules/ui_font/tools/android_fonts.py).
 public final class GroveFonts
 {
   private GroveFonts() {}

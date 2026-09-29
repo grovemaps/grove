@@ -1,8 +1,8 @@
 #include "relations_draw_info.hpp"
 
-#include "drape_frontend/grove_cycle_routes.hpp"
+#include "modules/cycle_route_lines/drape_frontend/cycle_routes.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 
 #include "indexer/feature.hpp"
 #include "indexer/map_style_reader.hpp"
@@ -51,7 +51,8 @@ void RelationsDrawInfo::Init(FeatureType & ft)
     return;
 
   buffer_vector<std::pair<std::string, int>, 4> refs;
-  int groveCycleLevel = -1;  // Grove: one line for all cycle routes, see grove_cycle_routes.hpp.
+  int groveCycleLevel =
+      -1;  // Grove: one line for all cycle routes, see modules/cycle_route_lines/drape_frontend/cycle_routes.hpp.
   for (uint32_t relID : ft.GetRelations())
   {
     auto rel = ft.ReadRelation(relID);

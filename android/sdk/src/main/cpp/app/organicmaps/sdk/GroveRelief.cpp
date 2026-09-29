@@ -2,9 +2,9 @@
 
 #include "app/organicmaps/sdk/Framework.hpp"
 
-#include "map/grove_relief.hpp"
+#include "modules/relief/map/relief.hpp"
 
-// Grove: the shaded relief switch, see libs/map/grove_relief.hpp.
+// Grove: the shaded relief switch, see modules/relief/map/relief.hpp.
 extern "C"
 {
 JNIEXPORT jboolean Java_app_organicmaps_sdk_GroveRelief_nativeIsEnabled(JNIEnv *, jclass)

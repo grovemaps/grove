@@ -175,11 +175,11 @@ protected:
 
   // POC source of raster background tiles (see tileBackgroundReadFn in CreateDrapeEngine).
   std::unique_ptr<RasterTileProvider> m_rasterTileProvider;
-  // Grove: shaded relief tiles, see map/grove_relief.hpp.
+  // Grove: shaded relief tiles, see modules/relief/map/relief.hpp.
   std::unique_ptr<RasterTileProvider> m_groveRelief;
-  // Grove: chains' places for the logo layer, see map/grove_brand_places.hpp.
+  // Grove: chains' places for the logo layer, see modules/logos/map/brand_places.hpp.
   std::unique_ptr<grove::BrandPlaces> m_groveBrandPlaces;
-  // Grove: relief and land cover saved for the downloaded maps, see map/grove_offline_layers.hpp.
+  // Grove: relief and land cover saved for the downloaded maps, see modules/offline_layers/map/offline_layers.hpp.
   std::unique_ptr<grove::OfflineLayers> m_groveOfflineLayers;
 
   StorageDownloadingPolicy m_storageDownloadingPolicy;

@@ -3,11 +3,11 @@
 #include "drape/color.hpp"
 #include "drape/glsl_types.hpp"
 #include "drape/glyph_manager.hpp"
-#include "drape/grove_brand_texture.hpp"
 #include "drape/pointers.hpp"
 #include "drape/rainbow_colors.hpp"
 #include "drape/stipple_pen_resource.hpp"  // for PenPatternT
 #include "drape/texture.hpp"
+#include "modules/logos/drape/brand_texture.hpp"
 
 #include "base/string_utils.hpp"
 #include "base/timer.hpp"
@@ -202,7 +202,7 @@ private:
   std::string m_resPostfix;
   std::vector<drape_ptr<Texture>> m_symbolTextures;
   drape_ptr<Texture> m_stipplePenTexture;
-  drape_ptr<grove::BrandTexture> m_groveBrands;  // Grove: brand logo badges, see grove_brand_texture.hpp.
+  drape_ptr<grove::BrandTexture> m_groveBrands;  // Grove: brand logo badges, see modules/logos/drape/brand_texture.hpp.
   drape_ptr<Texture> m_colorTexture;
   std::vector<drape_ptr<Texture>> m_glyphTextures;
   mutable std::mutex m_glyphTexturesMutex;

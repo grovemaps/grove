@@ -7,8 +7,8 @@
 #include "routing/transit_info.hpp"
 #include "routing/turns.hpp"
 
+#include "modules/way_kinds/routing/way_kind.hpp"
 #include "routing/base/followed_polyline.hpp"
-#include "routing/grove_way_kind.hpp"
 
 #include "routing_common/maxspeed_conversion.hpp"
 
@@ -101,7 +101,7 @@ public:
     std::string m_destination;   // E.g. "Cupertino".
     std::string m_ref;           // Number of street/road e.g. "CA 85".
     bool m_isLink = false;
-    // Grove: what the way is, for voice guidance, see routing/grove_way_kind.hpp.
+    // Grove: what the way is, for voice guidance, see modules/way_kinds/routing/way_kind.hpp.
     grove::WayKind m_groveWayKind = grove::WayKind::None;
 
     RoadNameInfo() = default;
@@ -159,7 +159,7 @@ public:
   }
 
   void SetTurnExits(uint32_t exitNum) { m_turn.m_exitNum = exitNum; }
-  // Grove: merged turns, see routing/grove_turns.hpp.
+  // Grove: merged turns, see modules/merge_jogs/routing/turns.hpp.
   void SetTurnDirection(turns::CarDirection direction) { m_turn.m_turn = direction; }
   void SetPedestrianTurn(turns::PedestrianDirection direction) { m_turn.m_pedestrianTurn = direction; }
 

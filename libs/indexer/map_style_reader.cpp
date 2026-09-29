@@ -1,6 +1,6 @@
 #include "map_style_reader.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 #include "platform/platform.hpp"
 
 #include "base/file_name_utils.hpp"
@@ -42,8 +42,8 @@ std::string GetDrawingRulesFile(MapStyle mapStyle)
   (void)mapStyle;
   return kDesignerRulesFile;
 #else
-  // Grove: Organic Maps' own styles without Grove's look (drules_*_classic.bin, built by tools/grove/extra_styles.sh),
-  // Grove's colours while driving with its switch.
+  // Grove: Organic Maps' own styles without Grove's look (drules_*_classic.bin, built by
+  // modules/look/tools/extra_styles.sh), Grove's colours while driving with its switch.
   std::string const family = GetStyleRulesFamily(mapStyle);
   if (family == "merged")
     return "drules_merged.bin";

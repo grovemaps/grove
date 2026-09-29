@@ -42,9 +42,9 @@ class AreaShape : public MapShape
 public:
   AreaShape(std::vector<m2::PointD> triangleList, BuildingOutline && buildingOutline, AreaViewParams const & params);
 
-  // Grove: see grove_buildings.hpp.
+  // Grove: see modules/see_through_buildings/drape_frontend/buildings.hpp.
   bool IsBuilding3D() const { return m_params.m_is3D; }
-  // Grove: the footprint's bounding box, see grove_buildings.hpp.
+  // Grove: the footprint's bounding box, see modules/see_through_buildings/drape_frontend/buildings.hpp.
   m2::RectD GetBounds() const
   {
     m2::RectD r;

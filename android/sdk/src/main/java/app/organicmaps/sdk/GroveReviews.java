@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-// Grove: reviews of places from Mangrove (https://mangrove.reviews), see libs/map/grove_reviews.hpp.
+// Grove: reviews of places from Mangrove (https://mangrove.reviews), see modules/reviews/map/reviews.hpp.
 public final class GroveReviews
 {
   private GroveReviews() {}

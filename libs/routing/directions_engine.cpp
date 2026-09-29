@@ -1,15 +1,15 @@
 #include "routing/directions_engine.hpp"
 
+#include "modules/way_kinds/routing/way_kind.hpp"
 #include "routing/data_source.hpp"
 #include "routing/fake_feature_ids.hpp"
-#include "routing/grove_way_kind.hpp"
 #include "routing/lanes/lanes_parser.hpp"
 #include "routing/routing_helpers.hpp"
 #include "routing/turns.hpp"
 
 #include "indexer/ftypes_matcher.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 
 namespace routing
 {
@@ -90,7 +90,7 @@ void DirectionsEngine::LoadPathAttributes(FeatureID const & featureId, LoadedPat
   /// @todo Should make some better parsing here (@see further use in GetFullRoadName).
   pathSegment.m_roadNameInfo.m_ref = ft->GetRef();
   pathSegment.m_roadNameInfo.m_name = ft->GetDefaultName();
-  // Grove: for "turn right onto the bike path", see routing/grove_way_kind.hpp.
+  // Grove: for "turn right onto the bike path", see modules/way_kinds/routing/way_kind.hpp.
   if (grove::IsOn(grove::Feature::WayKinds))
     pathSegment.m_roadNameInfo.m_groveWayKind = grove::GetWayKind(types);
 }

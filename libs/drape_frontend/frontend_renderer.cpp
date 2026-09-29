@@ -4,7 +4,6 @@
 #include "drape_frontend/debug_rect_renderer.hpp"
 #include "drape_frontend/drape_measurer.hpp"
 #include "drape_frontend/drape_notifier.hpp"
-#include "drape_frontend/grove_measure.hpp"
 #include "drape_frontend/gui/drape_gui.hpp"
 #include "drape_frontend/gui/ruler_helper.hpp"
 #include "drape_frontend/message_subclasses.hpp"
@@ -14,6 +13,7 @@
 #include "drape_frontend/screen_quad_renderer.hpp"
 #include "drape_frontend/user_mark_shapes.hpp"
 #include "drape_frontend/visual_params.hpp"
+#include "modules/measure_tap/drape_frontend/measure.hpp"
 
 #include "shaders/programs.hpp"
 
@@ -26,7 +26,7 @@
 #include "indexer/drawing_rules.hpp"
 #include "indexer/scales.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 #include "platform/trace.hpp"
 
 #include "base/assert.hpp"
@@ -1028,7 +1028,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
                                                make_ref(data));
     }
 
-    // Grove: relief and land cover tiles go to their layers, see grove_raster_layers.hpp.
+    // Grove: relief and land cover tiles go to their layers, see modules/core/drape_frontend/raster_layers.hpp.
     auto renderer = make_ref(m_tileBackgroundRenderer);
     if (!grove::IsStock())
       renderer = m_groveLayers.Route(renderer, msg->GetMode());
@@ -2178,7 +2178,7 @@ void FrontendRenderer::OnDoubleTap(m2::PointD const & pt)
 void FrontendRenderer::OnTwoFingersTap()
 {
   ScreenBase const & screen = m_userEventStream.GetCurrentScreen();
-  // Grove: the distance between the fingers, see grove_measure.hpp.
+  // Grove: the distance between the fingers, see modules/measure_tap/drape_frontend/measure.hpp.
   if (auto const & measure = grove::GetMeasureFn(); measure && grove::IsOn(grove::Feature::MeasureTap))
   {
     auto const & [p1, p2] = m_userEventStream.GetTwoFingersTouches();

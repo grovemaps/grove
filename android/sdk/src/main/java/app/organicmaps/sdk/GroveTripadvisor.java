@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 // Grove: a place's Tripadvisor rating and newest reviews, with the user's own API key. See
-// libs/map/grove_tripadvisor.hpp.
+// modules/tripadvisor/map/tripadvisor.hpp.
 public final class GroveTripadvisor
 {
   private GroveTripadvisor() {}

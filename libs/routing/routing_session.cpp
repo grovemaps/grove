@@ -1,7 +1,7 @@
 #include "routing/routing_session.hpp"
 
+#include "modules/core/platform/features.hpp"
 #include "platform/distance.hpp"
-#include "platform/grove_features.hpp"
 #include "platform/location.hpp"
 #include "platform/measurement_utils.hpp"
 #include "platform/platform.hpp"

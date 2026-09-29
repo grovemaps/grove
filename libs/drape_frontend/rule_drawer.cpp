@@ -11,7 +11,7 @@
 #include "indexer/feature_visibility.hpp"
 #include "indexer/map_style_reader.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 
 #include "geometry/clipping.hpp"
 #include "geometry/mercator.hpp"
@@ -198,7 +198,8 @@ RuleDrawer::~RuleDrawer()
   if (m_wasCancelled)
     return;
 
-  if (grove::IsOn(grove::Feature::SeeThroughBuildings))  // Grove: see grove_buildings.hpp.
+  if (grove::IsOn(grove::Feature::SeeThroughBuildings))  // Grove: see
+                                                         // modules/see_through_buildings/drape_frontend/buildings.hpp.
     m_groveBuildings.Flush(m_context);
 
   auto & overlayShapes = m_mapShapes[df::OverlayType];
@@ -404,7 +405,7 @@ void RuleDrawer::ProcessPointStyle(FeatureType & f, Stylist const & s)
   if (IsDiscardCustomFeature(f.GetID()))
     return;
   if (grove::IsOn(grove::Feature::SeeThroughBuildings) && (s.m_symbolRule || s.m_captionRule))
-    m_groveBuildings.AddPlace(f.GetCenter());  // Grove: see grove_buildings.hpp.
+    m_groveBuildings.AddPlace(f.GetCenter());  // Grove: see modules/see_through_buildings/drape_frontend/buildings.hpp.
 
   ApplyPointFeature apply(m_applyParams, f, s.m_captionDescriptor);
   apply.ProcessPointRules(s.m_symbolRule, s.m_captionRule, s.m_houseNumberRule, f.GetCenter(),

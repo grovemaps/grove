@@ -1,6 +1,6 @@
 #include "routing/index_router.hpp"
 
-#include "routing/grove_turns.hpp"
+#include "modules/merge_jogs/routing/turns.hpp"
 
 #include "routing/base/astar_progress.hpp"
 
@@ -36,7 +36,7 @@
 #include "indexer/feature_data.hpp"
 #include "indexer/scales.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 #include "platform/settings.hpp"
 
 #include "geometry/distance_on_sphere.hpp"
@@ -149,7 +149,7 @@ std::unique_ptr<DirectionsEngine> CreateDirectionsEngine(VehicleType vehicleType
                                                          MwmDataSource & dataSource)
 {
   // Grove: turns without jogs (bike paths along roads, squares and crossings, road wiggles), see
-  // routing/grove_turns.hpp.
+  // modules/merge_jogs/routing/turns.hpp.
   if (grove::IsOn(grove::Feature::MergeJogs))
   {
     switch (vehicleType)

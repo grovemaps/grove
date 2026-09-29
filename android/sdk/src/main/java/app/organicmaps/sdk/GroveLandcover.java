@@ -1,6 +1,6 @@
 package app.organicmaps.sdk;
 
-// Grove: land cover when zoomed out, see libs/map/grove_landcover.hpp.
+// Grove: land cover when zoomed out, see modules/landcover/map/landcover.hpp.
 public final class GroveLandcover
 {
   private GroveLandcover() {}

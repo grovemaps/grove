@@ -1,6 +1,6 @@
 package app.organicmaps.sdk;
 
-// Grove: bicycle routing prefers cycle routes, see libs/routing/grove_cycle_routes.hpp.
+// Grove: bicycle routing prefers cycle routes, see modules/prefer_cycle_routes/routing/cycle_routes.hpp.
 public final class GroveCycleRoutes
 {
   private GroveCycleRoutes() {}

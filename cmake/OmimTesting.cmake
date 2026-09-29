@@ -42,7 +42,8 @@ function(omim_add_test name)
   cmake_parse_arguments(TEST "${options}" "" "" ${ARGN})
 
   set(TEST_NAME ${name})
-  set(TEST_SRC ${TEST_UNPARSED_ARGUMENTS})
+  grove_module_sources(tests/${name} groveSources)  # Grove: modules/*/tests/<test>/
+  set(TEST_SRC ${TEST_UNPARSED_ARGUMENTS} ${groveSources})
 
   omim_add_test_target(${TEST_NAME} "${TEST_SRC}" ${TEST_NO_PLATFORM_INIT} ${TEST_REQUIRE_QT} ${TEST_BOOST_TEST} ${TEST_GTEST})
   omim_add_ctest(${TEST_NAME} ${TEST_REQUIRE_SERVER} ${TEST_BOOST_TEST} ${TEST_GTEST})

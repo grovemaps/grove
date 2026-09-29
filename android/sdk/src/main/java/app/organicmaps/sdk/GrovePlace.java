@@ -1,7 +1,7 @@
 package app.organicmaps.sdk;
 
 // Grove: the selected place's colour (its chain's logo colour or its category colour), see
-// libs/map/grove_place_color.hpp.
+// modules/place_title_color/map/place_color.hpp.
 public final class GrovePlace
 {
   private GrovePlace() {}

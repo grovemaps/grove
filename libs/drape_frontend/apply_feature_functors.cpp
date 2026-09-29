@@ -4,15 +4,15 @@
 #include "drape_frontend/area_shape.hpp"
 #include "drape_frontend/color_constants.hpp"
 #include "drape_frontend/colored_symbol_shape.hpp"
-#include "drape_frontend/grove_brands.hpp"
-#include "drape_frontend/grove_poi_dot.hpp"
-#include "drape_frontend/grove_typography.hpp"
 #include "drape_frontend/line_shape.hpp"
 #include "drape_frontend/path_symbol_shape.hpp"
 #include "drape_frontend/path_text_shape.hpp"
 #include "drape_frontend/poi_symbol_shape.hpp"
 #include "drape_frontend/text_layout.hpp"
 #include "drape_frontend/text_shape.hpp"
+#include "modules/logos/drape_frontend/brands.hpp"
+#include "modules/poi_dots/drape_frontend/poi_dot.hpp"
+#include "modules/typography/drape_frontend/typography.hpp"
 
 #include "indexer/road_shields_parser.hpp"
 
@@ -25,7 +25,7 @@
 #include "drape/stipple_pen_resource.hpp"
 #include "drape/texture_manager.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 
 #include "base/logging.hpp"
 
@@ -409,7 +409,8 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
   auto const [createdByEditor, obsoleteInEditor] = m_params.GetEditStatus(m_f.GetID());
   m2::PointF symbolSize(0, 0);
 
-  // Grove: the logo layer draws chains' logos; their names show under them from zoom 16. See grove_brands.hpp.
+  // Grove: the logo layer draws chains' logos; their names show under them from zoom 16. See
+  // modules/logos/drape_frontend/brands.hpp.
   bool const groveChain = grove::IsOn(grove::Feature::Logos) &&
                           grove::ChainLogoSize(m_f, m_params.m_tileKey.m_zoomLevel, texMng, symbolSize);
   if (groveChain)
@@ -446,7 +447,7 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
     if (region.IsValid())
     {
       m_params.m_insertShape(make_unique_dp<PoiSymbolShape>(centerPoint, params, m_params.m_tileKey, 0));
-      if (grove::IsOn(grove::Feature::PoiDots))  // Grove: see grove_poi_dot.hpp.
+      if (grove::IsOn(grove::Feature::PoiDots))  // Grove: see modules/poi_dots/drape_frontend/poi_dot.hpp.
         grove::InsertPoiDot(m_params.m_insertShape, texMng, centerPoint, params, params.m_symbolName);
     }
     else
@@ -469,7 +470,7 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
       params.m_titleDecl.m_secondaryLang = m_captions.GetAuxTextLang();
     }
     ASSERT(!params.m_titleDecl.m_primaryText.empty(), ());
-    if (grove::IsOn(grove::Feature::Typography))  // Grove: see grove_typography.hpp.
+    if (grove::IsOn(grove::Feature::Typography))  // Grove: see modules/typography/drape_frontend/typography.hpp.
       grove::StyleCaption(m_f, symbolRule != nullptr, params.m_titleDecl);
 
     ExtractCaptionParams(capRule, auxRule, params);

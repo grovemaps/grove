@@ -2,7 +2,7 @@ package app.organicmaps.sdk;
 
 import androidx.annotation.WorkerThread;
 
-// Grove: the height of any point, see libs/map/grove_elevation.hpp.
+// Grove: the height of any point, see modules/elevation/map/elevation.hpp.
 public final class GroveElevation
 {
   private GroveElevation() {}

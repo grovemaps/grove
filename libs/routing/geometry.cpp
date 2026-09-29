@@ -1,14 +1,14 @@
 #include "routing/geometry.hpp"
 
+#include "modules/prefer_cycle_routes/routing/cycle_routes.hpp"
 #include "routing/city_roads.hpp"
-#include "routing/grove_cycle_routes.hpp"
 #include "routing/maxspeeds.hpp"
 
 #include "indexer/altitude_loader.hpp"
 #include "indexer/feature.hpp"
 #include "indexer/feature_source.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 
 #include "geometry/distance_on_sphere.hpp"
 #include "geometry/mercator.hpp"
@@ -201,7 +201,8 @@ void RoadGeometry::Load(VehicleModelInterface const & vehicleModel, FeatureType 
       m_condition = maxspeed.GetConditionalTime();
     }
   }
-  if (grove::IsOn(grove::Feature::PreferCycleRoutes))  // Grove: see grove_cycle_routes.hpp.
+  if (grove::IsOn(
+          grove::Feature::PreferCycleRoutes))  // Grove: see modules/prefer_cycle_routes/routing/cycle_routes.hpp.
     grove::ApplyCycleRoutes(vehicleModel, feature, m_forwardS, m_backwardS);
 
   auto const & optionsClassfier = RoutingOptionsClassifier::Instance();

@@ -2,13 +2,13 @@
 
 #include "app/organicmaps/sdk/Framework.hpp"
 
-#include "map/grove_tripadvisor.hpp"
+#include "modules/tripadvisor/map/tripadvisor.hpp"
 
 #include "platform/preferred_languages.hpp"
 
 #include <ctime>
 
-// Grove: Tripadvisor ratings with the user's own API key, see libs/map/grove_tripadvisor.hpp.
+// Grove: Tripadvisor ratings with the user's own API key, see modules/tripadvisor/map/tripadvisor.hpp.
 extern "C"
 {
 JNIEXPORT jstring Java_app_organicmaps_sdk_GroveTripadvisor_nativeGetKey(JNIEnv * env, jclass)

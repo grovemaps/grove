@@ -79,9 +79,6 @@ set(SRC
   frontend_renderer.cpp
   frontend_renderer.hpp
   gps_track_point.hpp
-  grove_brand_layer.cpp
-  grove_brand_layer.hpp
-  grove_cycle_routes.hpp
   gps_track_renderer.cpp
   gps_track_renderer.hpp
   gui/choose_position_mark.cpp

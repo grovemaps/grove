@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.Locale;
 
 // Grove: the place's Tripadvisor rating and newest reviews, with the user's own API key (Settings), and a link to
-// its Tripadvisor page as Tripadvisor's terms ask. See libs/map/grove_tripadvisor.hpp.
+// its Tripadvisor page as Tripadvisor's terms ask. See modules/tripadvisor/map/tripadvisor.hpp.
 public class GroveTripadvisorFragment extends Fragment implements Observer<MapObject>
 {
   public static final String TAG = "GROVE_TRIPADVISOR_FRAGMENT_TAG";

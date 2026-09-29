@@ -10,7 +10,7 @@
 #include "drape/texture_of_colors.hpp"
 #include "drape/tm_read_resources.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 
 #include <algorithm>
 #include <bit>
@@ -653,7 +653,7 @@ bool TextureManager::GetSymbolRegionSafe(std::string const & symbolName, SymbolR
 {
   CHECK(m_isInitialized, ());
 
-  // Grove: brand logo badges, loaded on first use, see grove_brand_texture.hpp.
+  // Grove: brand logo badges, loaded on first use, see modules/logos/drape/brand_texture.hpp.
   if (auto const qid = m_groveBrands ? grove::BrandQid(symbolName) : std::string_view{}; !qid.empty())
   {
     if (!m_groveBrands->Prepare(std::string(qid)))

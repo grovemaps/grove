@@ -2,7 +2,7 @@
 
 #include "routing/routing_helpers.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 
 #include "base/assert.hpp"
 

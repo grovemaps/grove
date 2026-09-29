@@ -5,7 +5,7 @@
 
 #include "geometry/mercator.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 #include "platform/location.hpp"
 
 #include "geometry/angles.hpp"

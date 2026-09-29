@@ -1,6 +1,6 @@
 package app.organicmaps.sdk;
 
-// Grove: the performance boost switch, see libs/platform/grove_performance.hpp. Takes effect after a restart.
+// Grove: the performance boost switch, see modules/performance_boost/platform/performance.hpp. Takes effect after a restart.
 public final class GrovePerformance
 {
   private GrovePerformance() {}

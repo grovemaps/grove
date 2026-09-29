@@ -2,9 +2,9 @@
 
 #include "app/organicmaps/sdk/Framework.hpp"
 
-#include "map/grove_place_color.hpp"
+#include "modules/place_title_color/map/place_color.hpp"
 
-// Grove: the colour of the selected place's card, see libs/map/grove_place_color.hpp.
+// Grove: the colour of the selected place's card, see modules/place_title_color/map/place_color.hpp.
 extern "C"
 {
 JNIEXPORT jint Java_app_organicmaps_sdk_GrovePlace_nativeGetSelectedColor(JNIEnv *, jclass)

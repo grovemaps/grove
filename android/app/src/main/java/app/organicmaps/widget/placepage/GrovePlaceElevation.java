@@ -10,7 +10,7 @@ import app.organicmaps.sdk.util.concurrency.ThreadPool;
 import app.organicmaps.util.UiUtils;
 import java.util.Locale;
 
-// Grove: the height of the place card's point, next to its coordinates. See libs/map/grove_elevation.hpp.
+// Grove: the height of the place card's point, next to its coordinates. See modules/elevation/map/elevation.hpp.
 final class GrovePlaceElevation
 {
   private static final Handler sMainHandler = new Handler(Looper.getMainLooper());

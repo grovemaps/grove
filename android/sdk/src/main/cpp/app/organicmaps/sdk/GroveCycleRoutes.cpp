@@ -1,8 +1,8 @@
 #include <jni.h>
 
-#include "routing/grove_cycle_routes.hpp"
+#include "modules/prefer_cycle_routes/routing/cycle_routes.hpp"
 
-// Grove: the cycle routes switch, see libs/routing/grove_cycle_routes.hpp.
+// Grove: the cycle routes switch, see modules/prefer_cycle_routes/routing/cycle_routes.hpp.
 extern "C"
 {
 JNIEXPORT jboolean Java_app_organicmaps_sdk_GroveCycleRoutes_nativeIsEnabled(JNIEnv *, jclass)

@@ -2,11 +2,11 @@
 
 #include "app/organicmaps/sdk/Framework.hpp"
 
-#include "map/grove_reviews.hpp"
+#include "modules/reviews/map/reviews.hpp"
 
 #include <ctime>
 
-// Grove: Mangrove reviews of the selected place, see libs/map/grove_reviews.hpp.
+// Grove: Mangrove reviews of the selected place, see modules/reviews/map/reviews.hpp.
 namespace
 {
 jobject ToJavaResult(JNIEnv * env, grove::reviews::PlaceReviews const & reviews)

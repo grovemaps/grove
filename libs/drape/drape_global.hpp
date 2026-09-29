@@ -66,8 +66,8 @@ enum BackgroundMode
 {
   Default = 0,
   Satellite,
-  Relief,     // Grove: shaded relief over the map, see drape_frontend/grove_raster_layers.hpp.
-  Landcover,  // Grove: land cover under the map, see drape_frontend/grove_raster_layers.hpp.
+  Relief,     // Grove: shaded relief over the map, see modules/core/drape_frontend/raster_layers.hpp.
+  Landcover,  // Grove: land cover under the map, see modules/core/drape_frontend/raster_layers.hpp.
 
   Count
 };

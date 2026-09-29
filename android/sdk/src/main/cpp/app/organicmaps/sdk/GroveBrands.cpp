@@ -2,9 +2,9 @@
 
 #include "app/organicmaps/sdk/Framework.hpp"
 
-#include "map/grove_brand_places.hpp"
+#include "modules/logos/map/brand_places.hpp"
 
-// Grove: the map's brands button, see libs/map/grove_brand_places.hpp.
+// Grove: the map's brands button, see modules/logos/map/brand_places.hpp.
 extern "C"
 {
 JNIEXPORT jboolean Java_app_organicmaps_sdk_GroveBrands_nativeAreShown(JNIEnv *, jclass)

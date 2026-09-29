@@ -22,10 +22,10 @@
 
 #include "routing_common/num_mwm_id.hpp"
 
+#include "modules/core/platform/features.hpp"
 #include "platform/country_file.hpp"
 #include "platform/distance.hpp"
 #include "platform/duration.hpp"
-#include "platform/grove_features.hpp"
 #include "platform/platform.hpp"
 
 #include "geometry/algorithm.hpp"

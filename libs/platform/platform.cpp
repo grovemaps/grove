@@ -1,6 +1,6 @@
 #include "platform/platform.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 #include "platform/preferred_languages.hpp"
 
 #include "coding/internal/file_data.hpp"
@@ -196,7 +196,7 @@ void Platform::GetFontNames(FilesList & res) const
   res.insert(res.end(), arrDef, arrDef + ARRAY_SIZE(arrDef));
 
   // Grove: Inter replaces Roboto for Latin, Greek and Cyrillic (see fonts/grove_whitelist.txt), before the emoji font.
-  // Its italic, semibold and Geist twins only serve styled labels, see drape/grove_text_style.hpp.
+  // Its italic, semibold and Geist twins only serve styled labels, see modules/typography/drape/text_style.hpp.
   if (grove::IsOn(grove::Feature::Typography))
   {
     ASSERT_EQUAL(res.back(), "fonts/organic_maps_emoji.ttf", ());

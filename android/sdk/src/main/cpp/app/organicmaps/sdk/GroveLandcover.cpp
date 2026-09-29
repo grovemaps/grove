@@ -2,9 +2,9 @@
 
 #include "app/organicmaps/sdk/Framework.hpp"
 
-#include "map/grove_landcover.hpp"
+#include "modules/landcover/map/landcover.hpp"
 
-// Grove: the land cover switch, see libs/map/grove_landcover.hpp.
+// Grove: the land cover switch, see modules/landcover/map/landcover.hpp.
 extern "C"
 {
 JNIEXPORT jboolean Java_app_organicmaps_sdk_GroveLandcover_nativeIsEnabled(JNIEnv *, jclass)

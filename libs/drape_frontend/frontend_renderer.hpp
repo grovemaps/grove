@@ -4,7 +4,6 @@
 #include "drape_frontend/drape_api_renderer.hpp"
 #include "drape_frontend/frame_values.hpp"
 #include "drape_frontend/gps_track_renderer.hpp"
-#include "drape_frontend/grove_raster_layers.hpp"
 #include "drape_frontend/gui/layer_render.hpp"
 #include "drape_frontend/map_data_provider.hpp"
 #include "drape_frontend/my_position_controller.hpp"
@@ -19,6 +18,7 @@
 #include "drape_frontend/traffic_renderer.hpp"
 #include "drape_frontend/transit_scheme_renderer.hpp"
 #include "drape_frontend/user_event_stream.hpp"
+#include "modules/core/drape_frontend/raster_layers.hpp"
 
 #include "kml/type_utils.hpp"
 
@@ -332,7 +332,8 @@ private:
 
   drape_ptr<RouteRenderer> m_routeRenderer;
   drape_ptr<TileBackgroundRenderer> m_tileBackgroundRenderer;
-  grove::RasterLayers m_groveLayers;  // Grove: land cover and shaded relief, see grove_raster_layers.hpp.
+  grove::RasterLayers
+      m_groveLayers;  // Grove: land cover and shaded relief, see modules/core/drape_frontend/raster_layers.hpp.
   drape_ptr<TrafficRenderer> m_trafficRenderer;
   drape_ptr<TransitSchemeRenderer> m_transitSchemeRenderer;
   drape_ptr<dp::Framebuffer> m_buildingsFramebuffer;

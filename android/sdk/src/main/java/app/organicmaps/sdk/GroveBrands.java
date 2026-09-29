@@ -1,6 +1,6 @@
 package app.organicmaps.sdk;
 
-// Grove: the map's brands button, see libs/map/grove_brand_places.hpp.
+// Grove: the map's brands button, see modules/logos/map/brand_places.hpp.
 public final class GroveBrands
 {
   private GroveBrands() {}

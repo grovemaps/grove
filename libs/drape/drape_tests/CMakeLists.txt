@@ -2,6 +2,8 @@ project(drape_tests)
 
 set(DRAPE_TESTABLE_SRC_PREFIXED  ${DRAPE_TESTABLE_SRC})
 list(TRANSFORM DRAPE_TESTABLE_SRC_PREFIXED PREPEND "../")
+grove_module_sources(drape GROVE_DRAPE_SRC)  # Grove: these tests compile drape's sources, the modules' too.
+list(APPEND DRAPE_TESTABLE_SRC_PREFIXED ${GROVE_DRAPE_SRC})
 
 set(SRC
   ${DRAPE_TESTABLE_SRC_PREFIXED}
@@ -17,8 +19,6 @@ set(SRC
   gl_mock_functions.hpp
   glyph_mng_tests.cpp
   glyph_packer_test.cpp
-  grove_brand_tests.cpp
-  grove_text_style_tests.cpp
   harfbuzz_shaping_test.cpp
   img.cpp
   img.hpp

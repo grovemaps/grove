@@ -43,7 +43,8 @@ public:
   void SetAutoPerspective(bool enable);
   void Enable3dMode();
   void SetRotationIn3dMode(double rotationAngle);
-  // Grove: tilts the map by the user's gesture, at any zoom; 0 makes it flat again. See grove_gestures.hpp.
+  // Grove: tilts the map by the user's gesture, at any zoom; 0 makes it flat again. See
+  // modules/tilt_gesture/drape_frontend/gestures.hpp.
   void SetTilt(double angle, double maxAngle);
   void Disable3dMode();
 

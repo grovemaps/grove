@@ -2,17 +2,17 @@
 #include "base/assert.hpp"
 #include "map/benchmark_tools.hpp"
 #include "map/gps_tracker.hpp"
-#include "map/grove_brand_places.hpp"
-#include "map/grove_landcover.hpp"
-#include "map/grove_landcover_reading.hpp"
-#include "map/grove_measure.hpp"
-#include "map/grove_offline_layers.hpp"
-#include "map/grove_relief.hpp"
 #include "map/place_page_info.hpp"
 #include "map/raster_tile_provider.hpp"
 #include "map/relation_track.hpp"
 #include "map/track_mark.hpp"
 #include "map/user_mark.hpp"
+#include "modules/landcover/map/landcover.hpp"
+#include "modules/landuse_11/map/landcover_reading.hpp"
+#include "modules/logos/map/brand_places.hpp"
+#include "modules/measure_tap/map/measure.hpp"
+#include "modules/offline_layers/map/offline_layers.hpp"
+#include "modules/relief/map/relief.hpp"
 
 #include "routing/route.hpp"
 #include "routing/speed_camera_prohibition.hpp"
@@ -28,10 +28,10 @@
 
 #include "drape_frontend/color_constants.hpp"
 #include "drape_frontend/gps_track_point.hpp"
-#include "drape_frontend/grove_brands.hpp"
 #include "drape_frontend/relations_draw_info.hpp"
 #include "drape_frontend/tile_key.hpp"
 #include "drape_frontend/visual_params.hpp"
+#include "modules/logos/drape_frontend/brands.hpp"
 
 #include "drape/drape_global.hpp"
 
@@ -51,7 +51,7 @@
 #include "indexer/scales.hpp"
 #include "indexer/transliteration_loader.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 #include "platform/localization.hpp"
 #include "platform/measurement_utils.hpp"
 #include "platform/platform.hpp"
@@ -483,7 +483,7 @@ void Framework::OnCountryFileDownloaded(storage::CountryId const &, storage::Loc
     if (id.IsAlive())
     {
       rect = id.GetInfo()->m_bordersRect;
-      // Grove: save the region's relief and land cover, see map/grove_offline_layers.hpp.
+      // Grove: save the region's relief and land cover, see modules/offline_layers/map/offline_layers.hpp.
       if (m_groveOfflineLayers)
         m_groveOfflineLayers->Add(localFile->GetCountryName(), localFile->GetVersion(), rect);
     }
@@ -1743,7 +1743,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
 {
   auto idReadFn = [this](auto const & fn, m2::RectD const & r, int scale)
   {
-    // Grove: the maps' forests and fields from zoom 11, see map/grove_landcover_reading.hpp.
+    // Grove: the maps' forests and fields from zoom 11, see modules/landuse_11/map/landcover_reading.hpp.
     if (grove::IsOn(grove::Feature::Landuse11) && grove::ExtraIndexScale(scale) >= 0)
       grove::ForEachFeatureIDWithExtraIndex(m_featuresFetcher, r, fn, scale);
     else
@@ -1785,19 +1785,19 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
   if (bgTilesActive && !m_rasterTileProvider)
     CreateBackgroundTilesProvider(bgTilesUrl, GetBackgroundTilesCacheSize());
 
-  // Grove: shaded relief, see map/grove_relief.hpp. Its switch works at once, so the provider is there unless Grove is
-  // stock; the same for the ones below.
+  // Grove: shaded relief, see modules/relief/map/relief.hpp. Its switch works at once, so the provider is there unless
+  // Grove is stock; the same for the ones below.
   if (!grove::IsStock() && !m_groveRelief)
     m_groveRelief = grove::CreateReliefProvider([this] { return make_ref(m_drapeEngine); });
-  // Grove: two-finger tap distance, see map/grove_measure.hpp.
+  // Grove: two-finger tap distance, see modules/measure_tap/map/measure.hpp.
   if (!grove::IsStock())
     grove::InitMeasure();
-  // Grove: land cover when zoomed out, see map/grove_landcover.hpp.
+  // Grove: land cover when zoomed out, see modules/landcover/map/landcover.hpp.
   if (!grove::IsStock())
     grove::landcover::CreateProvider([this] { return make_ref(m_drapeEngine); },
                                      [this] { return MapStyleIsDark(GetMapStyle()); });
 
-  // Grove: relief and land cover saved for the downloaded maps, see map/grove_offline_layers.hpp.
+  // Grove: relief and land cover saved for the downloaded maps, see modules/offline_layers/map/offline_layers.hpp.
   if (grove::IsOn(grove::Feature::OfflineLayers) && !m_groveOfflineLayers)
   {
     m_groveOfflineLayers =
@@ -1809,7 +1809,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
         m_groveOfflineLayers->Add(info->GetCountryName(), info->GetVersion(), info->m_bordersRect);
   }
 
-  // Grove: chains' logos, see map/grove_brand_places.hpp.
+  // Grove: chains' logos, see modules/logos/map/brand_places.hpp.
   if (grove::IsOn(grove::Feature::Logos) && !m_groveBrandPlaces)
   {
     grove::BrandsShown() = grove::AreBrandsShown();

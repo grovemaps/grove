@@ -1,8 +1,8 @@
 #pragma once
 
-#include "drape_frontend/grove_gestures.hpp"
 #include "drape_frontend/kinetic_scroller.hpp"
 #include "drape_frontend/navigator.hpp"
+#include "modules/tilt_gesture/drape_frontend/gestures.hpp"
 
 #include "drape/pointers.hpp"
 
@@ -464,7 +464,7 @@ public:
   void SetTestBridge(TTestBridge const & fn) { m_testFn = fn; }
 #endif
 
-  // Grove: where the fingers of the last two-finger tap were, see grove_measure.hpp.
+  // Grove: where the fingers of the last two-finger tap were, see modules/measure_tap/drape_frontend/measure.hpp.
   std::array<m2::PointF, 2> const & GetTwoFingersTouches() const { return m_twoFingersTouches; }
 
 private:
@@ -574,7 +574,7 @@ private:
 #endif
   m2::PointD m_startDragOrg;
   std::array<m2::PointF, 2> m_twoFingersTouches;
-  // Grove: two-finger tilt, see grove_gestures.hpp.
+  // Grove: two-finger tilt, see modules/tilt_gesture/drape_frontend/gestures.hpp.
   grove::TwoFingerGesture m_groveGesture = grove::TwoFingerGesture::Undecided;
   std::array<m2::PointD, 2> m_groveGestureStart;
   double m_groveStartTilt = 0;

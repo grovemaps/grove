@@ -2,7 +2,7 @@
 
 #include "indexer/scales.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 #include "platform/platform.hpp"
 
 #include "coding/point_coding.hpp"  // kMwmPointAccuracy

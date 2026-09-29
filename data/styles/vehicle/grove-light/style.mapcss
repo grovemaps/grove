@@ -1,4 +1,4 @@
-/* Grove: car navigation in Grove's colors, the "Grove colors while driving" switch (tools/grove/extra_styles.sh
+/* Grove: car navigation in Grove's colors, the "Grove colors while driving" switch (modules/look/tools/extra_styles.sh
  * builds it into drules_vehicle_grove.bin). By default navigation keeps Organic Maps' muted vehicle style. */
 @import("../light/colors.mapcss");
 @import("../../grove/palette-light.mapcss");

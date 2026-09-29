@@ -98,7 +98,7 @@ jobs:
           target: google_apis
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: bash tools/grove/android_smoke_test.sh "$(ls apk/*.apk | head -1)"
+          script: bash modules/core/tools/android_smoke_test.sh "$(ls apk/*.apk | head -1)"
 
       - name: Upload the emulator log and screenshot
         if: always()

@@ -1,6 +1,6 @@
 package app.organicmaps.sdk;
 
-// Grove: shaded relief (hillshading) over the map, see libs/map/grove_relief.hpp.
+// Grove: shaded relief (hillshading) over the map, see modules/relief/map/relief.hpp.
 public final class GroveRelief
 {
   private GroveRelief() {}

@@ -25,7 +25,7 @@
 
 #include "shaders/program_params.hpp"
 
-#include "platform/grove_features.hpp"
+#include "modules/core/platform/features.hpp"
 #include "platform/platform.hpp"
 
 #include "base/file_name_utils.hpp"

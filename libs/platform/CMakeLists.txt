@@ -21,9 +21,6 @@ set(SRC
   get_text_by_id.cpp
   get_text_by_id.hpp
   gui_thread.hpp
-  grove_features.cpp
-  grove_features.hpp
-  grove_performance.hpp
   http_client.cpp
   http_client.hpp
   http_payload.cpp
