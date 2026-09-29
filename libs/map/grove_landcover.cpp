@@ -111,14 +111,17 @@ size_t LevelFor(int zoom)
 }
 
 // The longitude of each sample column and the latitude of each sample row of a map tile, samples x samples a pixel.
-// Rows run south to north.
+// Rows run south to north. Panned around the world, the map shows copies of it east and west: their longitudes wrap
+// back into [-180, 180).
 std::pair<std::vector<double>, std::vector<double>> SampleCoordinates(m2::RectD const & rect, int samples)
 {
   std::vector<double> lons(size_t{kOutSize} * samples), lats(size_t{kOutSize} * samples);
   for (size_t i = 0; i < lons.size(); ++i)
   {
     double const f = (i + 0.5) / lons.size();
-    lons[i] = mercator::XToLon(rect.minX() + rect.SizeX() * f);
+    lons[i] = std::remainder(mercator::XToLon(rect.minX() + rect.SizeX() * f), 360.0);
+    if (lons[i] >= 180)
+      lons[i] -= 360;
     lats[i] = mercator::YToLat(rect.minY() + rect.SizeY() * f);
   }
   return {std::move(lons), std::move(lats)};
