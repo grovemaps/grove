@@ -2621,7 +2621,7 @@ void FrontendRenderer::ReleaseResources()
   m_buildingsFramebuffer.reset();
   m_screenQuadRenderer.reset();
   m_tileBackgroundRenderer.reset();
-  m_groveLayers.Reset();  // Grove
+  m_groveLayers.Reset();  // Grove[core]
   m_trafficRenderer.reset();
   m_transitSchemeRenderer.reset();
   m_postprocessRenderer.reset();

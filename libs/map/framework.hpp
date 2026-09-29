@@ -96,7 +96,7 @@ struct FrameworkParams
   FrameworkParams(bool enableDiffs) : m_enableDiffs(enableDiffs) {}
 };
 
-namespace grove
+namespace grove  // Grove[core]
 {
 class BrandPlaces;
 class OfflineLayers;

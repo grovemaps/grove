@@ -60,7 +60,7 @@ function(omim_add_executable executable)
 endfunction()
 
 function(omim_add_library library)
-  grove_module_sources(${library} groveSources)  # Grove: modules/*/<library>/
+  grove_module_sources(${library} groveSources)  # Grove[core]: modules/*/<library>/
   add_library(${library} ${ARGN} ${groveSources})
 
   # Enable warnings for all our libraries.

@@ -137,8 +137,8 @@ public:
   bool DisableFollowMode();
   kml::TrackId SaveRoute();
 
-  // Grove: a route saved as a track keeps its stops and router in the track's properties (in the format of the
-  // route points saved across restarts). The router of a track saved so, or nothing for other tracks.
+  // Grove[saved_trips]: a route saved as a track keeps its stops and router in the track's properties (in the format of
+  // the route points saved across restarts). The router of a track saved so, or nothing for other tracks.
   static std::string_view constexpr kGroveTripPoints = "grove_route_points";
   static std::string_view constexpr kGroveTripRouter = "grove_router";
   std::optional<routing::RouterType> GroveTripOfTrack(kml::TrackId trackId);

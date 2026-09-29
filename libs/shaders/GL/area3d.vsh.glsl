@@ -39,7 +39,7 @@ void main()
     v_intensity = 0.0;
   if (u_groveLighting > 0.5)
   {
-    // Grove: brightness from ambient and sun light, roofs ~1.0, sunlit walls ~0.95, walls in shade 0.72; given as the
+    // Grove[buildings_3d]: brightness from ambient and sun light, roofs ~1.0, sunlit walls ~0.95, walls in shade 0.72; given as the
     // intensity the fragment shader turns into it (0.8 + 0.2 * intensity).
     float light = dot(normDir, normDir) != 0.0 ? max(0.0, -dot(kGroveLightDir, normalize(normDir))) : 0.0;
     float brightness = 0.72 + 0.36 * light;

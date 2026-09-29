@@ -296,7 +296,7 @@ void Navigator::SetRotationIn3dMode(double rotationAngle)
   m_Screen.SetRotationAngle(rotationAngle);
 }
 
-void Navigator::SetTilt(double angle, double maxAngle)
+void Navigator::SetTilt(double angle, double maxAngle)  // Grove[tilt_gesture]
 {
   if (angle <= 0)
     Disable3dMode();

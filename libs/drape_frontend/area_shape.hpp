@@ -7,7 +7,7 @@
 #include "drape/pointers.hpp"
 
 #include "geometry/point2d.hpp"
-#include "geometry/rect2d.hpp"
+#include "geometry/rect2d.hpp"  // Grove[see_through_buildings]
 #include "geometry/triangle2d.hpp"
 
 #include <vector>

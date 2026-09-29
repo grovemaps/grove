@@ -453,7 +453,7 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
     else
     {
       LOG(LERROR, ("Style error. Symbol name must be valid for feature", m_f.GetID()));
-    }
+    }  // Grove[poi_dots]
   }
 
   if (captionRule)
@@ -477,7 +477,7 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
     params.m_depth = PriorityToDepth(captionRule->priority, drule::caption, 0);
     params.m_hasArea = HasArea();
     params.m_createdByEditor = createdByEditor;
-    if (groveChain)
+    if (groveChain)  // Grove[logos]
       grove::PlaceChainName(params.m_titleDecl, GetAnchor(0, 1));
 
     ASSERT(!(symbolRule && params.m_titleDecl.m_anchor == dp::Anchor::Center),
@@ -485,7 +485,7 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
     if (houseNumberRule && params.m_titleDecl.m_anchor == dp::Anchor::Center)
       params.m_titleDecl.m_anchor = GetAnchor(0, 1);
 
-    params.m_startOverlayRank = symbolRule || groveChain ? dp::OverlayRank1 : dp::OverlayRank0;
+    params.m_startOverlayRank = symbolRule || groveChain ? dp::OverlayRank1 : dp::OverlayRank0;  // Grove[logos]
     m_params.m_insertShape(make_unique_dp<TextShape>(centerPoint, params, m_params.m_tileKey, symbolSize,
                                                      m2::PointF(0, 0), dp::Center, 0));
   }
@@ -882,7 +882,8 @@ void ApplyLineFeatureAdditional::GetRoadShieldsViewParams(ref_ptr<dp::TextureMan
   textParams.m_titleDecl.m_secondaryOptional = false;
   textParams.m_startOverlayRank = dp::OverlayRank1;
 
-  auto const textMetrics = texMng->ShapeSingleTextLine(textParams.m_titleDecl.m_primaryText, regionLang, nullptr);
+  auto const textMetrics =
+      texMng->ShapeSingleTextLine(textParams.m_titleDecl.m_primaryText, regionLang, nullptr);  // Grove[typography]
   float const textRatio = font.m_size * fontScale / dp::kBaseFontSizePixels;
   float const textWidthInPixels = textMetrics.m_lineWidthInPixels * textRatio;
   float const textHeightInPixels = textMetrics.m_maxLineHeightInPixels * textRatio;

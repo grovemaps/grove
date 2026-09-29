@@ -621,7 +621,7 @@ UNIT_TEST(ShapeText_LangParameterPlumbing)
   }
 
   // Turkish `locl` in Roboto blocks the fi ligature. English/default keeps it.
-  // Grove: Inter, which has no fi ligature, serves Latin in the full font list, so load Roboto alone.
+  // Grove[typography]: Inter, which has no fi ligature, serves Latin in the full font list, so load Roboto alone.
   dp::GlyphManager::Params robotoOnly;
   robotoOnly.m_uniBlocks = base::JoinPath("fonts", "unicode_blocks.txt");
   robotoOnly.m_whitelist = base::JoinPath("fonts", "whitelist.txt");

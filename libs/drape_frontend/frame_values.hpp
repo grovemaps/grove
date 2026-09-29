@@ -45,7 +45,7 @@ struct FrameValues
     SetProjection(params);
     SetPivotTransform(params);
     SetZScale(params);
-    SetGroveLighting(params);
+    SetGroveLighting(params);  // Grove[buildings_3d]
     SetGroveAlpha(params);
   }
 
@@ -53,7 +53,7 @@ private:
   DECLARE_SETTER(SetProjection, m_projection)
   DECLARE_SETTER(SetPivotTransform, m_pivotTransform)
   DECLARE_SETTER(SetZScale, m_zScale)
-  DECLARE_SETTER(SetGroveLighting, m_groveLighting)
+  DECLARE_SETTER(SetGroveLighting, m_groveLighting)  // Grove[buildings_3d]
   DECLARE_SETTER(SetGroveAlpha, m_groveAlpha)
 };
 }  // namespace df

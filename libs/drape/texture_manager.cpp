@@ -320,7 +320,7 @@ void TextureManager::Release()
   m_symbolTextures.clear();
 
   m_stipplePenTexture.reset();
-  m_groveBrands.reset();  // Grove
+  m_groveBrands.reset();  // Grove[logos]
   m_colorTexture.reset();
   m_trafficArrowTexture.reset();
   m_arrowTexture.reset();
@@ -612,7 +612,7 @@ void TextureManager::OnVisualScaleChanged(ref_ptr<dp::GraphicsContext> context, 
   OnSwitchMapStyle(context);
 
   if (context->GetApiVersion() == dp::ApiVersion::Vulkan)
-  {
+  {  // Grove[logos]
     m_stipplePenTexture->DeferredCleanup(m_texturesToCleanup);
     if (m_groveBrands)  // Grove
       m_groveBrands->DeferredCleanup(m_texturesToCleanup);

@@ -66,11 +66,12 @@ struct FeatureInfo
 {
   Feature m_feature;
   FeatureGroup m_group;
-  std::string_view m_key;  // Settings key, and the feature's name in the app's strings ("grove_feature_<key>").
-  bool m_default;          // The switch for new users.
-  bool m_restart;          // Read once at start: a change takes effect after a restart.
+  std::string_view m_module;  // Its folder, modules/<module>/, and its name in the app's strings.
+  std::string_view m_key;     // Settings key.
+  bool m_default;             // The switch for new users.
+  bool m_restart;             // Read once at start: a change takes effect after a restart.
+  // One line; modules/<module>/README.md and data/grove_modules.txt tell where its code is.
   std::string_view m_about;
-  std::string_view m_code;  // The upstream files with hooks, then Grove's own.
 };
 
 std::span<FeatureInfo const> Features();

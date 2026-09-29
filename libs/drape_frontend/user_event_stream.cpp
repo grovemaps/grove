@@ -1153,7 +1153,7 @@ void UserEventStream::EndScale(Touch const & t1, Touch const & t2)
   m2::PointD touch1(t1.m_location);
   m2::PointD touch2(t2.m_location);
 
-  // Grove: a tilt or an undecided gesture leaves the scale as it started.
+  // Grove[tilt_gesture]: a tilt or an undecided gesture leaves the scale as it started.
   if (m_groveGesture != grove::TwoFingerGesture::Scale)
   {
     touch1 = m_groveGestureStart[0];

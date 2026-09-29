@@ -323,7 +323,7 @@ bool RasterTileProvider::RequestTile(df::TileKey const & tileKey, dp::Background
       return;
     }
 
-    // Grove: tiles saved for downloaded maps.
+    // Grove[offline_layers]: tiles saved for downloaded maps.
     if (!m_params.m_offlineSubdir.empty() &&
         DecodeFileToRGBA(GetPlatform().WritableDir() + m_params.m_offlineSubdir + "/" + fileName, rgba, width, height))
     {

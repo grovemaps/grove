@@ -86,7 +86,7 @@ struct ALIGNMENT MapProgramParams
                 Program::BookmarkAboveText, Program::BookmarkAnimAboveText, Program::BookmarkAnimAboveTextBillboard,
                 Program::BookmarkAboveTextBillboard)
 };
-// Grove: its fields fill the padding (GL, Vulkan and Metal copy the struct as is).
+// Grove[buildings_3d]: its fields fill the padding (GL, Vulkan and Metal copy the struct as is).
 static_assert(sizeof(MapProgramParams) == 224);
 
 struct ALIGNMENT RouteProgramParams

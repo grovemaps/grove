@@ -949,7 +949,7 @@ text::TextMetrics GlyphManager::ShapeText(std::string_view utf8, int8_t lang)
 
       // GetFontIndex's MRU block cache (m_lastUsedBlock) handles the common case where
       // adjacent characters share a unicode block, so this per-character call is cheap.
-      int const fontIndex = m_impl->m_groveTypography
+      int const fontIndex = m_impl->m_groveTypography  // Grove[typography]
                               ? m_impl->m_groveFonts.Pick(GetFontIndex(u32Character), u32Character, groveStyle)
                               : GetFontIndex(u32Character);
       if (fontIndex < 0)
@@ -1011,7 +1011,7 @@ text::TextMetrics GlyphManager::ShapeText(std::string_view utf8, int8_t lang)
   if (allGlyphs.m_glyphs.empty())
     LOG(LWARNING, ("No glyphs were found in all fonts for string with characters in warnings above" /*, utf8*/));
 
-  if (m_impl->m_groveTypography)
+  if (m_impl->m_groveTypography)  // Grove[typography]
     grove::ApplyTracking(groveStyle, allGlyphs);
   return m_impl->m_textMetricsCache.Insert(TextMetricsCacheKey{std::string(cacheKey.m_utf8), lang},
                                            std::move(allGlyphs));

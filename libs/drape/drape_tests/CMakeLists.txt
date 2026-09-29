@@ -2,7 +2,7 @@ project(drape_tests)
 
 set(DRAPE_TESTABLE_SRC_PREFIXED  ${DRAPE_TESTABLE_SRC})
 list(TRANSFORM DRAPE_TESTABLE_SRC_PREFIXED PREPEND "../")
-grove_module_sources(drape GROVE_DRAPE_SRC)  # Grove: these tests compile drape's sources, the modules' too.
+grove_module_sources(drape GROVE_DRAPE_SRC)  # Grove[core]: these tests compile drape's sources, the modules' too.
 list(APPEND DRAPE_TESTABLE_SRC_PREFIXED ${GROVE_DRAPE_SRC})
 
 set(SRC

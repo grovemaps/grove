@@ -432,7 +432,7 @@ public:
   std::string GenerateTrackRecordingName() const;
   dp::Color GenerateTrackRecordingColor() const;
 
-  // Grove: properties, the route's stops and router (map/routing_manager.hpp, GroveTripOfTrack).
+  // Grove[saved_trips]: properties, the route's stops and router (map/routing_manager.hpp, GroveTripOfTrack).
   kml::TrackId SaveRoute(kml::TrackGeometry points, std::string const & from, std::string const & to,
                          kml::Properties properties = {});
 

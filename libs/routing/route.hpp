@@ -136,7 +136,7 @@ public:
     bool operator==(RoadNameInfo const & rni) const
     {
       return m_name == rni.m_name && m_ref == rni.m_ref && m_junction_ref == rni.m_junction_ref &&
-             m_destination_ref == rni.m_destination_ref && m_destination == rni.m_destination &&
+             m_destination_ref == rni.m_destination_ref && m_destination == rni.m_destination &&  // Grove[way_kinds]
              m_groveWayKind == rni.m_groveWayKind;
     }
 

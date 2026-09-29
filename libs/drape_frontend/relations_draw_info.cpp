@@ -45,7 +45,7 @@ bool RelationsDrawInfo::HasHikingOrCycling(FeatureType & ft) const
 
 void RelationsDrawInfo::Init(FeatureType & ft)
 {
-  using RR = feature::RouteRelationBase;
+  using RR = feature::RouteRelationBase;  // Grove[cycle_route_lines]
 
   if (m_sett.IsEmpty())
     return;
@@ -98,7 +98,7 @@ void RelationsDrawInfo::Init(FeatureType & ft)
     }
   }
 
-  if (groveCycleLevel >= 0)
+  if (groveCycleLevel >= 0)  // Grove[cycle_route_lines]
     if (auto const color = grove::CycleRouteColor(groveCycleLevel, m_sett.zoom))
       m_colors.push_back({*color, 1000});
 

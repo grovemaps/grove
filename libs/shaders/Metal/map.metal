@@ -72,7 +72,7 @@ vertex Area3dFragment_T vsArea3d(const Area3dVertex_T in [[stage_in]],
                                  sampler u_colorTexSampler [[sampler(0)]])
 {
   constexpr float4 kNormalizedLightDir = float4(0.3162, 0.0, 0.9486, 0.0);
-  // Grove: sun from the upper left of the screen; walls darken toward the ground. Same as area3d.vsh.glsl.
+  // Grove[buildings_3d]: sun from the upper left of the screen; walls darken toward the ground. Same as area3d.vsh.glsl.
   constexpr float4 kGroveLightDir = float4(0.4472, -0.4472, 0.7746, 0.0);
   constexpr float kGroveGroundShade = 0.8;
   
@@ -94,7 +94,7 @@ vertex Area3dFragment_T vsArea3d(const Area3dVertex_T in [[stage_in]],
     out.intensity = 0.0;
   if (uniforms.u_groveLighting > 0.5)
   {
-    // Grove: brightness given as the intensity fsArea3d turns into it, as in area3d.vsh.glsl.
+    // Grove[buildings_3d]: brightness given as the intensity fsArea3d turns into it, as in area3d.vsh.glsl.
     float light = dot(normDir, normDir) != 0.0 ? max(0.0, -dot(kGroveLightDir, normalize(normDir))) : 0.0;
     float brightness = 0.72 + 0.36 * light;
     if (in.a_position.z == 0.0)
@@ -105,9 +105,9 @@ vertex Area3dFragment_T vsArea3d(const Area3dVertex_T in [[stage_in]],
   out.position = uniforms.u_pivotTransform * pos;
   
   half4 color = u_colorTex.sample(u_colorTexSampler, in.a_texCoords);
-  half const groveAlpha = color.a;
+  half const groveAlpha = color.a;  // Grove[see_through_buildings]
   color.a = (half)uniforms.u_opacity;
-  // Grove: the colour's alpha too, which buildings with places inside lower. Same as texturing3d.fsh.glsl.
+  // Grove[see_through_buildings]: the colour's alpha too, which buildings with places inside lower. Same as texturing3d.fsh.glsl.
   if (uniforms.u_groveAlpha > 0.5)
     color.a *= groveAlpha;
   out.color = color;
