@@ -164,8 +164,9 @@ size_t StyleReader::GetDrawingRulesVariant(MapStyle mapStyle) const
 
 ReaderPtr<Reader> StyleReader::GetResourceReader(std::string const & file, std::string_view density) const
 {
-  // Grove: Organic Maps' own icons with its look.
-  std::string resFile = base::JoinPath(GroveClassicLook() ? "symbols-classic" : "symbols", std::string{density},
+  // Grove: Organic Maps' own icon atlas with its look; the other textures (traffic arrows...) are shared.
+  bool const classicIcons = GroveClassicLook() && file.starts_with("symbols.");
+  std::string resFile = base::JoinPath(classicIcons ? "symbols-classic" : "symbols", std::string{density},
                                        GetStyleResourcesSuffix(GetCurrentStyle()), file);
 
   auto overriddenResFile = base::JoinPath(GetPlatform().WritableDir(), kStylesOverrideDir, resFile);
