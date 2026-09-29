@@ -233,6 +233,30 @@
     <string name="grove_brand_logos">Логотипи брендів</string>
     <!-- Grove: place card reviews section: the rating of the last half year's reviews when it differs from the older ones. %1$s is like "★ 2.0 ↓ (3)" -->
     <string name="reviews_last_6_months">За останні 6 місяців: %1$s</string>
+    <!-- Grove: Settings: title of the «Map & layers» section card and page -->
+    <string name="grove_settings_map_title">Мапа й шари</string>
+    <!-- Grove: Settings: what the «Map & layers» section holds -->
+    <string name="grove_settings_map_summary">Стиль, 3D-будівлі, рельєф, земний покрив, підписи</string>
+    <!-- Grove: Settings: title of the «Navigation» section card and page -->
+    <string name="grove_settings_navigation_title">Навігація</string>
+    <!-- Grove: Settings: what the «Navigation» section holds -->
+    <string name="grove_settings_navigation_summary">Голосові підказки, 3D-вигляд, веломаршрути, що оминати</string>
+    <!-- Grove: Settings: title of the «Places & reviews» section card and page -->
+    <string name="grove_settings_places_title">Місця й відгуки</string>
+    <!-- Grove: Settings: what the «Places & reviews» section holds -->
+    <string name="grove_settings_places_summary">Відгуки Mangrove, оцінки Tripadvisor</string>
+    <!-- Grove: Settings: title of the «Privacy & data» section card and page -->
+    <string name="grove_settings_privacy_title">Приватність і дані</string>
+    <!-- Grove: Settings: what the «Privacy & data» section holds -->
+    <string name="grove_settings_privacy_summary">Завантаження, мобільні дані, сховище, історія пошуку</string>
+    <!-- Grove: Settings: title of the «App» section card and page -->
+    <string name="grove_settings_app_title">Застосунок</string>
+    <!-- Grove: Settings: what the «App» section holds -->
+    <string name="grove_settings_app_summary">Одиниці, екран, енергозбереження, продуктивність</string>
+    <!-- Grove: Settings: title of the «About» section card and page -->
+    <string name="grove_settings_about_title">Про застосунок</string>
+    <!-- Grove: Settings: what the «About» section holds -->
+    <string name="grove_settings_about_summary">Допомога, відгуки й інше</string>
     <!-- Grove: Settings: switch that lets the map engine use more processor cores -->
     <string name="pref_performance_boost_title">Прискорення роботи</string>
     <!-- Grove: Settings: explanation of the performance boost switch -->

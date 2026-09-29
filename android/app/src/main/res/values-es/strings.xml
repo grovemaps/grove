@@ -233,6 +233,30 @@
     <string name="grove_brand_logos">Logotipos de marcas</string>
     <!-- Grove: place card reviews section: the rating of the last half year's reviews when it differs from the older ones. %1$s is like "★ 2.0 ↓ (3)" -->
     <string name="reviews_last_6_months">Últimos 6 meses: %1$s</string>
+    <!-- Grove: Settings: title of the «Map & layers» section card and page -->
+    <string name="grove_settings_map_title">Mapa y capas</string>
+    <!-- Grove: Settings: what the «Map & layers» section holds -->
+    <string name="grove_settings_map_summary">Estilo, edificios 3D, relieve, cobertura del suelo, etiquetas</string>
+    <!-- Grove: Settings: title of the «Navigation» section card and page -->
+    <string name="grove_settings_navigation_title">Navegación</string>
+    <!-- Grove: Settings: what the «Navigation» section holds -->
+    <string name="grove_settings_navigation_summary">Guía por voz, vista 3D, rutas ciclistas, qué evitar</string>
+    <!-- Grove: Settings: title of the «Places & reviews» section card and page -->
+    <string name="grove_settings_places_title">Lugares y reseñas</string>
+    <!-- Grove: Settings: what the «Places & reviews» section holds -->
+    <string name="grove_settings_places_summary">Reseñas de Mangrove, valoraciones de Tripadvisor</string>
+    <!-- Grove: Settings: title of the «Privacy & data» section card and page -->
+    <string name="grove_settings_privacy_title">Privacidad y datos</string>
+    <!-- Grove: Settings: what the «Privacy & data» section holds -->
+    <string name="grove_settings_privacy_summary">Descargas, datos móviles, almacenamiento, historial de búsqueda</string>
+    <!-- Grove: Settings: title of the «App» section card and page -->
+    <string name="grove_settings_app_title">Aplicación</string>
+    <!-- Grove: Settings: what the «App» section holds -->
+    <string name="grove_settings_app_summary">Unidades, pantalla, ahorro de energía, rendimiento</string>
+    <!-- Grove: Settings: title of the «About» section card and page -->
+    <string name="grove_settings_about_title">Acerca de</string>
+    <!-- Grove: Settings: what the «About» section holds -->
+    <string name="grove_settings_about_summary">Ayuda, comentarios y más</string>
     <!-- Grove: Settings: switch that lets the map engine use more processor cores -->
     <string name="pref_performance_boost_title">Impulso de rendimiento</string>
     <!-- Grove: Settings: explanation of the performance boost switch -->
