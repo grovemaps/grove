@@ -129,7 +129,7 @@ It also writes an `<icon>-dot` symbol for every recolored icon: a small circle o
 
 The script needs Qt 6 to build `skin_generator_tool` (`QT_PATH` in `/Volumes/grove/tools/env.sh`). It uses `optipng` or `oxipng` for lossless compression. With unmodified SVGs, this toolchain reproduces upstream's committed atlases pixel for pixel.
 
-The vehicle (navigation) style isn't touched yet.
+The vehicle style, which car navigation uses, imports the Grove palette, the label colors by category and the borders too, so driving shows the same map; its own declutter rules stay, since it is already sparse. The icon atlases are shared by all styles.
 
 ### Syncing with a newer Organic Maps
 
