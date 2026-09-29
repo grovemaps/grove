@@ -120,21 +120,10 @@ void DrawBrandLayer(df::TileKey const & tileKey, std::set<MwmSet::MwmId> const &
   double const mercatorPerPx = rect.SizeX() / vparams.GetTileSize();
   auto const textures = context->GetTextureManager();
 
-  // Zoomed out: wider bundles of fewer logos, and each chain once per area.
-  struct Density
-  {
-    double m_bundle;  // Logo widths.
-    size_t m_maxLogos;
-    double m_chainSpacing;  // Logo widths.
-  };
-  Density const density = tileKey.m_zoomLevel <= 15 ? Density{1.5, 2, 4}
-                        : tileKey.m_zoomLevel == 16 ? Density{1.25, 2, 2}
-                                                    : Density{1, kMaxLogos, 0};
   double const logoWidth = logoPx * mercatorPerPx;
 
   df::TMapShapes shapes;
-  for (auto const & cluster :
-       ClusterBrandPlaces(places, density.m_bundle * logoWidth, density.m_maxLogos, density.m_chainSpacing * logoWidth))
+  for (auto const & cluster : ClusterBrandPlaces(places, logoWidth, kMaxLogos))
   {
     std::vector<std::pair<BrandPlace const *, std::string>> logos;
     for (auto const * place : cluster.m_logos)
