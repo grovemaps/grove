@@ -32,6 +32,7 @@
     <SwitchPreferenceCompat android:key="@string/pref_3d" android:title="@string/pref_map_3d_title" app:singleLineTitle="false" android:order="3" />
     <SwitchPreferenceCompat android:key="@string/pref_auto_zoom" android:title="@string/pref_map_auto_zoom" app:singleLineTitle="false" android:order="4" />
     <SwitchPreferenceCompat android:key="@string/pref_auto_night_in_navigation" android:title="@string/pref_auto_night_in_navigation_title" app:singleLineTitle="false" android:order="5" />
+    <SwitchPreferenceCompat android:key="GroveNavigationColors" android:title="@string/pref_navigation_colors_title" android:summary="@string/pref_navigation_colors_summary" app:singleLineTitle="false" android:persistent="false" android:order="6" />
     <SwitchPreferenceCompat android:key="GroveCycleRoutes" android:title="@string/pref_prefer_cycle_routes_title" android:summary="@string/pref_prefer_cycle_routes_summary" app:singleLineTitle="false" android:persistent="false" android:order="6" />
     <PreferenceScreen android:key="@string/prefs_routing" android:title="@string/driving_options_title" android:order="7">
       <intent android:targetClass="app.organicmaps.settings.DrivingOptionsActivity" android:targetPackage="@string/app_id">

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run upstream's tools/unix/generate_drules.sh, then build the Organic Maps look (tools/grove/classic_style.sh, whose
+# Run upstream's tools/unix/generate_drules.sh, then build the Organic Maps look (tools/grove/extra_styles.sh, whose
 # colors and patterns join the ones upstream's script has just rewritten), and undo the comment-only rewrite of the
 # priority files.
 #
@@ -10,7 +10,7 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 bash tools/unix/generate_drules.sh "$@"
-tools/grove/classic_style.sh
+tools/grove/extra_styles.sh
 
 strip_comments() { sed -E 's/[[:space:]]*#.*$//'; }
 while IFS= read -r f; do

@@ -56,6 +56,14 @@ final class GroveSettings
       return true;
     });
 
+    final TwoStatePreference navigationColors = fragment.getPreference("GroveNavigationColors");
+    navigationColors.setChecked(GroveLook.nativeGetNavigationColors());
+    navigationColors.setOnPreferenceChangeListener((preference, newValue) -> {
+      GroveLook.nativeSetNavigationColors((Boolean) newValue);
+      offerRestart(fragment.requireContext());
+      return true;
+    });
+
     final ListPreference look = fragment.getPreference("GroveLook");
     look.setValue(GroveLook.nativeGet());
     look.setSummaryProvider(ListPreference.SimpleSummaryProvider.getInstance());

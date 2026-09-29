@@ -12,4 +12,9 @@ public final class GroveLook
   public static native String nativeGet();
 
   public static native void nativeSet(@NonNull String look);
+
+  // Car navigation in Grove's colors instead of Organic Maps' muted vehicle style; applied after a restart.
+  public static native boolean nativeGetNavigationColors();
+
+  public static native void nativeSetNavigationColors(boolean grove);
 }

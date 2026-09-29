@@ -7218,6 +7218,32 @@ pt = Ajuda, comentários e mais
 ru = Помощь, отзывы и другое
 uk = Допомога, відгуки й інше
 
+[pref_navigation_colors_title]
+comment = Grove: Settings «Navigation» section: switch to draw the map in Grove's colors while navigating by car
+tags = android-app
+en = Grove colors while driving
+de = Grove-Farben beim Fahren
+es = Colores de Grove al conducir
+fr = Couleurs Grove en conduisant
+it = Colori di Grove alla guida
+nl = Grove-kleuren tijdens het rijden
+pt = Cores do Grove ao conduzir
+ru = Цвета Grove во время вождения
+uk = Кольори Grove під час водіння
+
+[pref_navigation_colors_summary]
+comment = Grove: Settings «Navigation» section: explanation of the Grove colors while driving switch
+tags = android-app
+en = Off: the calmer, muted car navigation map of Organic Maps. Takes effect after a restart.
+de = Aus: die ruhigere, gedämpfte Navigationskarte von Organic Maps. Wirkt nach einem Neustart.
+es = Desactivado: el mapa de navegación más tranquilo y apagado de Organic Maps. Se aplica tras reiniciar.
+fr = Désactivé : la carte de navigation plus calme et sobre d’Organic Maps. Prend effet après un redémarrage.
+it = Disattivato: la mappa di navigazione più calma e sobria di Organic Maps. Ha effetto dopo il riavvio.
+nl = Uit: de rustigere, gedempte navigatiekaart van Organic Maps. Werkt na een herstart.
+pt = Desligado: o mapa de navegação mais calmo e sóbrio do Organic Maps. Aplica-se após reiniciar.
+ru = Выключено: более спокойная, приглушённая карта навигации Organic Maps. Вступает в силу после перезапуска.
+uk = Вимкнено: спокійніша, приглушена мапа навігації Organic Maps. Набуває чинності після перезапуску.
+
 [pref_map_look_title]
 comment = Grove: Settings «Map» section: which look the map has, Grove's or Organic Maps' own styles and icons
 tags = android-app

@@ -16,4 +16,16 @@ JNIEXPORT void Java_app_organicmaps_sdk_GroveLook_nativeSet(JNIEnv * env, jclass
 {
   settings::Set("GroveLook", jni::ToNativeString(env, look));
 }
+
+JNIEXPORT jboolean Java_app_organicmaps_sdk_GroveLook_nativeGetNavigationColors(JNIEnv *, jclass)
+{
+  bool grove = false;
+  settings::TryGet("GroveNavigationColors", grove);
+  return static_cast<jboolean>(grove);
+}
+
+JNIEXPORT void Java_app_organicmaps_sdk_GroveLook_nativeSetNavigationColors(JNIEnv *, jclass, jboolean grove)
+{
+  settings::Set("GroveNavigationColors", static_cast<bool>(grove));
+}
 }

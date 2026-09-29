@@ -37,7 +37,7 @@ std::string GetStyleRulesFamily(MapStyle mapStyle)
 }
 
 // Grove: the map's look, settings key "GroveLook", read once at start (switching needs a restart): "organicmaps" draws
-// with Organic Maps' own styles and icons, built by tools/grove/classic_style.sh; anything else is Grove's.
+// with Organic Maps' own styles and icons, built by tools/grove/extra_styles.sh; anything else is Grove's.
 bool GroveClassicLook()
 {
   static bool const classic = []
@@ -49,6 +49,19 @@ bool GroveClassicLook()
   return classic;
 }
 
+// Grove: car navigation in Grove's colors, settings key "GroveNavigationColors" (off: Organic Maps' muted vehicle
+// style), read once at start like the look.
+bool GroveNavigationColors()
+{
+  static bool const grove = []
+  {
+    bool value = false;
+    settings::TryGet("GroveNavigationColors", value);
+    return value;
+  }();
+  return grove;
+}
+
 std::string GetDrawingRulesFile(MapStyle mapStyle)
 {
 #ifdef BUILD_DESIGNER
@@ -56,7 +69,13 @@ std::string GetDrawingRulesFile(MapStyle mapStyle)
   return kDesignerRulesFile;
 #else
   std::string const family = GetStyleRulesFamily(mapStyle);
-  return "drules_" + family + (GroveClassicLook() && family != "merged" ? "_classic" : "") + ".bin";
+  if (family == "merged")
+    return "drules_merged.bin";
+  if (GroveClassicLook())
+    return "drules_" + family + "_classic.bin";
+  if (family == "vehicle" && GroveNavigationColors())
+    return "drules_vehicle_grove.bin";
+  return "drules_" + family + ".bin";
 #endif  // BUILD_DESIGNER
 }
 

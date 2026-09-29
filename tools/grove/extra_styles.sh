@@ -1,8 +1,10 @@
 #!/bin/bash
-# Build the "Organic Maps" look: Organic Maps' own styles and icons, untouched by Grove, which users can pick instead
-# of Grove's (settings key "GroveLook", libs/indexer/map_style_reader.cpp).
+# Build the drawing rules users can switch to (libs/indexer/map_style_reader.cpp):
+# - the "Organic Maps" look (settings key "GroveLook"): Organic Maps' own styles and icons, untouched by Grove;
+# - car navigation in Grove's colors (settings key "GroveNavigationColors"): data/styles/vehicle/grove-{light,dark}
+#   into data/drules_vehicle_grove.bin. Navigation keeps Organic Maps' muted vehicle style by default.
 #
-#   tools/grove/classic_style.sh     (tools/grove/generate_drules.sh runs it)
+#   tools/grove/extra_styles.sh     (tools/grove/generate_drules.sh runs it)
 #
 # Takes data/styles and data/symbols from the Organic Maps commit in tools/grove/classic_base.txt (the one Grove is
 # based on; tools/grove/sync_upstream.sh updates it), compiles the styles against Grove's current data (the type
@@ -33,9 +35,18 @@ for family in default outdoors vehicle; do
     light "$TMP/${family}_light.bin" dark "$TMP/${family}_dark.bin" > /dev/null
   rm -f "data/drules_${family}_classic.txt"
 done
-# Both looks draw the same types: the classificator must come out as Grove's.
+echo "Building car navigation in Grove's colors"
+for variant in light dark; do
+  python3 "$KOTHIC/libkomwm.py" -s "data/styles/vehicle/grove-$variant/style.mapcss" -o "$TMP/vehicle_grove_$variant" \
+    -p data/styles/vehicle/include/ -d "$WORK" > /dev/null
+done
+python3 "$KOTHIC/merge_variants.py" data/drules_vehicle_grove \
+  light "$TMP/vehicle_grove_light.bin" dark "$TMP/vehicle_grove_dark.bin" > /dev/null
+rm -f data/drules_vehicle_grove.txt
+
+# All of them draw the same types: the classificator must come out as Grove's.
 cmp -s "$WORK/classificator.txt" data/classificator.txt || { echo "classificator differs from Grove's" >&2; exit 1; }
-# The classic styles' colors and patterns, appended to Grove's.
+# Their colors and patterns, appended to Grove's.
 cp "$WORK/colors.txt" "$WORK/patterns.txt" data/
 
 rm -rf data/symbols-classic

@@ -106,7 +106,7 @@ Current upstream hooks:
 | `libs/drape_frontend/read_manager.cpp` (`GetReadingThreadsCount`) | more tile reading threads with the performance boost (`libs/platform/grove_performance.hpp`, Grove) |
 | `android/app/.../search/CategoriesAdapter.java` | search categories' circles take the map icons' category colors (`GroveCategoryIcons.java`) |
 | `android/app/src/main/res/xml/prefs_main.xml`, `SettingsPrefsFragment.java` | settings in sections: the start page shows a colored, animated card for each (map and layers, navigation, places and reviews, privacy and data, app, about), a section's page only its group headed by an animated illustration (`GroveSectionPreference.java`, `GroveSettings.showSection`, `res/drawable/grove_settings_anim_*.xml`). Every page holds all preferences, hidden but for its own, so upstream's setup code finds them; `removePreference` removes from the actual parent |
-| `libs/indexer/map_style_reader.cpp` | the map's look (`GroveLook` settings key, read at start): "organicmaps" loads `drules_*_classic.bin` and `symbols-classic/`, Organic Maps' own styles and icons, built by `tools/grove/classic_style.sh` from the commit in `tools/grove/classic_base.txt`; Android Settings → Map & layers → "Map look" offers a restart |
+| `libs/indexer/map_style_reader.cpp` | `drules_vehicle_grove.bin` with the "Grove colors while driving" switch (`GroveNavigationColors`); the map's look (`GroveLook` settings key, read at start): "organicmaps" loads `drules_*_classic.bin` and `symbols-classic/`, Organic Maps' own styles and icons, built by `tools/grove/extra_styles.sh` from the commit in `tools/grove/classic_base.txt`; Android Settings → Map & layers → "Map look" offers a restart |
 | `android/app/build.gradle` | stores `grove_brands.bin`, `grove_landcover_world.bin` and `grove_reviews.bin` uncompressed, so they are read in place |
 | `android/app/src/main/res/**`, `RoutingBottomMenuController.java` | Roboto references point to the app font (Geist, Inter for Greek), and the app themes hang under `values/grove_fonts.xml`; written by `tools/grove/android_fonts.py`, see "Fonts" |
 | `android/app/src/main/res/layout/place_page_details.xml`, `PlacePageView.java` | a container for the Mangrove reviews section and the one line that shows it (`GroveReviewsFragment`) |
@@ -132,7 +132,7 @@ It also writes an `<icon>-dot` symbol for every recolored icon: a small circle o
 
 The script needs Qt 6 to build `skin_generator_tool` (`QT_PATH` in `/Volumes/grove/tools/env.sh`). It uses `optipng` or `oxipng` for lossless compression. With unmodified SVGs, this toolchain reproduces upstream's committed atlases pixel for pixel.
 
-The vehicle style, which car navigation uses, imports the Grove palette, the label colors by category and the borders too, so driving shows the same map; its own declutter rules stay, since it is already sparse. The icon atlases are shared by all styles.
+Car navigation keeps Organic Maps' calmer, muted vehicle style by default (`drules_vehicle.bin` is upstream's, byte for byte). The "Grove colors while driving" switch (Settings → Navigation, `GroveNavigationColors` settings key, after a restart) loads `drules_vehicle_grove.bin` instead, built by `tools/grove/extra_styles.sh` from `data/styles/vehicle/grove-{light,dark}`: the vehicle style with the Grove palette, the label colors by category and the borders. The icon atlases are shared by all styles.
 
 ### Syncing with a newer Organic Maps
 
