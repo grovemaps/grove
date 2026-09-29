@@ -9,6 +9,8 @@
 
 #include "indexer/ftypes_matcher.hpp"
 
+#include "platform/grove_features.hpp"
+
 namespace routing
 {
 using namespace ftypes;
@@ -89,7 +91,8 @@ void DirectionsEngine::LoadPathAttributes(FeatureID const & featureId, LoadedPat
   pathSegment.m_roadNameInfo.m_ref = ft->GetRef();
   pathSegment.m_roadNameInfo.m_name = ft->GetDefaultName();
   // Grove: for "turn right onto the bike path", see routing/grove_way_kind.hpp.
-  pathSegment.m_roadNameInfo.m_groveWayKind = grove::GetWayKind(types);
+  if (grove::IsOn(grove::Feature::WayKinds))
+    pathSegment.m_roadNameInfo.m_groveWayKind = grove::GetWayKind(types);
 }
 
 void DirectionsEngine::GetSegmentRangeAndAdjacentEdges(IRoadGraph::EdgeListT const & outgoingEdges, Edge const & inEdge,

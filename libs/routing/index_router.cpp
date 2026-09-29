@@ -36,6 +36,7 @@
 #include "indexer/feature_data.hpp"
 #include "indexer/scales.hpp"
 
+#include "platform/grove_features.hpp"
 #include "platform/settings.hpp"
 
 #include "geometry/distance_on_sphere.hpp"
@@ -147,16 +148,27 @@ std::shared_ptr<VehicleModelFactoryInterface> CreateVehicleModelFactory(
 std::unique_ptr<DirectionsEngine> CreateDirectionsEngine(VehicleType vehicleType, std::shared_ptr<NumMwmIds> numMwmIds,
                                                          MwmDataSource & dataSource)
 {
-  switch (vehicleType)
-  {
   // Grove: turns without jogs (bike paths along roads, squares and crossings, road wiggles), see
   // routing/grove_turns.hpp.
-  case VehicleType::Pedestrian: return std::make_unique<grove::PedestrianDirectionsEngine>(dataSource, numMwmIds);
+  if (grove::IsOn(grove::Feature::MergeJogs))
+  {
+    switch (vehicleType)
+    {
+    case VehicleType::Pedestrian: return std::make_unique<grove::PedestrianDirectionsEngine>(dataSource, numMwmIds);
+    case VehicleType::Bicycle:
+      return std::make_unique<grove::CarDirectionsEngine>(dataSource, numMwmIds, grove::JogMode::Bicycle);
+    case VehicleType::Car:
+      return std::make_unique<grove::CarDirectionsEngine>(dataSource, numMwmIds, grove::JogMode::Car);
+    default: break;
+    }
+  }
+
+  switch (vehicleType)
+  {
+  case VehicleType::Pedestrian:
   case VehicleType::Transit: return std::make_unique<PedestrianDirectionsEngine>(dataSource, numMwmIds);
   case VehicleType::Bicycle:
-    return std::make_unique<grove::CarDirectionsEngine>(dataSource, numMwmIds, grove::JogMode::Bicycle);
-  case VehicleType::Car:
-    return std::make_unique<grove::CarDirectionsEngine>(dataSource, numMwmIds, grove::JogMode::Car);
+  case VehicleType::Car: return std::make_unique<CarDirectionsEngine>(dataSource, numMwmIds);
   case VehicleType::Count: CHECK(false, ("Can't create DirectionsEngine for", vehicleType)); return nullptr;
   }
   UNREACHABLE();

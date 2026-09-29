@@ -51,6 +51,7 @@
 #include "indexer/scales.hpp"
 #include "indexer/transliteration_loader.hpp"
 
+#include "platform/grove_features.hpp"
 #include "platform/localization.hpp"
 #include "platform/measurement_utils.hpp"
 #include "platform/platform.hpp"
@@ -1742,7 +1743,8 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
 {
   auto idReadFn = [this](auto const & fn, m2::RectD const & r, int scale)
   {
-    if (grove::ExtraIndexScale(scale) >= 0)
+    // Grove: the maps' forests and fields from zoom 11, see map/grove_landcover_reading.hpp.
+    if (grove::IsOn(grove::Feature::Landuse11) && grove::ExtraIndexScale(scale) >= 0)
       grove::ForEachFeatureIDWithExtraIndex(m_featuresFetcher, r, fn, scale);
     else
       m_featuresFetcher.ForEachFeatureID(r, fn, scale);
@@ -1783,17 +1785,20 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
   if (bgTilesActive && !m_rasterTileProvider)
     CreateBackgroundTilesProvider(bgTilesUrl, GetBackgroundTilesCacheSize());
 
-  // Grove: shaded relief, see map/grove_relief.hpp.
-  if (!m_groveRelief)
+  // Grove: shaded relief, see map/grove_relief.hpp. Its switch works at once, so the provider is there unless Grove is
+  // stock; the same for the ones below.
+  if (!grove::IsStock() && !m_groveRelief)
     m_groveRelief = grove::CreateReliefProvider([this] { return make_ref(m_drapeEngine); });
   // Grove: two-finger tap distance, see map/grove_measure.hpp.
-  grove::InitMeasure();
+  if (!grove::IsStock())
+    grove::InitMeasure();
   // Grove: land cover when zoomed out, see map/grove_landcover.hpp.
-  grove::landcover::CreateProvider([this] { return make_ref(m_drapeEngine); },
-                                   [this] { return MapStyleIsDark(GetMapStyle()); });
+  if (!grove::IsStock())
+    grove::landcover::CreateProvider([this] { return make_ref(m_drapeEngine); },
+                                     [this] { return MapStyleIsDark(GetMapStyle()); });
 
   // Grove: relief and land cover saved for the downloaded maps, see map/grove_offline_layers.hpp.
-  if (!m_groveOfflineLayers)
+  if (grove::IsOn(grove::Feature::OfflineLayers) && !m_groveOfflineLayers)
   {
     m_groveOfflineLayers =
         std::make_unique<grove::OfflineLayers>(base::JoinPath(GetPlatform().WritableDir(), "grove_offline"));
@@ -1804,8 +1809,8 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
         m_groveOfflineLayers->Add(info->GetCountryName(), info->GetVersion(), info->m_bordersRect);
   }
 
-  // Grove: chains' logos from zoom 15, see map/grove_brand_places.hpp.
-  if (!m_groveBrandPlaces)
+  // Grove: chains' logos, see map/grove_brand_places.hpp.
+  if (grove::IsOn(grove::Feature::Logos) && !m_groveBrandPlaces)
   {
     grove::BrandsShown() = grove::AreBrandsShown();
     m_groveBrandPlaces = std::make_unique<grove::BrandPlaces>(
@@ -3153,9 +3158,14 @@ void Framework::SaveTransitSchemeEnabled(bool enabled)
 bool Framework::LoadIsolinesEnabled()
 {
   // Grove: contour lines are on until switched off, as in Guru Maps. The maps have them only where terrain is.
-  bool enabled = true;
-  settings::TryGet(kIsolinesEnabledKey, enabled);
-  return enabled;
+  if (grove::IsOn(grove::Feature::Contours))
+  {
+    bool enabled = true;
+    settings::TryGet(kIsolinesEnabledKey, enabled);
+    return enabled;
+  }
+  bool enabled;
+  return settings::Get(kIsolinesEnabledKey, enabled) && enabled;
 }
 
 void Framework::SaveIsolinesEnabled(bool enabled)

@@ -5,6 +5,7 @@
 #include "drape/grove_text_style.hpp"
 #include "drape/harfbuzz_shaping.hpp"
 
+#include "platform/grove_features.hpp"
 #include "platform/platform.hpp"
 #include "platform/preferred_languages.hpp"
 
@@ -673,6 +674,8 @@ struct GlyphManager::Impl
   TUniBlocks m_blocks;
   TUniBlockIter m_lastUsedBlock;
   std::vector<std::unique_ptr<Font>> m_fonts;
+  // Grove: label typography (grove::Feature::Typography), see grove_text_style.hpp.
+  bool const m_groveTypography = grove::IsOn(grove::Feature::Typography);
   grove::FontVariants m_groveFonts;
 
   TextMetricsCache m_textMetricsCache;
@@ -730,7 +733,8 @@ GlyphManager::GlyphManager(Params const & params) : m_impl(std::make_unique<Impl
       m_impl->m_fonts.emplace_back(
           std::make_unique<Font>(GetPlatform().GetReader(fontName), m_impl->m_library, faceIndex));
       // Grove: semibold and italic twins serve no unicode block, see grove_text_style.hpp.
-      if (!m_impl->m_groveFonts.OnFontLoaded(fontName, static_cast<int>(m_impl->m_fonts.size()) - 1))
+      if (!m_impl->m_groveTypography ||
+          !m_impl->m_groveFonts.OnFontLoaded(fontName, static_cast<int>(m_impl->m_fonts.size()) - 1))
         m_impl->m_fonts.back()->GetCharcodes(charCodes);
     }
     catch (RootException const & e)
@@ -906,7 +910,7 @@ text::TextMetrics GlyphManager::ShapeText(std::string_view utf8, int8_t lang)
     return *cached;
 
   // Grove: typography marker in front of the text, see grove_text_style.hpp.
-  uint8_t const groveStyle = grove::TakeTextStyle(utf8);
+  uint8_t const groveStyle = m_impl->m_groveTypography ? grove::TakeTextStyle(utf8) : 0;
 
   auto const [text, segments] = harfbuzz_shaping::GetTextSegments(utf8);
 
@@ -945,7 +949,9 @@ text::TextMetrics GlyphManager::ShapeText(std::string_view utf8, int8_t lang)
 
       // GetFontIndex's MRU block cache (m_lastUsedBlock) handles the common case where
       // adjacent characters share a unicode block, so this per-character call is cheap.
-      int const fontIndex = m_impl->m_groveFonts.Pick(GetFontIndex(u32Character), u32Character, groveStyle);
+      int const fontIndex = m_impl->m_groveTypography
+                              ? m_impl->m_groveFonts.Pick(GetFontIndex(u32Character), u32Character, groveStyle)
+                              : GetFontIndex(u32Character);
       if (fontIndex < 0)
       {
         if (m_impl->m_loggedMissingChars.insert(u32Character).second)
@@ -1005,7 +1011,8 @@ text::TextMetrics GlyphManager::ShapeText(std::string_view utf8, int8_t lang)
   if (allGlyphs.m_glyphs.empty())
     LOG(LWARNING, ("No glyphs were found in all fonts for string with characters in warnings above" /*, utf8*/));
 
-  grove::ApplyTracking(groveStyle, allGlyphs);
+  if (m_impl->m_groveTypography)
+    grove::ApplyTracking(groveStyle, allGlyphs);
   return m_impl->m_textMetricsCache.Insert(TextMetricsCacheKey{std::string(cacheKey.m_utf8), lang},
                                            std::move(allGlyphs));
 }

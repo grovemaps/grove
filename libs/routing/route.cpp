@@ -5,6 +5,7 @@
 
 #include "geometry/mercator.hpp"
 
+#include "platform/grove_features.hpp"
 #include "platform/location.hpp"
 
 #include "geometry/angles.hpp"
@@ -492,7 +493,8 @@ void Route::GetClosestStreetNameAfterIdx(size_t segIdx, RouteSegment::RoadNameIn
         roadNameInfo = r;
       break;
     }
-    else if (r.m_groveWayKind != grove::WayKind::None && !roadNameInfo.HasExitInfo())
+    else if (grove::IsOn(grove::Feature::WayKinds) && r.m_groveWayKind != grove::WayKind::None &&
+             !roadNameInfo.HasExitInfo())
     {
       // Grove: a bike path or path without a name is where the turn leads, not the street it joins further on.
       roadNameInfo = r;
@@ -517,7 +519,7 @@ void Route::GetClosestStreetNameAfterIdx(size_t segIdx, RouteSegment::RoadNameIn
   }
 
   // Grove: the kind of way only where it changes, "onto the bike path" off a road, not at every turn along bike paths.
-  if (segIdx > 0 && segIdx <= m_routeSegments.size() &&
+  if (grove::IsOn(grove::Feature::WayKinds) && segIdx > 0 && segIdx <= m_routeSegments.size() &&
       grove::IsSameWayKind(m_routeSegments[segIdx - 1].GetRoadNameInfo().m_groveWayKind, roadNameInfo.m_groveWayKind))
     roadNameInfo.m_groveWayKind = grove::WayKind::None;
 

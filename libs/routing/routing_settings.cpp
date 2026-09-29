@@ -2,6 +2,8 @@
 
 #include "routing/routing_helpers.hpp"
 
+#include "platform/grove_features.hpp"
+
 #include "base/assert.hpp"
 
 namespace routing
@@ -36,7 +38,7 @@ RoutingSettings GetRoutingSettings(VehicleType vehicleType)
             .m_minIngoingDistMeters = 4.0};
   case VehicleType::Bicycle:
     // Grove: a rebuilt route starts the way the rider goes, instead of sending them back each time.
-    return {.m_useDirectionForRouteBuilding = true,
+    return {.m_useDirectionForRouteBuilding = grove::IsOn(grove::Feature::BikeHeading),
             .m_matchRoute = true,
             .m_soundDirection = true,
             .m_matchingThresholdM = 30.0,

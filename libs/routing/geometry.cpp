@@ -8,6 +8,8 @@
 #include "indexer/feature.hpp"
 #include "indexer/feature_source.hpp"
 
+#include "platform/grove_features.hpp"
+
 #include "geometry/distance_on_sphere.hpp"
 #include "geometry/mercator.hpp"
 
@@ -199,7 +201,8 @@ void RoadGeometry::Load(VehicleModelInterface const & vehicleModel, FeatureType 
       m_condition = maxspeed.GetConditionalTime();
     }
   }
-  grove::ApplyCycleRoutes(vehicleModel, feature, m_forwardS, m_backwardS);  // Grove
+  if (grove::IsOn(grove::Feature::PreferCycleRoutes))  // Grove: see grove_cycle_routes.hpp.
+    grove::ApplyCycleRoutes(vehicleModel, feature, m_forwardS, m_backwardS);
 
   auto const & optionsClassfier = RoutingOptionsClassifier::Instance();
   for (uint32_t type : types)

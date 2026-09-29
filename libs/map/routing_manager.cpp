@@ -25,6 +25,7 @@
 #include "platform/country_file.hpp"
 #include "platform/distance.hpp"
 #include "platform/duration.hpp"
+#include "platform/grove_features.hpp"
 #include "platform/platform.hpp"
 
 #include "geometry/algorithm.hpp"
@@ -1441,7 +1442,7 @@ kml::TrackId RoutingManager::SaveRoute()
 
   // Grove: keep the stops and the router, so the trip can be navigated again (GroveTripOfTrack).
   kml::Properties properties;
-  if (auto const points = GetRoutePointsToSave(); points.size() >= 2)
+  if (auto const points = GetRoutePointsToSave(); grove::IsOn(grove::Feature::SavedTrips) && points.size() >= 2)
   {
     properties[std::string(kGroveTripPoints)] = SerializeRoutePoints(points);
     properties[std::string(kGroveTripRouter)] = strings::to_string(static_cast<int>(GetRouter()));

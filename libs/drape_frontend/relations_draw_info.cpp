@@ -2,6 +2,8 @@
 
 #include "drape_frontend/grove_cycle_routes.hpp"
 
+#include "platform/grove_features.hpp"
+
 #include "indexer/feature.hpp"
 #include "indexer/map_style_reader.hpp"
 
@@ -33,7 +35,8 @@ bool RelationsDrawInfo::HasHikingOrCycling(FeatureType & ft) const
       continue;
     // Grove: roads of cycle routes not drawn at this zoom keep the map style's visibility.
     using RR = feature::RouteRelationBase;
-    if ((rel.GetType() != RR::Type::Bicycle && rel.GetType() != RR::Type::MTB) ||
+    if (!grove::IsOn(grove::Feature::CycleRouteLines) ||
+        (rel.GetType() != RR::Type::Bicycle && rel.GetType() != RR::Type::MTB) ||
         grove::CycleRouteColor(grove::CycleRouteLevel(rel.GetRel()), m_sett.zoom))
       return true;
   }
@@ -52,7 +55,8 @@ void RelationsDrawInfo::Init(FeatureType & ft)
   for (uint32_t relID : ft.GetRelations())
   {
     auto rel = ft.ReadRelation(relID);
-    if (m_sett.cycling && (rel.GetType() == RR::Type::Bicycle || rel.GetType() == RR::Type::MTB))
+    if (grove::IsOn(grove::Feature::CycleRouteLines) && m_sett.cycling &&
+        (rel.GetType() == RR::Type::Bicycle || rel.GetType() == RR::Type::MTB))
     {
       int const level = grove::CycleRouteLevel(rel.GetRel());
       if (groveCycleLevel < 0 || level < groveCycleLevel)

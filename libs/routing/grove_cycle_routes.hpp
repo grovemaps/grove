@@ -10,7 +10,7 @@ namespace grove
 // local routes): they are usually quieter and nicer than the roads around them. Such a road's weight speed is
 // raised a little, so a route takes a short detour to use it and a far longer one never; its ETA speed is unchanged.
 // Stronger factors (1.3) sent a ride across Amsterdam 48% further round the city's regional routes. Mountain bike
-// trails get nothing. The settings switch is "GroveCycleRoutes", on by default, and applies from the next route.
+// trails get nothing. The switch is Feature::PreferCycleRoutes, on by default, and applies from the next route.
 bool PreferCycleRoutes();
 void SetPreferCycleRoutes(bool prefer);
 

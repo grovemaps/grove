@@ -71,7 +71,7 @@ void CreateProvider(std::function<ref_ptr<df::DrapeEngine>()> getEngine, std::fu
 // offline there (map/grove_offline_layers.hpp). Blocks; false on network errors.
 bool Prefetch(m2::RectD const & mercatorRect);
 
-// The settings switch (key "GroveLandcover", on by default). Takes effect at once.
+// The switch, Feature::Landcover (on by default). Takes effect at once.
 bool IsEnabled();
 void SetEnabled(ref_ptr<df::DrapeEngine> engine, bool enabled);
 }  // namespace grove::landcover

@@ -24,7 +24,7 @@ std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<d
 std::string_view constexpr kReliefOfflineSubdir = "grove_relief_offline";
 std::string_view constexpr kTerrariumTiles = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/";
 
-// The settings switch (key "GroveRelief", on by default). Takes effect at once.
+// The switch, Feature::Relief (on by default). Takes effect at once.
 bool IsReliefEnabled();
 void SetReliefEnabled(ref_ptr<df::DrapeEngine> engine, bool enabled);
 

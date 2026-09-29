@@ -1,7 +1,7 @@
 #include "map_style_reader.hpp"
 
+#include "platform/grove_features.hpp"
 #include "platform/platform.hpp"
-#include "platform/settings.hpp"
 
 #include "base/file_name_utils.hpp"
 #include "base/logging.hpp"
@@ -36,44 +36,20 @@ std::string GetStyleRulesFamily(MapStyle mapStyle)
   return "default";
 }
 
-// Grove: the map's look, settings key "GroveLook", read once at start (switching needs a restart): "organicmaps" draws
-// with Organic Maps' own styles and icons, built by tools/grove/extra_styles.sh; anything else is Grove's.
-bool GroveClassicLook()
-{
-  static bool const classic = []
-  {
-    std::string look;
-    settings::TryGet("GroveLook", look);
-    return look == "organicmaps";
-  }();
-  return classic;
-}
-
-// Grove: car navigation in Grove's colors, settings key "GroveNavigationColors" (off: Organic Maps' muted vehicle
-// style), read once at start like the look.
-bool GroveNavigationColors()
-{
-  static bool const grove = []
-  {
-    bool value = false;
-    settings::TryGet("GroveNavigationColors", value);
-    return value;
-  }();
-  return grove;
-}
-
 std::string GetDrawingRulesFile(MapStyle mapStyle)
 {
 #ifdef BUILD_DESIGNER
   (void)mapStyle;
   return kDesignerRulesFile;
 #else
+  // Grove: Organic Maps' own styles without Grove's look (drules_*_classic.bin, built by tools/grove/extra_styles.sh),
+  // Grove's colours while driving with its switch.
   std::string const family = GetStyleRulesFamily(mapStyle);
   if (family == "merged")
     return "drules_merged.bin";
-  if (GroveClassicLook())
+  if (!grove::IsOn(grove::Feature::Look))
     return "drules_" + family + "_classic.bin";
-  if (family == "vehicle" && GroveNavigationColors())
+  if (family == "vehicle" && grove::IsOn(grove::Feature::NavigationColors))
     return "drules_vehicle_grove.bin";
   return "drules_" + family + ".bin";
 #endif  // BUILD_DESIGNER
@@ -165,7 +141,7 @@ size_t StyleReader::GetDrawingRulesVariant(MapStyle mapStyle) const
 ReaderPtr<Reader> StyleReader::GetResourceReader(std::string const & file, std::string_view density) const
 {
   // Grove: Organic Maps' own icon atlas with its look; the other textures (traffic arrows...) are shared.
-  bool const classicIcons = GroveClassicLook() && file.starts_with("symbols.");
+  bool const classicIcons = !grove::IsOn(grove::Feature::Look) && file.starts_with("symbols.");
   std::string resFile = base::JoinPath(classicIcons ? "symbols-classic" : "symbols", std::string{density},
                                        GetStyleResourcesSuffix(GetCurrentStyle()), file);
 

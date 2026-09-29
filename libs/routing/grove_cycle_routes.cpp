@@ -5,38 +5,20 @@
 #include "indexer/feature.hpp"
 #include "indexer/route_relation.hpp"
 
-#include "platform/settings.hpp"
+#include "platform/grove_features.hpp"
 
 #include <algorithm>
-#include <atomic>
 
 namespace grove
 {
-namespace
-{
-std::string_view constexpr kSettingsKey = "GroveCycleRoutes";
-
-std::atomic<bool> & Prefer()
-{
-  static std::atomic<bool> prefer = []
-  {
-    bool value = true;
-    settings::TryGet(kSettingsKey, value);
-    return value;
-  }();
-  return prefer;
-}
-}  // namespace
-
 bool PreferCycleRoutes()
 {
-  return Prefer();
+  return IsOn(Feature::PreferCycleRoutes);
 }
 
 void SetPreferCycleRoutes(bool prefer)
 {
-  settings::Set(kSettingsKey, prefer);
-  Prefer() = prefer;
+  SetSwitch(Feature::PreferCycleRoutes, prefer);
 }
 
 double CycleRouteFactor(std::string_view network)

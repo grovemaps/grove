@@ -4,10 +4,10 @@
 
 #include "drape_frontend/grove_raster_layers.hpp"
 
+#include "platform/grove_features.hpp"
 #include "platform/grove_performance.hpp"
 #include "platform/http_client.hpp"
 #include "platform/platform.hpp"
-#include "platform/settings.hpp"
 
 #include "coding/file_reader.hpp"
 #include "coding/file_writer.hpp"
@@ -39,7 +39,6 @@ namespace grove::landcover
 {
 namespace
 {
-std::string_view constexpr kEnabledKey = "GroveLandcover";
 std::string_view constexpr kUrl = "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/";
 
 // From this zoom tiles come from WorldCover's files online (about 16 files for a zoom 6 tile); further out a tile would
@@ -745,14 +744,12 @@ bool Prefetch(m2::RectD const & mercatorRect)
 
 bool IsEnabled()
 {
-  bool enabled = true;
-  settings::TryGet(kEnabledKey, enabled);
-  return enabled;
+  return IsOn(Feature::Landcover);
 }
 
 void SetEnabled(ref_ptr<df::DrapeEngine> engine, bool enabled)
 {
-  settings::Set(kEnabledKey, enabled);
+  SetSwitch(Feature::Landcover, enabled);
   RasterLayerEnabled(dp::BackgroundMode::Landcover) = enabled;
   // Re-reads the visible tiles, which also updates the layer's viewport (requests or drops its tiles).
   if (engine)

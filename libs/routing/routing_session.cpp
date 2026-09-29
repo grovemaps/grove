@@ -1,6 +1,7 @@
 #include "routing/routing_session.hpp"
 
 #include "platform/distance.hpp"
+#include "platform/grove_features.hpp"
 #include "platform/location.hpp"
 #include "platform/measurement_utils.hpp"
 #include "platform/platform.hpp"
@@ -503,6 +504,11 @@ void RoutingSession::GenerateNotifications(std::vector<std::string> & notificati
   {
     m_routingRebuildAnnounceCount = m_routingRebuildCount;
     // Grove: once a minute at most; riding a different way than the route rebuilds it every few seconds.
+    if (!grove::IsOn(grove::Feature::QuietRecalculating))
+    {
+      notifications.emplace_back(m_turnNotificationsMgr.GenerateRecalculatingText());
+      return;
+    }
     auto const now = std::chrono::steady_clock::now();
     if (now - m_groveRecalculatingSaid >= std::chrono::minutes(1) ||
         m_groveRecalculatingSaid == std::chrono::steady_clock::time_point{})
@@ -525,14 +531,17 @@ void RoutingSession::GenerateNotifications(std::vector<std::string> & notificati
   if (m_route->GetNextTurns(turns))
   {
     RouteSegment::RoadNameInfo nextStreetInfo;
-    m_route->GetNextTurnStreetName(nextStreetInfo);
-    // Names only if TtsStreetNames is enabled. Grove: the kind of way ("the bike path") always, as it comes from the
-    // voice's own phrases, which the voice pronounces well.
-    if (!announceStreets)
+
+    // only populate nextStreetInfo if TtsStreetNames is enabled
+    if (announceStreets)
+      m_route->GetNextTurnStreetName(nextStreetInfo);
+    // Grove: the kind of way ("the bike path") always, as it comes from the voice's own phrases, which the voice
+    // pronounces well.
+    else if (grove::IsOn(grove::Feature::WayKinds))
     {
-      auto const kind = nextStreetInfo.m_groveWayKind;
-      nextStreetInfo = {};
-      nextStreetInfo.m_groveWayKind = kind;
+      RouteSegment::RoadNameInfo next;
+      m_route->GetNextTurnStreetName(next);
+      nextStreetInfo.m_groveWayKind = next.m_groveWayKind;
     }
 
     m_turnNotificationsMgr.GenerateTurnNotifications(turns, notifications, nextStreetInfo);

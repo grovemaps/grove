@@ -14,12 +14,15 @@ layout (binding = 0) uniform UBO
   float u_zScale;
   float u_interpolation;
   float u_isOutlinePass;
+  float u_groveLighting;  // Grove: grove::Feature::Buildings3d.
+  float u_groveAlpha;     // Grove: grove::Feature::SeeThroughBuildings.
 };
 
-// Grove: sun from the upper left of the screen, as in shaded relief maps.
-const vec4 kNormalizedLightDir = vec4(0.4472, -0.4472, 0.7746, 0.0);
-// Grove: walls darken toward the ground, so buildings read as standing on it.
-const float kGroundShade = 0.8;
+const vec4 kNormalizedLightDir = vec4(0.3162, 0.0, 0.9486, 0.0);
+// Grove: sun from the upper left of the screen, as in shaded relief maps; walls darken toward the ground, so buildings
+// read as standing on it.
+const vec4 kGroveLightDir = vec4(0.4472, -0.4472, 0.7746, 0.0);
+const float kGroveGroundShade = 0.8;
 
 void main()
 {
@@ -34,10 +37,16 @@ void main()
     v_intensity = max(0.0, -dot(kNormalizedLightDir, normalize(normDir)));
   else
     v_intensity = 0.0;
-  // Grove: brightness from ambient and sun light; roofs ~1.0, sunlit walls ~0.95, walls in shade 0.72.
-  v_intensity = 0.72 + 0.36 * v_intensity;
-  if (a_position.z == 0.0)
-    v_intensity *= kGroundShade;
+  if (u_groveLighting > 0.5)
+  {
+    // Grove: brightness from ambient and sun light, roofs ~1.0, sunlit walls ~0.95, walls in shade 0.72; given as the
+    // intensity the fragment shader turns into it (0.8 + 0.2 * intensity).
+    float light = dot(normDir, normDir) != 0.0 ? max(0.0, -dot(kGroveLightDir, normalize(normDir))) : 0.0;
+    float brightness = 0.72 + 0.36 * light;
+    if (a_position.z == 0.0)
+      brightness *= kGroveGroundShade;
+    v_intensity = (brightness - 0.8) / 0.2;
+  }
   gl_Position = u_pivotTransform * pos;
 #ifdef VULKAN
   gl_Position.y = -gl_Position.y;

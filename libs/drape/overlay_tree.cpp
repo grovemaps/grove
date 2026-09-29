@@ -4,6 +4,8 @@
 #include "drape/debug_renderer.hpp"
 #include "drape/grove_brand_texture.hpp"
 
+#include "platform/grove_features.hpp"
+
 #include "geometry/mercator.hpp"
 
 #include <algorithm>
@@ -255,7 +257,7 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, int currentRank,
     handleToCompare = parentOverlay;
 
   // Grove: chains' logos never hide each other, see grove_brand_texture.hpp.
-  if (handleToCompare->GetPriority() == grove::kBrandPriority)
+  if (grove::IsOn(grove::Feature::Logos) && handleToCompare->GetPriority() == grove::kBrandPriority)
     rivals.erase_if([](ref_ptr<OverlayHandle> const & h) { return h->GetPriority() == grove::kBrandPriority; });
 
   bool const selected =

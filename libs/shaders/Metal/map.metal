@@ -13,6 +13,8 @@ typedef struct
   float u_zScale;
   float u_interpolation;
   float u_isOutlinePass;
+  float u_groveLighting;  // Grove: grove::Feature::Buildings3d.
+  float u_groveAlpha;     // Grove: grove::Feature::SeeThroughBuildings.
 } Uniforms_T;
 
 // Area/AreaOutline
@@ -69,9 +71,10 @@ vertex Area3dFragment_T vsArea3d(const Area3dVertex_T in [[stage_in]],
                                  texture2d<half> u_colorTex [[texture(0)]],
                                  sampler u_colorTexSampler [[sampler(0)]])
 {
+  constexpr float4 kNormalizedLightDir = float4(0.3162, 0.0, 0.9486, 0.0);
   // Grove: sun from the upper left of the screen; walls darken toward the ground. Same as area3d.vsh.glsl.
-  constexpr float4 kNormalizedLightDir = float4(0.4472, -0.4472, 0.7746, 0.0);
-  constexpr float kGroundShade = 0.8;
+  constexpr float4 kGroveLightDir = float4(0.4472, -0.4472, 0.7746, 0.0);
+  constexpr float kGroveGroundShade = 0.8;
   
   Area3dFragment_T out;
 
@@ -89,15 +92,24 @@ vertex Area3dFragment_T vsArea3d(const Area3dVertex_T in [[stage_in]],
     out.intensity = max(0.0, -dot(kNormalizedLightDir, normalize(normDir)));
   else
     out.intensity = 0.0;
-  out.intensity = 0.72 + 0.36 * out.intensity;
-  if (in.a_position.z == 0.0)
-    out.intensity *= kGroundShade;
+  if (uniforms.u_groveLighting > 0.5)
+  {
+    // Grove: brightness given as the intensity fsArea3d turns into it, as in area3d.vsh.glsl.
+    float light = dot(normDir, normDir) != 0.0 ? max(0.0, -dot(kGroveLightDir, normalize(normDir))) : 0.0;
+    float brightness = 0.72 + 0.36 * light;
+    if (in.a_position.z == 0.0)
+      brightness *= kGroveGroundShade;
+    out.intensity = (brightness - 0.8) / 0.2;
+  }
   
   out.position = uniforms.u_pivotTransform * pos;
   
   half4 color = u_colorTex.sample(u_colorTexSampler, in.a_texCoords);
+  half const groveAlpha = color.a;
+  color.a = (half)uniforms.u_opacity;
   // Grove: the colour's alpha too, which buildings with places inside lower. Same as texturing3d.fsh.glsl.
-  color.a *= (half)uniforms.u_opacity;
+  if (uniforms.u_groveAlpha > 0.5)
+    color.a *= groveAlpha;
   out.color = color;
   
   return out;
@@ -105,7 +117,7 @@ vertex Area3dFragment_T vsArea3d(const Area3dVertex_T in [[stage_in]],
 
 fragment half4 fsArea3d(const Area3dFragment_T in [[stage_in]])
 {
-  return half4(in.color.rgb * in.intensity, in.color.a);
+  return half4(in.color.rgb * (in.intensity * 0.2 + 0.8), in.color.a);
 }
 
 // Area3dOutline

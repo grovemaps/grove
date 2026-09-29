@@ -13,6 +13,7 @@
 
 #include "geometry/mercator.hpp"
 
+#include "platform/grove_features.hpp"
 #include "platform/platform.hpp"
 
 #include "base/macros.hpp"
@@ -1087,10 +1088,15 @@ void UserEventStream::BeginScale(Touch const & t1, Touch const & t2)
   m2::PointD touch1(t1.m_location);
   m2::PointD touch2(t2.m_location);
 
-  // Grove: the gesture is decided once the fingers have moved, see grove_gestures.hpp.
-  m_groveGesture = grove::TwoFingerGesture::Undecided;
-  m_groveGestureStart = {touch1, touch2};
-  m_groveStartTilt = m_navigator.Screen().isPerspective() ? m_navigator.Screen().GetRotationAngle() : 0;
+  // Grove: the gesture is decided once the fingers have moved, see grove_gestures.hpp. Without the tilt gesture
+  // every two-finger move scales, as upstream.
+  m_groveGesture = grove::TwoFingerGesture::Scale;
+  if (grove::IsOn(grove::Feature::TiltGesture))
+  {
+    m_groveGesture = grove::TwoFingerGesture::Undecided;
+    m_groveGestureStart = {touch1, touch2};
+    m_groveStartTilt = m_navigator.Screen().isPerspective() ? m_navigator.Screen().GetRotationAngle() : 0;
+  }
 
   if (m_listener)
   {

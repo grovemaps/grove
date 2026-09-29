@@ -6,6 +6,8 @@
 
 #include "indexer/road_shields_parser.hpp"
 
+#include "platform/grove_features.hpp"
+
 #include "base/assert.hpp"
 #include "base/string_utils.hpp"
 
@@ -146,7 +148,8 @@ std::string GetTtsText::GetTurnNotification(Notification const & notification) c
   std::string dirStr = GetTextByIdTrimmed(dirKey);
 
   if (notification.m_distanceUnits == 0 && !notification.m_useThenInsteadOfDistance &&
-      notification.m_nextStreetInfo.empty() && notification.m_nextStreetInfo.m_groveWayKind == grove::WayKind::None)
+      notification.m_nextStreetInfo.empty() &&
+      (!grove::IsOn(grove::Feature::WayKinds) || notification.m_nextStreetInfo.m_groveWayKind == grove::WayKind::None))
     return dirStr;
 
   if (notification.IsPedestrianNotification())
@@ -181,7 +184,7 @@ std::string GetTtsText::GetTurnNotification(Notification const & notification) c
   FormatFullRoadName(nsi, streetOut);
 
   // Grove: without a name, the kind of way, "the bike path", where the language has the phrase.
-  if (streetOut.empty())
+  if (grove::IsOn(grove::Feature::WayKinds) && streetOut.empty())
   {
     auto const kindId = grove::WayKindTextId(nsi.m_groveWayKind, notification.IsPedestrianNotification());
     if (!kindId.empty())

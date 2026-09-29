@@ -78,7 +78,7 @@ PlaceReviews FindBundled(Subject const & place);
 // Asks Mangrove for the place's reviews; blocks until it answers. Nothing on network errors.
 std::optional<PlaceReviews> Fetch(Subject const & place);
 
-// The settings switch (key "GroveReviews", on by default).
+// The switch, Feature::Reviews (on by default).
 bool IsEnabled();
 void SetEnabled(bool enabled);
 }  // namespace grove::reviews

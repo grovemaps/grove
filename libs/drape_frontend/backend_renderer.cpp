@@ -25,6 +25,7 @@
 
 #include "shaders/program_params.hpp"
 
+#include "platform/grove_features.hpp"
 #include "platform/platform.hpp"
 
 #include "base/file_name_utils.hpp"
@@ -870,7 +871,9 @@ void BackendRenderer::InitContextDependentResources()
   params.m_patterns = "patterns.txt";
 #endif  // BUILD_DESIGNER
   params.m_glyphMngParams.m_uniBlocks = base::JoinPath("fonts", "unicode_blocks.txt");
-  params.m_glyphMngParams.m_whitelist = base::JoinPath("fonts", "whitelist.txt");
+  // Grove: Inter for Latin, Greek and Cyrillic (grove::Feature::Typography).
+  params.m_glyphMngParams.m_whitelist =
+      base::JoinPath("fonts", grove::IsOn(grove::Feature::Typography) ? "grove_whitelist.txt" : "whitelist.txt");
   params.m_glyphMngParams.m_blacklist = base::JoinPath("fonts", "blacklist.txt");
   GetPlatform().GetFontNames(params.m_glyphMngParams.m_fonts);
 

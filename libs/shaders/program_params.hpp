@@ -71,6 +71,10 @@ struct ALIGNMENT MapProgramParams
   float m_zScale = 1.0f;
   float m_interpolation = 1.0f;
   float m_isOutlinePass = 1.0f;
+  // Grove: 3D buildings' light (grove::Feature::Buildings3d) and their own alpha (SeeThroughBuildings). They fill the
+  // struct's padding, so its size stays.
+  float m_groveLighting = 0.0f;
+  float m_groveAlpha = 0.0f;
 
   BIND_PROGRAMS(MapProgramParams, Program::Area, Program::Area3d, Program::Area3dOutline, Program::AreaOutline,
                 Program::Bookmark, Program::BookmarkAnim, Program::BookmarkAnimBillboard, Program::BookmarkBillboard,
@@ -82,6 +86,8 @@ struct ALIGNMENT MapProgramParams
                 Program::BookmarkAboveText, Program::BookmarkAnimAboveText, Program::BookmarkAnimAboveTextBillboard,
                 Program::BookmarkAboveTextBillboard)
 };
+// Grove: its fields fill the padding (GL, Vulkan and Metal copy the struct as is).
+static_assert(sizeof(MapProgramParams) == 224);
 
 struct ALIGNMENT RouteProgramParams
 {

@@ -74,7 +74,7 @@ UNIT_TEST(GroveTextStyle_Shaping)
 {
   dp::GlyphManager::Params args;
   args.m_uniBlocks = base::JoinPath("fonts", "unicode_blocks.txt");
-  args.m_whitelist = base::JoinPath("fonts", "whitelist.txt");
+  args.m_whitelist = base::JoinPath("fonts", "grove_whitelist.txt");
   args.m_blacklist = base::JoinPath("fonts", "blacklist.txt");
   GetPlatform().GetFontNames(args.m_fonts);
   dp::GlyphManager mng(args);

@@ -6,6 +6,8 @@
 #include "drape_frontend/rule_drawer.hpp"
 #include "drape_frontend/tile_utils.hpp"
 
+#include "platform/grove_features.hpp"
+
 #include "base/scope_guard.hpp"
 
 #include <algorithm>
@@ -64,7 +66,8 @@ void TileInfo::ReadFeatures(MapDataProvider const & model)
     drawer.DrawTileNet();
 #endif
   }
-  grove::DrawBrandLayer(m_context->GetTileKey(), m_mwms, make_ref(m_context));
+  if (grove::IsOn(grove::Feature::Logos))  // Grove: chains' logos, see grove_brand_layer.hpp.
+    grove::DrawBrandLayer(m_context->GetTileKey(), m_mwms, make_ref(m_context));
 #if defined(DRAPE_MEASURER_BENCHMARK) && defined(TILES_STATISTIC)
   DrapeMeasurer::Instance().EndTileReading();
 #endif

@@ -25,6 +25,8 @@
 #include "drape/stipple_pen_resource.hpp"
 #include "drape/texture_manager.hpp"
 
+#include "platform/grove_features.hpp"
+
 #include "base/logging.hpp"
 
 #include <algorithm>
@@ -408,7 +410,8 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
   m2::PointF symbolSize(0, 0);
 
   // Grove: the logo layer draws chains' logos; their names show under them from zoom 16. See grove_brands.hpp.
-  bool const groveChain = grove::ChainLogoSize(m_f, m_params.m_tileKey.m_zoomLevel, texMng, symbolSize);
+  bool const groveChain = grove::IsOn(grove::Feature::Logos) &&
+                          grove::ChainLogoSize(m_f, m_params.m_tileKey.m_zoomLevel, texMng, symbolSize);
   if (groveChain)
   {
     if (!grove::ShowsChainName(m_params.m_tileKey.m_zoomLevel))
@@ -443,7 +446,8 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
     if (region.IsValid())
     {
       m_params.m_insertShape(make_unique_dp<PoiSymbolShape>(centerPoint, params, m_params.m_tileKey, 0));
-      grove::InsertPoiDot(m_params.m_insertShape, texMng, centerPoint, params, params.m_symbolName);
+      if (grove::IsOn(grove::Feature::PoiDots))  // Grove: see grove_poi_dot.hpp.
+        grove::InsertPoiDot(m_params.m_insertShape, texMng, centerPoint, params, params.m_symbolName);
     }
     else
     {
@@ -465,7 +469,8 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
       params.m_titleDecl.m_secondaryLang = m_captions.GetAuxTextLang();
     }
     ASSERT(!params.m_titleDecl.m_primaryText.empty(), ());
-    grove::StyleCaption(m_f, symbolRule != nullptr, params.m_titleDecl);
+    if (grove::IsOn(grove::Feature::Typography))  // Grove: see grove_typography.hpp.
+      grove::StyleCaption(m_f, symbolRule != nullptr, params.m_titleDecl);
 
     ExtractCaptionParams(capRule, auxRule, params);
     params.m_depth = PriorityToDepth(captionRule->priority, drule::caption, 0);
@@ -493,7 +498,8 @@ void ApplyPointFeature::ProcessPointRules(drule::SymbolRule const * symbolRule, 
     params.m_titleDecl.m_primaryText = m_captions.GetHouseNumberText();
     params.m_titleDecl.m_primaryLang = m_captions.GetMwmRegionLang();
     ASSERT(!params.m_titleDecl.m_primaryText.empty(), ());
-    grove::StyleNumber(params.m_titleDecl.m_primaryText);
+    if (grove::IsOn(grove::Feature::Typography))  // Grove
+      grove::StyleNumber(params.m_titleDecl.m_primaryText);
 
     ExtractCaptionParams(capRule, nullptr, params);
     params.m_depth = PriorityToDepth(houseNumberRule->priority, drule::caption, 0);
@@ -817,6 +823,8 @@ void ApplyLineFeatureGeometry::ProcessRule(drule::LineRule const & lineRule)
       rParams.m_cap = params.m_cap;
       rParams.m_join = params.m_join;
       // Grove: solid, since dashed stripes over dashed paths read as noise.
+      if (!grove::IsOn(grove::Feature::CycleRouteLines))
+        rParams.m_pattern = params.m_pattern;
       rParams.m_width = stripeWidth * static_cast<float>(colors.size());
       rParams.m_depth = params.m_depth + 10;
       rParams.m_depthTestEnabled = params.m_depthTestEnabled;
@@ -863,7 +871,8 @@ void ApplyLineFeatureAdditional::GetRoadShieldsViewParams(ref_ptr<dp::TextureMan
   auto const regionLang = m_captions.GetMwmRegionLang();
   textParams.m_titleDecl.m_anchor = anchor;
   textParams.m_titleDecl.m_primaryText = roadNumber;
-  grove::StyleNumber(textParams.m_titleDecl.m_primaryText);
+  if (grove::IsOn(grove::Feature::Typography))  // Grove
+    grove::StyleNumber(textParams.m_titleDecl.m_primaryText);
   textParams.m_titleDecl.m_primaryLang = regionLang;
   textParams.m_titleDecl.m_secondaryLang = regionLang;
   textParams.m_titleDecl.m_primaryTextFont = font;
@@ -990,7 +999,8 @@ void ApplyLineFeatureAdditional::ProcessAdditionalLineRules(drule::PathTextRule 
     params.m_textFont = fontDecl;
     params.m_baseGtoPScale = m_params.m_currentScaleGtoP;
     params.m_lang = m_captions.GetMainTextLang();
-    grove::StylePathText(m_f, params);
+    if (grove::IsOn(grove::Feature::Typography))  // Grove
+      grove::StylePathText(m_f, params);
 
     uint32_t textIndex = kPathTextBaseTextIndex;
     for (auto const & spline : m_clippedSplines)

@@ -1,4 +1,6 @@
 #include "platform/platform.hpp"
+
+#include "platform/grove_features.hpp"
 #include "platform/preferred_languages.hpp"
 
 #include "coding/internal/file_data.hpp"
@@ -189,15 +191,18 @@ void Platform::GetFontNames(FilesList & res) const
       "fonts/05_khmeros.ttf",
       "fonts/06_code2000.ttf",
       "fonts/07_roboto_medium.ttf",
-      // Grove: Inter replaces Roboto for Latin, Greek and Cyrillic (see fonts/whitelist.txt).
-      // Its italic, semibold and Geist twins only serve styled labels, see drape/grove_text_style.hpp.
-      "fonts/08_geist_medium.ttf",
-      "fonts/08_inter_medium.ttf",
-      "fonts/08_inter_medium_italic.ttf",
-      "fonts/08_inter_semibold.ttf",
       "fonts/organic_maps_emoji.ttf",
   };
   res.insert(res.end(), arrDef, arrDef + ARRAY_SIZE(arrDef));
+
+  // Grove: Inter replaces Roboto for Latin, Greek and Cyrillic (see fonts/grove_whitelist.txt), before the emoji font.
+  // Its italic, semibold and Geist twins only serve styled labels, see drape/grove_text_style.hpp.
+  if (grove::IsOn(grove::Feature::Typography))
+  {
+    ASSERT_EQUAL(res.back(), "fonts/organic_maps_emoji.ttf", ());
+    res.insert(res.end() - 1, {"fonts/08_geist_medium.ttf", "fonts/08_inter_medium.ttf",
+                               "fonts/08_inter_medium_italic.ttf", "fonts/08_inter_semibold.ttf"});
+  }
 
   size_t const beforeSystem = res.size();
   GetSystemFontNames(res);

@@ -11,6 +11,8 @@
 #include "indexer/feature_visibility.hpp"
 #include "indexer/map_style_reader.hpp"
 
+#include "platform/grove_features.hpp"
+
 #include "geometry/clipping.hpp"
 #include "geometry/mercator.hpp"
 
@@ -185,7 +187,7 @@ RuleDrawer::RuleDrawer(TCheckCancelledCallback const & checkCancelled, TIsCountr
     /// @todo MinZoom was used for optimization in RenderGroup::UpdateCanBeDeletedStatus(), but is long time
     /// broken. See https://github.com/organicmaps/organicmaps/pull/5903 for details.
     shape->SetFeatureMinZoom(0);
-    if (m_groveBuildings.Hold(shape))  // Grove: see grove_buildings.hpp.
+    if (grove::IsOn(grove::Feature::SeeThroughBuildings) && m_groveBuildings.Hold(shape))  // Grove
       return;
     m_mapShapes[index].push_back(std::move(shape));
   };
@@ -196,7 +198,8 @@ RuleDrawer::~RuleDrawer()
   if (m_wasCancelled)
     return;
 
-  m_groveBuildings.Flush(m_context);  // Grove: see grove_buildings.hpp.
+  if (grove::IsOn(grove::Feature::SeeThroughBuildings))  // Grove: see grove_buildings.hpp.
+    m_groveBuildings.Flush(m_context);
 
   auto & overlayShapes = m_mapShapes[df::OverlayType];
   for (auto const & shape : overlayShapes)
@@ -400,7 +403,7 @@ void RuleDrawer::ProcessPointStyle(FeatureType & f, Stylist const & s)
 {
   if (IsDiscardCustomFeature(f.GetID()))
     return;
-  if (s.m_symbolRule || s.m_captionRule)
+  if (grove::IsOn(grove::Feature::SeeThroughBuildings) && (s.m_symbolRule || s.m_captionRule))
     m_groveBuildings.AddPlace(f.GetCenter());  // Grove: see grove_buildings.hpp.
 
   ApplyPointFeature apply(m_applyParams, f, s.m_captionDescriptor);

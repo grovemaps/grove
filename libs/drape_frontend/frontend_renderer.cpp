@@ -26,6 +26,7 @@
 #include "indexer/drawing_rules.hpp"
 #include "indexer/scales.hpp"
 
+#include "platform/grove_features.hpp"
 #include "platform/trace.hpp"
 
 #include "base/assert.hpp"
@@ -1027,9 +1028,12 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
                                                make_ref(data));
     }
 
-    m_groveLayers.Route(make_ref(m_tileBackgroundRenderer), msg->GetMode())
-        ->AssignTileBackgroundImage(m_context, msg->GetUid(), msg->GetTexturePool(), msg->GetTextureId(),
-                                    msg->GetMode());
+    // Grove: relief and land cover tiles go to their layers, see grove_raster_layers.hpp.
+    auto renderer = make_ref(m_tileBackgroundRenderer);
+    if (!grove::IsStock())
+      renderer = m_groveLayers.Route(renderer, msg->GetMode());
+    renderer->AssignTileBackgroundImage(m_context, msg->GetUid(), msg->GetTexturePool(), msg->GetTextureId(),
+                                        msg->GetMode());
     msg->MarkProcessed();
     break;
   }
@@ -1037,8 +1041,10 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
   case Message::Type::SetTileBackgroundData:
   {
     ref_ptr<SetTileBackgroundDataMessage> msg = message;
-    m_groveLayers.Route(make_ref(m_tileBackgroundRenderer), msg->GetImageUid())
-        ->SetTileBackgroundData(m_context, msg->GetTileKey(), msg->GetImageUid(), msg->GetRect());
+    auto renderer = make_ref(m_tileBackgroundRenderer);
+    if (!grove::IsStock())  // Grove
+      renderer = m_groveLayers.Route(renderer, msg->GetImageUid());
+    renderer->SetTileBackgroundData(m_context, msg->GetTileKey(), msg->GetImageUid(), msg->GetRect());
     break;
   }
 
@@ -1130,7 +1136,8 @@ void FrontendRenderer::UpdateContextDependentResources()
 
   m_trafficRenderer->ClearContextDependentResources();
   m_tileBackgroundRenderer->ClearContextDependentResources(m_context);
-  m_groveLayers.ClearContextDependentResources(m_context);
+  if (!grove::IsStock())  // Grove
+    m_groveLayers.ClearContextDependentResources(m_context);
 
   if (IsValidCurrentZoom())
   {
@@ -1458,6 +1465,10 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView, bool activeFram
   DrapeImmediateRenderingMeasurerGuard drapeMeasurerGuard(m_context);
 #endif
 
+  // Grove: 3D buildings lit from the upper left, and see-through ones, see shaders/GL/area3d.vsh.glsl.
+  m_frameValues.m_groveLighting = grove::IsOn(grove::Feature::Buildings3d) ? 1.0f : 0.0f;
+  m_frameValues.m_groveAlpha = grove::IsOn(grove::Feature::SeeThroughBuildings) ? 1.0f : 0.0f;
+
   if (m_postprocessRenderer->BeginFrame(m_context, modelView, activeFrame))
   {
     RefreshBgColor();
@@ -1480,11 +1491,14 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView, bool activeFram
 
     RenderTileBackgroundLayer(modelView);
     // Grove: land cover when zoomed out, under the map's areas.
-    m_groveLayers.RenderUnderMap(m_context, make_ref(m_gpuProgramManager), modelView, GetCurrentZoom(), m_frameValues);
+    if (!grove::IsStock())
+      m_groveLayers.RenderUnderMap(m_context, make_ref(m_gpuProgramManager), modelView, GetCurrentZoom(),
+                                   m_frameValues);
 
     Render2dLayer(modelView);
     // Grove: shaded relief over areas and roads, under 3D buildings, routes and labels.
-    m_groveLayers.RenderOverMap(m_context, make_ref(m_gpuProgramManager), modelView, GetCurrentZoom(), m_frameValues);
+    if (!grove::IsStock())
+      m_groveLayers.RenderOverMap(m_context, make_ref(m_gpuProgramManager), modelView, GetCurrentZoom(), m_frameValues);
     RenderUserMarksLayer(modelView, DepthLayer::UserLineLayer);
 
     bool const hasTransitRouteData = HasTransitRouteData();
@@ -1629,7 +1643,8 @@ void FrontendRenderer::Render3dLayer(ScreenBase const & modelView)
   DEBUG_LABEL(m_context, "3D Layer");
   if (m_buildingsFramebuffer->IsSupported())
   {
-    float const kOpacity = 0.9f;  // Grove: more solid buildings (upstream: 0.7).
+    // Grove: more solid buildings (upstream: 0.7).
+    float const kOpacity = grove::IsOn(grove::Feature::Buildings3d) ? 0.9f : 0.7f;
     m_screenQuadRenderer->RenderTexture(m_context, make_ref(m_gpuProgramManager), m_buildingsFramebuffer->GetTexture(),
                                         kOpacity);
   }
@@ -2164,7 +2179,7 @@ void FrontendRenderer::OnTwoFingersTap()
 {
   ScreenBase const & screen = m_userEventStream.GetCurrentScreen();
   // Grove: the distance between the fingers, see grove_measure.hpp.
-  if (auto const & measure = grove::GetMeasureFn())
+  if (auto const & measure = grove::GetMeasureFn(); measure && grove::IsOn(grove::Feature::MeasureTap))
   {
     auto const & [p1, p2] = m_userEventStream.GetTwoFingersTouches();
     m2::PointD const pixel1(p1), pixel2(p2);
@@ -2406,7 +2421,8 @@ TTilesCollection FrontendRenderer::ResolveTileKeys(ScreenBase const & screen)
 
   m_trafficRenderer->OnUpdateViewport(result, GetCurrentZoom(), tilesToDelete);
   m_tileBackgroundRenderer->OnUpdateViewport(m_context, result, GetCurrentZoom());
-  m_groveLayers.OnUpdateViewport(m_context, result, GetCurrentZoom());
+  if (!grove::IsStock())  // Grove
+    m_groveLayers.OnUpdateViewport(m_context, result, GetCurrentZoom());
 
 #if defined(DRAPE_MEASURER_BENCHMARK) && defined(GENERATING_STATISTIC)
   DrapeMeasurer::Instance().StartScenePreparing();
@@ -2446,7 +2462,8 @@ void FrontendRenderer::OnContextDestroy()
   m_gpsTrackRenderer->ClearRenderData();
   m_trafficRenderer->ClearContextDependentResources();
   m_tileBackgroundRenderer->ClearContextDependentResources(m_context);
-  m_groveLayers.ClearContextDependentResources(m_context);
+  if (!grove::IsStock())  // Grove
+    m_groveLayers.ClearContextDependentResources(m_context);
   m_drapeApiRenderer->Clear();
   m_postprocessRenderer->ClearContextDependentResources();
   m_transitSchemeRenderer->ClearContextDependentResources(nullptr /* overlayTree */);
@@ -2604,7 +2621,7 @@ void FrontendRenderer::ReleaseResources()
   m_buildingsFramebuffer.reset();
   m_screenQuadRenderer.reset();
   m_tileBackgroundRenderer.reset();
-  m_groveLayers.Reset();
+  m_groveLayers.Reset();  // Grove
   m_trafficRenderer.reset();
   m_transitSchemeRenderer.reset();
   m_postprocessRenderer.reset();

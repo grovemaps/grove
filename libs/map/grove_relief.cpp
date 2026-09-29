@@ -2,7 +2,7 @@
 
 #include "drape_frontend/grove_raster_layers.hpp"
 
-#include "platform/settings.hpp"
+#include "platform/grove_features.hpp"
 
 #include "geometry/mercator.hpp"
 
@@ -22,8 +22,6 @@ namespace grove
 {
 namespace
 {
-std::string_view constexpr kEnabledKey = "GroveRelief";
-
 // Tilezen/Mapzen "Terrarium" elevation tiles on AWS Open Data: worldwide, free, no key. Sources and attribution:
 // https://github.com/tilezen/joerd/blob/master/docs/attribution.md
 char constexpr kTerrariumUrl[] = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png";
@@ -244,14 +242,12 @@ std::unique_ptr<RasterTileProvider> CreateReliefProvider(std::function<ref_ptr<d
 
 bool IsReliefEnabled()
 {
-  bool enabled = true;
-  settings::TryGet(kEnabledKey, enabled);
-  return enabled;
+  return IsOn(Feature::Relief);
 }
 
 void SetReliefEnabled(ref_ptr<df::DrapeEngine> engine, bool enabled)
 {
-  settings::Set(kEnabledKey, enabled);
+  SetSwitch(Feature::Relief, enabled);
   RasterLayerEnabled(dp::BackgroundMode::Relief) = enabled;
   // Re-reads the visible tiles, which also updates the relief layer's viewport (requests or drops its tiles).
   if (engine)

@@ -3,8 +3,8 @@
 #include "indexer/classificator.hpp"
 #include "indexer/feature_data.hpp"
 
+#include "platform/grove_features.hpp"
 #include "platform/http_client.hpp"
-#include "platform/settings.hpp"
 
 #include "platform/platform.hpp"
 
@@ -62,7 +62,6 @@ struct JsonResponse
 
 namespace
 {
-std::string_view constexpr kEnabledKey = "GroveReviews";
 std::string_view constexpr kApi = "https://api.mangrove.reviews";
 std::string_view constexpr kPack = "grove_reviews.bin";
 std::string_view constexpr kPackIndex = "grove_reviews.txt";
@@ -650,13 +649,11 @@ std::optional<PlaceReviews> Fetch(Subject const & place)
 
 bool IsEnabled()
 {
-  bool enabled = true;
-  settings::TryGet(kEnabledKey, enabled);
-  return enabled;
+  return IsOn(Feature::Reviews);
 }
 
 void SetEnabled(bool enabled)
 {
-  settings::Set(kEnabledKey, enabled);
+  SetSwitch(Feature::Reviews, enabled);
 }
 }  // namespace grove::reviews

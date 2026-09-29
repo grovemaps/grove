@@ -10,6 +10,8 @@
 #include "drape/texture_of_colors.hpp"
 #include "drape/tm_read_resources.hpp"
 
+#include "platform/grove_features.hpp"
+
 #include <algorithm>
 #include <bit>
 #include <cstdint>
@@ -318,7 +320,7 @@ void TextureManager::Release()
   m_symbolTextures.clear();
 
   m_stipplePenTexture.reset();
-  m_groveBrands.reset();
+  m_groveBrands.reset();  // Grove
   m_colorTexture.reset();
   m_trafficArrowTexture.reset();
   m_arrowTexture.reset();
@@ -365,7 +367,8 @@ bool TextureManager::UpdateDynamicTextures(ref_ptr<dp::GraphicsContext> context)
   CHECK(m_stipplePenTexture != nullptr, ());
   m_stipplePenTexture->UpdateState(context);
 
-  m_groveBrands->UpdateState(context);
+  if (m_groveBrands)  // Grove: brand logos, grove::Feature::Logos.
+    m_groveBrands->UpdateState(context);
 
   UpdateGlyphTextures(context);
 
@@ -512,7 +515,8 @@ void TextureManager::Init(ref_ptr<dp::GraphicsContext> context, Params const & p
                                                       dp::TextureFormat::Red, make_ref(m_textureAllocator));
 
   InitStipplePen(params);
-  m_groveBrands = make_unique_dp<grove::BrandTexture>(make_ref(m_textureAllocator), params.m_visualScale);
+  if (grove::IsOn(grove::Feature::Logos))  // Grove
+    m_groveBrands = make_unique_dp<grove::BrandTexture>(make_ref(m_textureAllocator), params.m_visualScale);
 
   // Initialize colors (reserved ./data/colors.txt lines count).
   std::vector<dp::Color> colors;
@@ -610,11 +614,13 @@ void TextureManager::OnVisualScaleChanged(ref_ptr<dp::GraphicsContext> context, 
   if (context->GetApiVersion() == dp::ApiVersion::Vulkan)
   {
     m_stipplePenTexture->DeferredCleanup(m_texturesToCleanup);
-    m_groveBrands->DeferredCleanup(m_texturesToCleanup);
+    if (m_groveBrands)  // Grove
+      m_groveBrands->DeferredCleanup(m_texturesToCleanup);
   }
 
   InitStipplePen(params);
-  m_groveBrands = make_unique_dp<grove::BrandTexture>(make_ref(m_textureAllocator), params.m_visualScale);
+  if (grove::IsOn(grove::Feature::Logos))  // Grove
+    m_groveBrands = make_unique_dp<grove::BrandTexture>(make_ref(m_textureAllocator), params.m_visualScale);
 }
 
 void TextureManager::InvalidateArrowTexture(ref_ptr<dp::GraphicsContext> context,
@@ -648,7 +654,7 @@ bool TextureManager::GetSymbolRegionSafe(std::string const & symbolName, SymbolR
   CHECK(m_isInitialized, ());
 
   // Grove: brand logo badges, loaded on first use, see grove_brand_texture.hpp.
-  if (auto const qid = grove::BrandQid(symbolName); !qid.empty())
+  if (auto const qid = m_groveBrands ? grove::BrandQid(symbolName) : std::string_view{}; !qid.empty())
   {
     if (!m_groveBrands->Prepare(std::string(qid)))
       return false;
