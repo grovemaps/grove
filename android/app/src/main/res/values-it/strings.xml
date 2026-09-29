@@ -233,6 +233,14 @@
     <string name="grove_brand_logos">Loghi dei marchi</string>
     <!-- Grove: place card reviews section: the rating of the last half year's reviews when it differs from the older ones. %1$s is like "★ 2.0 ↓ (3)" -->
     <string name="reviews_last_6_months">Ultimi 6 mesi: %1$s</string>
+    <!-- Grove: Settings: switch that lets the map engine use more processor cores -->
+    <string name="pref_performance_boost_title">Potenziamento prestazioni</string>
+    <!-- Grove: Settings: explanation of the performance boost switch -->
+    <string name="pref_performance_boost_summary">Usa più core del processore per disegnare la mappa più velocemente dopo spostamenti e zoom. Ha effetto dopo il riavvio.</string>
+    <!-- Grove: Settings: dialog after switching the performance boost -->
+    <string name="pref_performance_boost_restart">Riavviare ora l’app per applicare la modifica?</string>
+    <!-- Grove: button that restarts the app -->
+    <string name="restart">Riavvia</string>
     <!-- Grove: Settings: title of the field for the user's own Tripadvisor API key -->
     <string name="tripadvisor_api_key">Chiave API di Tripadvisor</string>
     <!-- Grove: Settings: explanation shown when entering the Tripadvisor API key -->
