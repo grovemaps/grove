@@ -32,6 +32,7 @@ set(SRC
   app/organicmaps/sdk/GroveCycleRoutes.cpp
   app/organicmaps/sdk/GroveElevation.cpp
   app/organicmaps/sdk/GroveLandcover.cpp
+  app/organicmaps/sdk/GroveLook.cpp
   app/organicmaps/sdk/GroveMeasure.cpp
   app/organicmaps/sdk/GrovePerformance.cpp
   app/organicmaps/sdk/GrovePlace.cpp

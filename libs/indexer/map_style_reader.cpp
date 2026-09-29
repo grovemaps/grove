@@ -1,6 +1,7 @@
 #include "map_style_reader.hpp"
 
 #include "platform/platform.hpp"
+#include "platform/settings.hpp"
 
 #include "base/file_name_utils.hpp"
 #include "base/logging.hpp"
@@ -35,13 +36,27 @@ std::string GetStyleRulesFamily(MapStyle mapStyle)
   return "default";
 }
 
+// Grove: the map's look, settings key "GroveLook", read once at start (switching needs a restart): "organicmaps" draws
+// with Organic Maps' own styles and icons, built by tools/grove/classic_style.sh; anything else is Grove's.
+bool GroveClassicLook()
+{
+  static bool const classic = []
+  {
+    std::string look;
+    settings::TryGet("GroveLook", look);
+    return look == "organicmaps";
+  }();
+  return classic;
+}
+
 std::string GetDrawingRulesFile(MapStyle mapStyle)
 {
 #ifdef BUILD_DESIGNER
   (void)mapStyle;
   return kDesignerRulesFile;
 #else
-  return "drules_" + GetStyleRulesFamily(mapStyle) + ".bin";
+  std::string const family = GetStyleRulesFamily(mapStyle);
+  return "drules_" + family + (GroveClassicLook() && family != "merged" ? "_classic" : "") + ".bin";
 #endif  // BUILD_DESIGNER
 }
 
@@ -130,8 +145,9 @@ size_t StyleReader::GetDrawingRulesVariant(MapStyle mapStyle) const
 
 ReaderPtr<Reader> StyleReader::GetResourceReader(std::string const & file, std::string_view density) const
 {
-  std::string resFile =
-      base::JoinPath("symbols", std::string{density}, GetStyleResourcesSuffix(GetCurrentStyle()), file);
+  // Grove: Organic Maps' own icons with its look.
+  std::string resFile = base::JoinPath(GroveClassicLook() ? "symbols-classic" : "symbols", std::string{density},
+                                       GetStyleResourcesSuffix(GetCurrentStyle()), file);
 
   auto overriddenResFile = base::JoinPath(GetPlatform().WritableDir(), kStylesOverrideDir, resFile);
   if (GetPlatform().IsFileExistsByFullPath(overriddenResFile))

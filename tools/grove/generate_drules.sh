@@ -1,5 +1,7 @@
 #!/bin/bash
-# Run upstream's tools/unix/generate_drules.sh, then undo its comment-only rewrite of the priority files.
+# Run upstream's tools/unix/generate_drules.sh, then build the Organic Maps look (tools/grove/classic_style.sh, whose
+# colors and patterns join the ones upstream's script has just rewritten), and undo the comment-only rewrite of the
+# priority files.
 #
 # kothic refreshes the "# line z8- (also has ...)" notes in data/styles/*/include/priorities_*.prio.txt
 # from the compiled style, and Grove's overrides change those notes. The priorities themselves stay
@@ -8,6 +10,7 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 bash tools/unix/generate_drules.sh "$@"
+tools/grove/classic_style.sh
 
 strip_comments() { sed -E 's/[[:space:]]*#.*$//'; }
 while IFS= read -r f; do

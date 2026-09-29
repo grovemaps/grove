@@ -17,12 +17,17 @@ cd "$(git rev-parse --show-toplevel)"
 is_generated() {
   case "$1" in
     data/drules_*.bin | data/drules_*.txt | data/colors.txt | data/patterns.txt | \
-    data/visibility.txt | data/classificator.txt | data/types.txt | data/symbols/*/*/symbols.*) return 0 ;;
+    data/visibility.txt | data/classificator.txt | data/types.txt | data/symbols/*/*/symbols.* | \
+    data/symbols-classic/*/*/symbols.* | tools/grove/classic_base.txt) return 0 ;;
     *) return 1 ;;
   esac
 }
 
 regenerate() {
+  # The Organic Maps look is built from the upstream commit merged last.
+  if git rev-parse --verify -q "$UPSTREAM_REMOTE/$UPSTREAM_BRANCH" > /dev/null; then
+    git merge-base HEAD "$UPSTREAM_REMOTE/$UPSTREAM_BRANCH" > tools/grove/classic_base.txt
+  fi
   if ! python3 -c 'import sys; sys.exit(sys.version_info < (3, 10))'; then
     echo "Needs Python 3.10+ as python3 on PATH." >&2
     exit 1
@@ -36,7 +41,7 @@ regenerate() {
   local changed=()
   while IFS= read -r f; do
     is_generated "$f" && changed+=("$f")
-  done < <(git diff --name-only -- data)
+  done < <(git diff --name-only -- data tools/grove/classic_base.txt; git ls-files --others --exclude-standard -- data)
   if [ ${#changed[@]} -gt 0 ]; then
     git add -- "${changed[@]}"
     git commit -s -m "[styles] Regenerated drules and symbols"

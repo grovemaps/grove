@@ -7,12 +7,14 @@ import android.text.InputType;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.TwoStatePreference;
 import app.organicmaps.R;
 import app.organicmaps.sdk.GroveCycleRoutes;
 import app.organicmaps.sdk.GroveLandcover;
+import app.organicmaps.sdk.GroveLook;
 import app.organicmaps.sdk.GrovePerformance;
 import app.organicmaps.sdk.GroveRelief;
 import app.organicmaps.sdk.GroveReviews;
@@ -50,11 +52,16 @@ final class GroveSettings
     performance.setChecked(GrovePerformance.nativeIsEnabled());
     performance.setOnPreferenceChangeListener((preference, newValue) -> {
       GrovePerformance.nativeSetEnabled((Boolean) newValue);
-      new AlertDialog.Builder(fragment.requireContext())
-          .setMessage(R.string.pref_performance_boost_restart)
-          .setPositiveButton(R.string.restart, (dialog, which) -> restart(fragment.requireContext()))
-          .setNegativeButton(R.string.later, null)
-          .show();
+      offerRestart(fragment.requireContext());
+      return true;
+    });
+
+    final ListPreference look = fragment.getPreference("GroveLook");
+    look.setValue(GroveLook.nativeGet());
+    look.setSummaryProvider(ListPreference.SimpleSummaryProvider.getInstance());
+    look.setOnPreferenceChangeListener((preference, newValue) -> {
+      GroveLook.nativeSet((String) newValue);
+      offerRestart(fragment.requireContext());
       return true;
     });
 
@@ -82,7 +89,17 @@ final class GroveSettings
     });
   }
 
-  // Starts the app anew: the performance boost sizes thread pools at start.
+  // The performance boost and the map's look are read at start.
+  private static void offerRestart(@NonNull Context context)
+  {
+    new AlertDialog.Builder(context)
+        .setMessage(R.string.pref_performance_boost_restart)
+        .setPositiveButton(R.string.restart, (dialog, which) -> restart(context))
+        .setNegativeButton(R.string.later, null)
+        .show();
+  }
+
+  // Starts the app anew.
   private static void restart(@NonNull Context context)
   {
     final Intent launch = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());

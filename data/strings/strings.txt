@@ -7218,6 +7218,19 @@ pt = Ajuda, comentários e mais
 ru = Помощь, отзывы и другое
 uk = Допомога, відгуки й інше
 
+[pref_map_look_title]
+comment = Grove: Settings «Map» section: which look the map has, Grove's or Organic Maps' own styles and icons
+tags = android-app
+en = Map look
+de = Kartenstil
+es = Estilo del mapa
+fr = Style de carte
+it = Stile della mappa
+nl = Kaartstijl
+pt = Estilo do mapa
+ru = Стиль карты
+uk = Стиль мапи
+
 [pref_performance_boost_title]
 comment = Grove: Settings: switch that lets the map engine use more processor cores
 tags = android-app

@@ -12,6 +12,7 @@
   <app.organicmaps.settings.GroveSectionPreference android:key="grove_section_about" android:title="@string/grove_settings_about_title" android:summary="@string/grove_settings_about_summary" android:order="7" android:persistent="false" />
   <androidx.preference.PreferenceCategory android:key="grove_group_map" android:order="10" android:visible="false" app:iconSpaceReserved="false">
     <app.organicmaps.settings.GroveSectionPreference android:key="grove_hero_map" android:summary="@string/grove_settings_map_summary" android:selectable="false" android:persistent="false" android:order="1" />
+    <ListPreference android:key="GroveLook" android:title="@string/pref_map_look_title" app:singleLineTitle="false" android:entries="@array/grove_looks" android:entryValues="@array/grove_look_values" android:persistent="false" android:order="2" />
     <ListPreference android:key="@string/pref_map_appearance" android:title="@string/pref_appearance_title" app:singleLineTitle="false" android:entries="@array/map_appearance" android:order="2" />
     <SwitchPreferenceCompat android:key="@string/pref_3d_buildings" android:title="@string/pref_map_3d_buildings_title" app:singleLineTitle="false" android:order="3" />
     <SwitchPreferenceCompat android:key="GroveRelief" android:title="@string/pref_map_relief_title" android:summary="@string/pref_map_relief_summary" app:singleLineTitle="false" android:persistent="false" android:order="4" />
