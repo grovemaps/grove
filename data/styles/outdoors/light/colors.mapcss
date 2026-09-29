@@ -1,6 +1,6 @@
 /* Keep here changes of the base map style file only. */
 @import("../../default/light/colors.mapcss");
-@import("../../grove/palette-light.mapcss");
+@import("../../../../modules/look/styles/palette-light.mapcss");
 
 /* ~~~~ CONTENT OF COLORS-LIGHT ~~~~~
 

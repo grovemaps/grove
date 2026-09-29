@@ -1,7 +1,7 @@
 #!/bin/bash
 # Build the drawing rules users can switch to (libs/indexer/map_style_reader.cpp):
 # - the "Organic Maps" look (settings key "GroveLook"): Organic Maps' own styles and icons, untouched by Grove;
-# - car navigation in Grove's colors (settings key "GroveNavigationColors"): data/styles/vehicle/grove-{light,dark}
+# - car navigation in Grove's colors (settings key "GroveNavigationColors"): modules/navigation_colors/styles/{light,dark}
 #   into data/drules_vehicle_grove.bin. Navigation keeps Organic Maps' muted vehicle style by default.
 #
 #   modules/look/tools/extra_styles.sh     (modules/look/tools/generate_drules.sh runs it)

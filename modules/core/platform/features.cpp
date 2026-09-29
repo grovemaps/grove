@@ -18,7 +18,7 @@ FeatureInfo constexpr kFeatures[] = {
     {Look, G::Map, "GroveLook", true, true,
      "Grove's map style and icons: Apple-like colours, Guru Maps' terrain, CoMaps' cartography. Off: Organic Maps' "
      "own.",
-     "indexer/map_style_reader.cpp; data/styles/grove, modules/look/tools/extra_styles.sh"},
+     "indexer/map_style_reader.cpp; modules/look/styles, modules/look/tools/extra_styles.sh"},
     {Typography, G::Map, "GroveTypography", true, true,
      "Inter for map labels: semibold places, italic water, spaced capitals for streets and areas, Geist numbers.",
      "platform/platform.cpp, drape/glyph_manager.cpp, drape_frontend/apply_feature_functors.cpp, "

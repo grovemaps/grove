@@ -606,7 +606,7 @@ uint16_t Read16(std::string const & s, size_t offset)
 
 std::array<uint8_t, 4> ClassColor(uint8_t cls, bool dark)
 {
-  // Grove's light palette, at its zoom 11 shades (data/styles/grove/palette-light.mapcss); the dark ones follow
+  // Grove's light palette, at its zoom 11 shades (modules/look/styles/palette-light.mapcss); the dark ones follow
   // upstream's dark style.
   switch (cls)
   {

@@ -5,7 +5,7 @@
 @import("../include/Roads.mapcss");
 @import("../include/Roads_label.mapcss");
 @import("../include/Icons.mapcss");
-@import("../../grove/poi-label-colors.mapcss");
+@import("../../../../modules/look/styles/poi-label-colors.mapcss");
 @import("../include/Subways.mapcss");
 
 /* TODO: move to a separete base file */

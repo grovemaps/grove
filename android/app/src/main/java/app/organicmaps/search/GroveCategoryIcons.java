@@ -12,7 +12,7 @@ import app.organicmaps.util.ThemeUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-// Grove: search categories in the map icons' colors (data/styles/grove/icon-colors.txt), so the list matches the
+// Grove: search categories in the map icons' colors (modules/look/styles/icon-colors.txt), so the list matches the
 // map. Upstream's category icons are a glyph on a colored circle; only the circle is recolored.
 final class GroveCategoryIcons
 {

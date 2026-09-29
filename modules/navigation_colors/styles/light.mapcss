@@ -1,4 +1,8 @@
-@import("colors.mapcss");
+/* Grove: car navigation in Grove's colors, the "Grove colors while driving" switch (modules/look/tools/extra_styles.sh
+ * builds it into drules_vehicle_grove.bin). By default navigation keeps Organic Maps' muted vehicle style.
+ * Imported by data/styles/vehicle/grove-light/style.mapcss: kothic resolves imports from there, where upstream's vehicle
+ * includes expect it. */
+@import("../light/colors.mapcss");
 @import("../../../../modules/look/styles/palette-light.mapcss");
 @import("../include/defaults.mapcss");
 @import("../include/Basemap.mapcss");
@@ -8,7 +12,8 @@
 @import("../include/Icons.mapcss");
 @import("../../../../modules/look/styles/poi-label-colors.mapcss");
 @import("../include/Subways.mapcss");
-@import("../../../../modules/look/styles/apple-look.mapcss");
+@import("../../../../modules/look/styles/borders.mapcss");
+
 
 colors
 {
@@ -29,8 +34,8 @@ colors
   RoutePedestrian-opacity: 0.8;
   RouteBicycle-color: #9C27B0;
   RouteBicycle-opacity: 0.8;
-  RouteRuler-color: #66347F;
-  RouteRuler-opacity: 0.9;
+  RouteRuler-color: #1D339E;
+  RouteRuler-opacity: 0.8;
   RoutePreview-color: #000000;
   RoutePreview-opacity: 0.3;
   RouteMaskCar-color: #000000;
@@ -66,11 +71,11 @@ colors
   TrafficG3-opacity: 0.0;
   TrafficG4-color: #39962E;
   TrafficG5-color: #39962E;
-  TrafficTempBlock-color: #525252;
+  TrafficTempBlock-color: #464646;
   TrafficUnknown-color: #000000;
   TrafficArrowLight-color: #FFFFFF;
   TrafficArrowDark-color: #473635;
-  TrafficOutline-color: #E8E6DC;
+  TrafficOutline-color: #F0F0F0;
   RoadShieldBlackText-color: #000000;
   RoadShieldWhiteText-color: #FFFFFF;
   RoadShieldUKYellowText-color: #FFD400;

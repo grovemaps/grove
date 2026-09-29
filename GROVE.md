@@ -43,7 +43,7 @@ Apple Maps sets the color palette.
   - Qt 6 with Core, Gui, Widgets, Xml, Svg, OpenGL, OpenGLWidgets and Network. It's needed for `skin_generator_tool` (icons) and the desktop app (renders).
   - Android: JDK 17, SDK platform 36, NDK 29.0.14206865; build with `cd android && ./gradlew -Parm64 assembleFdroidDebug`.
 - **Style changes:**
-  1. Edit `data/styles/grove/*`.
+  1. Edit `modules/look/styles/*`.
   2. Run `modules/look/tools/generate_drules.sh`, then `modules/look/tools/generate_symbols.py`.
   3. Commit the regenerated files separately as `[styles] Regenerated`.
 - **Before pushing, check for logged errors.** The APKs are Debug builds, which stop on any logged error (LERROR) or failed ASSERT. Release desktop builds only log them. Run the desktop app with `--log_abort_level=E` in screenshot mode (see `modules/core/tools/render_screens.sh` for the flags) and make sure the log has no `E(` lines. On GitHub, the emulator test in `grove-android.yaml` refuses to publish an APK that doesn't survive start.
@@ -60,7 +60,7 @@ Apple Maps sets the color palette.
 Grove must be able to take in new Organic Maps releases, so keep its changes out of upstream files wherever possible:
 
 1. **Modules, not edits.** Each Grove feature lives in its own folder, `modules/<module>/`: its C++ code by the upstream library it extends (`modules/logos/drape_frontend/` goes into `drape_frontend`, via `modules/core/modules.cmake`), its tests (`modules/<module>/tests/<test>/`), tools, data and ideas. An upstream file gets at most a small hook, such as an `@import` line, a flag or a single call, and every hook checks its feature's switch (`modules/core/platform/features.hpp`), so with Stock on only upstream's code runs.
-2. **Override, don't rewrite.** Styles use kothic's rule that the last definition wins. `data/styles/grove/palette-light.mapcss` redefines the color variables and is imported right after upstream's colors. `default/light/colors.mapcss` stays byte-identical to upstream.
+2. **Override, don't rewrite.** Styles use kothic's rule that the last definition wins. `modules/look/styles/palette-light.mapcss` redefines the color variables and is imported right after upstream's colors. `default/light/colors.mapcss` stays byte-identical to upstream.
 3. **Never hand-merge generated files.** `data/drules_*`, `colors.txt`, `patterns.txt`, `visibility.txt`, `classificator.txt` and `types.txt` are rebuilt by `modules/look/tools/generate_drules.sh`. It runs upstream's `tools/unix/generate_drules.sh`, then restores the `priorities_*.prio.txt` files, where Grove's overrides would otherwise only rewrite the zoom notes in comments. The icon atlases `data/symbols/*/*/symbols.*` are rebuilt by `modules/look/tools/generate_symbols.py`. **Don't run upstream's `tools/unix/generate_symbols.sh`**, because it would drop the Grove icon colors. Commit generated files separately as `[styles] Regenerated`.
 4. **Small, prefixed commits:** `[grove]`, `[styles]`, `[android]` and so on. Each commit does one thing, so conflicts stay easy to read.
 
@@ -113,7 +113,7 @@ Current upstream hooks:
 | `android/app/src/main/res/layout/place_page_details.xml`, `PlacePageView.java` | a container for the Mangrove reviews section and the one line that shows it (`GroveReviewsFragment`) |
 | `data/fonts/whitelist.txt` | Inter for Latin, Greek and Cyrillic blocks; drops the system Roboto entries for those blocks (a whitelisted system font loads last and would win) |
 
-Grove style files in `data/styles/grove/`:
+Grove style files in `modules/look/styles/`:
 
 - `palette-light.mapcss` holds the Apple Maps colors measured from the reference screenshots, with Organic Maps' contrast: amber motorways and trunks, yellow primaries, white streets, buildings with a defined border on a warm background (Apple's grey roads on grey read as grey on grey).
 - `palette-dark.mapcss` holds dark-mode values. For now it only has POI label colors, derived from the Apple light hues.
@@ -133,7 +133,7 @@ It also writes an `<icon>-dot` symbol for every recolored icon: a small circle o
 
 The script needs Qt 6 to build `skin_generator_tool` (`QT_PATH` in `/Volumes/grove/tools/env.sh`). It uses `optipng` or `oxipng` for lossless compression. With unmodified SVGs, this toolchain reproduces upstream's committed atlases pixel for pixel.
 
-Car navigation keeps Organic Maps' calmer, muted vehicle style by default (`drules_vehicle.bin` is upstream's, byte for byte). The "Grove colors while driving" switch (Settings → Navigation, `GroveNavigationColors` settings key, after a restart) loads `drules_vehicle_grove.bin` instead, built by `modules/look/tools/extra_styles.sh` from `data/styles/vehicle/grove-{light,dark}`: the vehicle style with the Grove palette, the label colors by category and the borders. The icon atlases are shared by all styles.
+Car navigation keeps Organic Maps' calmer, muted vehicle style by default (`drules_vehicle.bin` is upstream's, byte for byte). The "Grove colors while driving" switch (Settings → Navigation, `GroveNavigationColors` settings key, after a restart) loads `drules_vehicle_grove.bin` instead, built by `modules/look/tools/extra_styles.sh` from `modules/navigation_colors/styles/{light,dark}`: the vehicle style with the Grove palette, the label colors by category and the borders. The icon atlases are shared by all styles.
 
 ### Syncing with a newer Organic Maps
 
@@ -152,7 +152,7 @@ modules/look/tools/generate_drules.sh                    # upstream's generate_d
 modules/look/tools/generate_symbols.py                   # icons; needs the drules from the line above
 ```
 
-Untracked Grove files (`GROVE.md`, `modules/`, `data/styles/grove/`) aren't stashed and stay where they are. Use `--index` on `stash pop`, or the staged Guru submodule comes back unstaged.
+Untracked Grove files (`GROVE.md`, `modules/`, `modules/look/styles/`) aren't stashed and stay where they are. Use `--index` on `stash pop`, or the staged Guru submodule comes back unstaged.
 
 **With commits** (once Grove's changes are committed):
 

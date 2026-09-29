@@ -5,7 +5,7 @@ Use this instead of tools/unix/generate_symbols.sh. Upstream SVGs in
 data/styles/default/{light,dark}/symbols are never edited: each run copies them to a temp dir,
 recolors the copies and runs skin_generator_tool on them.
 
-An icon gets the color of the label category (data/styles/grove/icon-colors.txt) shared by the place
+An icon gets the color of the label category (modules/look/styles/icon-colors.txt) shared by the place
 types that use it. Categories are read back from the compiled data/drules_default.txt, so run
 modules/look/tools/generate_drules.sh first. Icons used by types of several categories, or whose SVG has more
 than one non-white/black color, keep their upstream colors and are listed with --verbose.
@@ -27,6 +27,7 @@ import tempfile
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 DATA = os.path.join(ROOT, 'data')
 STYLES = os.path.join(DATA, 'styles')
+GROVE_STYLES = os.path.join(ROOT, 'modules', 'look', 'styles')
 # Same resolutions and sizes as tools/unix/generate_symbols.sh.
 RESOLUTIONS = [('mdpi', 18), ('hdpi', 27), ('xhdpi', 36), ('6plus', 43), ('xxhdpi', 54), ('xxxhdpi', 64)]
 THEMES = ['light', 'dark']
@@ -50,7 +51,7 @@ def norm(color):
 def read_icon_colors():
     """Returns ({color key: {theme: color}}, [(icon glob, color key, recolor all)]) from icon-colors.txt."""
     colors, rules = {}, []
-    with open(os.path.join(STYLES, 'grove', 'icon-colors.txt')) as f:
+    with open(os.path.join(GROVE_STYLES, 'icon-colors.txt')) as f:
         for line in f:
             m = re.match(r'^(\w+)\s+(#[0-9A-Fa-f]{6})\s+(#[0-9A-Fa-f]{6})', line)
             if m:
@@ -66,8 +67,8 @@ def read_icon_colors():
 def read_label_variables():
     """Effective light-theme label colors: upstream colors.mapcss overridden by Grove's palette."""
     values = {}
-    for path in ('default/light/colors.mapcss', 'grove/palette-light.mapcss'):
-        with open(os.path.join(STYLES, path)) as f:
+    for path in (os.path.join(STYLES, 'default/light/colors.mapcss'), os.path.join(GROVE_STYLES, 'palette-light.mapcss')):
+        with open(path) as f:
             for name, value in re.findall(r'^@(\w+_label)\s*:\s*(#[0-9A-Fa-f]{6})\s*;', f.read(), re.M):
                 values[name] = value.upper()
     return values
