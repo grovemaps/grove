@@ -34,11 +34,21 @@ public:
   {
     if (m_buildings.empty())
       return;
+    // Places sorted from west to east: each building only tests the places within its bounding box.
+    std::ranges::sort(m_places, {}, &m2::PointD::x);
     for (auto & shape : m_buildings)
     {
       auto * area = static_cast<df::AreaShape *>(shape.get());
-      if (std::ranges::any_of(m_places, [area](m2::PointD const & p) { return area->Contains(p); }))
-        area->SetAlpha(kHollowAlpha);
+      m2::RectD const bounds = area->GetBounds();
+      for (auto p = std::ranges::lower_bound(m_places, bounds.minX(), {}, &m2::PointD::x);
+           p != m_places.end() && p->x <= bounds.maxX(); ++p)
+      {
+        if (p->y >= bounds.minY() && p->y <= bounds.maxY() && area->Contains(*p))
+        {
+          area->SetAlpha(kHollowAlpha);
+          break;
+        }
+      }
       shape->Prepare(context->GetTextureManager());
     }
     context->Flush(std::move(m_buildings));

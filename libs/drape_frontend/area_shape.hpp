@@ -7,6 +7,7 @@
 #include "drape/pointers.hpp"
 
 #include "geometry/point2d.hpp"
+#include "geometry/rect2d.hpp"
 #include "geometry/triangle2d.hpp"
 
 #include <vector>
@@ -43,6 +44,14 @@ public:
 
   // Grove: see grove_buildings.hpp.
   bool IsBuilding3D() const { return m_params.m_is3D; }
+  // Grove: the footprint's bounding box, see grove_buildings.hpp.
+  m2::RectD GetBounds() const
+  {
+    m2::RectD r;
+    for (auto const & v : m_vertexes)
+      r.Add(v);
+    return r;
+  }
   bool Contains(m2::PointD const & pt) const
   {
     for (size_t i = 0; i + 2 < m_vertexes.size(); i += 3)
